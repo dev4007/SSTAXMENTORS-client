@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { message } from "antd";
@@ -11,10 +11,17 @@ const CreateSupportTicket = () => {
   const [issueMessage, setIssueMessage] = useState("");
   const [files, setFiles] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token"));
+  const formRef = useRef(null); // Create a ref for the form
+
 
   useEffect(() => {
-    let isMounted = true;
+    // let isMounted = true;
     // Fetch ticket ID from the backend on component mount
+    fetchTicketId();
+    // return () => {
+    //   isMounted = false;
+    // };
+  }, []);
     const fetchTicketId = async () => {
       try {
         const token = localStorage.getItem("token");
@@ -37,8 +44,8 @@ const CreateSupportTicket = () => {
       } catch (error) {
         console.error("Error fetching ticket ID:", error);
         console.log("error", error.response);
-        console.log("ismounted", isMounted);
-        if (isMounted && error.response && error.response.status === 500) {
+        // console.log("ismounted", isMounted);
+        if (error.response && error.response.status === 500) {
           // If the response status is 401, display an alert and redirect to login page
           alert("Session expired. Please login again.");
           // window.location.href = '/'; // Change the URL accordingly
@@ -47,11 +54,7 @@ const CreateSupportTicket = () => {
       }
     };
 
-    fetchTicketId();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+
 
   const handleFileChange = (event) => {
     // Set selected files based on file input change
@@ -82,10 +85,11 @@ const CreateSupportTicket = () => {
       );
 
       console.log(response.data.message);
+      handleReset()
+      // formRef.current.reset();
+      fetchTicketId()
       message.success("support ticket submitted successfully!");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+
     } catch (error) {
       message.error("support ticket not sent. please try again later");
       console.error("Error creating support ticket:", error);
@@ -96,7 +100,7 @@ const CreateSupportTicket = () => {
     // Reset form fields
     setQuestionType("general");
     setIssueMessage("");
-    setFiles([]);
+    setFiles(null);
   };
 
   return (

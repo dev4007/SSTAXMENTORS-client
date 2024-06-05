@@ -8,6 +8,9 @@ import NavigationBar from "../../NavigationBar/NavigationBar";
 
 const SendCMApreparation = () => {
   const [clients, setClients] = useState([]);
+
+  const [filteredClientData, setFilteredClientData] = useState([]);
+
   const [selectedClient, setSelectedClient] = useState("");
   const [companies, setCompanies] = useState([]);
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -29,6 +32,33 @@ const SendCMApreparation = () => {
   const [itemsPerPageClient] = useState(15); // You can change this value as needed
   let isMounted = true;
   let navigate = useNavigate();
+
+
+  useEffect(() => {
+    filterClientData();
+  }, [clients, searchQuery, filterOption]); // Updated dependencies
+
+  const filterClientData = () => {
+    let filteredClients = clients.filter((client) => {
+      const fullName = `${client.firstname} ${client.lastname}.toLowerCase()`;
+      return (
+        fullName.includes(searchQuery.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    });
+
+    if (filterOption !== "all") {
+      filteredClients = filteredClients.filter(
+        (client) => client.status === filterOption
+      );
+    }
+
+    setFilteredClientData(filteredClients);
+  };
+
+  const startIndexC = (currentPageC - 1) * itemsPerPageC;
+  const endIndexC = Math.min(startIndexC + itemsPerPageC, filteredClientData.length);
+  const slicedHistoryC = filteredClientData.slice(startIndexC, endIndexC);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -126,9 +156,9 @@ const SendCMApreparation = () => {
     return buttons;
   };
 
-  const startIndexC = (currentPageC - 1) * itemsPerPageC;
-  const endIndexC = Math.min(startIndexC + itemsPerPageC, clients.length);
-  const slicedHistoryC = clients.slice(startIndexC, endIndexC);
+  // const startIndexC = (currentPageC - 1) * itemsPerPageC;
+  // const endIndexC = Math.min(startIndexC + itemsPerPageC, clients.length);
+  // const slicedHistoryC = clients.slice(startIndexC, endIndexC);
 
   // Pagination function
   const paginateClients = (pageNumber) => setCurrentPageClient(pageNumber);
@@ -474,7 +504,7 @@ const SendCMApreparation = () => {
                         className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}
                       >
                         <td className="py-2 px-4 border-b">
-                          {currentClients.length - startIndexC - index}
+                          {filteredClientData.length - startIndexC - index}
                         </td>
                         <td className="py-2 px-4 border-b">
                           {client.firstname}

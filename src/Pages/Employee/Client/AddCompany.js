@@ -47,8 +47,6 @@ const AddCompany = () => {
 
   const formRef = useRef(null); // Create a ref for the form
 
-
-
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
