@@ -27,7 +27,7 @@ const Employeeattendance = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/employee/employeeatten",
+        "https://www.sstaxmentors.com/admin/employee/employeeatten",
         {
           params: {
             searchQuery: searchQuery,

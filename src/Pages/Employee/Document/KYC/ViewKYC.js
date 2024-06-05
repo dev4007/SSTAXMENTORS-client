@@ -38,7 +38,7 @@ function ViewKYC() {
         try {
           const token = localStorage.getItem("token");
           const response = await axios.get(
-            "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+            "https://www.sstaxmentors.com/admin/client/manageclient",
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -153,7 +153,7 @@ function ViewKYC() {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/kyc/getKYCOfClient",
+        "https://www.sstaxmentors.com/admin/document/kyc/getKYCOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -191,7 +191,7 @@ function ViewKYC() {
     
             // Send request to fetch the file
             const response = await axios.get(
-                `https://sstaxmentors-server.vercel.app/user/document/kyc/previewkycAE/${filename}`,
+                `https://www.sstaxmentors.com/user/document/kyc/previewkycAE/${filename}`,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`,
@@ -221,7 +221,7 @@ function ViewKYC() {
     
             // Send request to download the file
             const response = await axios.get(
-                `https://sstaxmentors-server.vercel.app/user/document/kyc/downloadkycAE/${filename}`,
+                `https://www.sstaxmentors.com/user/document/kyc/downloadkycAE/${filename}`,
                 {
                     headers: {
                         Authorization: `Bearer ${authToken}`,

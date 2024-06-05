@@ -26,7 +26,7 @@ const RegistrationForm = () => {
     // Handle submission to a server or perform other actions
 
     try {
-      await axios.post("https://sstaxmentors-server.vercel.app/user/registration/register", formData);
+      await axios.post("https://www.sstaxmentors.com/user/registration/register", formData);
       message.info("Check your mail inbox, Verify your email");
       const role = localStorage.getItem("role");
       if (role === "user") {

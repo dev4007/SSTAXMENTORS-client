@@ -10,7 +10,7 @@ const ImageCarousel = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/loginImages"
+          "https://www.sstaxmentors.com/admin/loginImages"
         );
         if (response.data && response.data.loginImages) {
           const filteredImages = response.data.loginImages.filter(

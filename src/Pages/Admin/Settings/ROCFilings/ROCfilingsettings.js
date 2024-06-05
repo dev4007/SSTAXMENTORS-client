@@ -19,7 +19,7 @@ const ROCfilingssettings = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/rocfilings/ROCfilingsfields"
+        "https://www.sstaxmentors.com/admin/settings/rocfilings/ROCfilingsfields"
       );
       setFields(response.data);
     } catch (error) {
@@ -47,7 +47,7 @@ const ROCfilingssettings = () => {
       }
 
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/settings/rocfilings/addNewROCfilingfield",
+        "https://www.sstaxmentors.com/admin/settings/rocfilings/addNewROCfilingfield",
         {
           fieldName: newFieldName.trim(),
           fieldDescription: newFieldDescription.trim(),
@@ -83,7 +83,7 @@ const ROCfilingssettings = () => {
       }
 
       const response = await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/rocfilings/removeROCfilingfield/${id}`
+        `https://www.sstaxmentors.com/admin/settings/rocfilings/removeROCfilingfield/${id}`
       );
       setFields(fields.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -113,7 +113,7 @@ const ROCfilingssettings = () => {
       }
 
       const response = await axios.put(
-        `https://sstaxmentors-server.vercel.app/admin/settings/rocfilings/toggleActiveFieldROC/${id}`
+        `https://www.sstaxmentors.com/admin/settings/rocfilings/toggleActiveFieldROC/${id}`
       );
 
       const updatedFields = fields.map((field) => {

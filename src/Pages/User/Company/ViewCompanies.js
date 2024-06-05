@@ -89,7 +89,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyDetails",
+        "https://www.sstaxmentors.com/user/company/getCompanyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -126,7 +126,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/company/previewCompanyFile/${filename}`,
+        `https://www.sstaxmentors.com/user/company/previewCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -147,7 +147,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/company/downloadCompanyFile/${filename}`,
+        `https://www.sstaxmentors.com/user/company/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -178,7 +178,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/deleteCompany",
+        "https://www.sstaxmentors.com/user/deleteCompany",
         { clientId: modalContent.companyId },
         {
           headers: {

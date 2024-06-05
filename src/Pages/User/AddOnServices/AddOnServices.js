@@ -19,7 +19,7 @@ const AddOnServicesPage = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/addonservice/getAddOnServices",
+          "https://www.sstaxmentors.com/admin/settings/addonservice/getAddOnServices",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ const AddOnServicesPage = () => {
       setLoader(true)
       const authToken = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/addonservice/addNewAddOnService",
+        "https://www.sstaxmentors.com/user/addonservice/addNewAddOnService",
         {
           selectedServices: selectedServices,
           description: description,

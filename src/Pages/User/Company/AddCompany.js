@@ -44,7 +44,7 @@ function AddCompany() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/CompanyDetails",
+        "https://www.sstaxmentors.com/admin/client/CompanyDetails",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -152,7 +152,7 @@ function AddCompany() {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/company/addcompany",
+        "https://www.sstaxmentors.com/user/company/addcompany",
         formData,
         {
           headers: {

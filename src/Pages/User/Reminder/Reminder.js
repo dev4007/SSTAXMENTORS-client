@@ -18,10 +18,10 @@ const Reminder = () => {
   const [showDetails, setShowDetails] = useState(false);
   const [selectedReminder, setSelectedReminder] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [remindersPerPage] = useState(10);
+  const [remindersPerPage,setRemindersPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPageC, setCurrentPageC] = useState(1);
-  const [itemsPerPageC, setItemsPerPageC] = useState(100);
+  const [itemsPerPageC, setItemsPerPageC] = useState(20);
 
   useEffect(() => {
     let isMounted = true;
@@ -29,7 +29,7 @@ const Reminder = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/reminder/getreminders",
+          "https://www.sstaxmentors.com/user/reminder/getreminders",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -56,7 +56,7 @@ const Reminder = () => {
     };
   }, []);
 
-  const totalPagesC = Math.ceil(reminders.length / itemsPerPageC);
+  // const totalPages = Math.ceil(reminders.length / itemsPerPageC);
 
   const paginateC = (pageNumber) => {
     setCurrentPageC(pageNumber);
@@ -65,14 +65,14 @@ const Reminder = () => {
   const renderPaginationButtons = () => {
     const buttons = [];
     const maxButtons = 3; // Number of buttons to display
-    const maxPages = Math.min(totalPagesC, maxButtons);
+    const maxPages = Math.min(totalPages, maxButtons);
     const middleButton = Math.ceil(maxPages / 2);
     let startPage = Math.max(1, currentPageC - middleButton + 1);
-    let endPage = Math.min(totalPagesC, startPage + maxPages - 1);
+    let endPage = Math.min(totalPages, startPage + maxPages - 1);
 
-    if (currentPageC > middleButton && totalPagesC > maxButtons) {
-      startPage = Math.min(currentPageC - 1, totalPagesC - maxButtons + 1);
-      endPage = Math.min(startPage + maxButtons - 1, totalPagesC);
+    if (currentPageC > middleButton && totalPages > maxButtons) {
+      startPage = Math.min(currentPageC - 1, totalPages - maxButtons + 1);
+      endPage = Math.min(startPage + maxButtons - 1, totalPages);
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -93,7 +93,7 @@ const Reminder = () => {
       );
     }
 
-    if (totalPagesC > maxButtons && endPage < totalPagesC) {
+    if (totalPages > maxButtons && endPage < totalPages) {
       buttons.push(
         <li key="ellipsis" className="page-item disabled">
           <span className="page-link bg-blue-500 text-white font-semibold py-2 px-4 rounded">
@@ -102,12 +102,12 @@ const Reminder = () => {
         </li>
       );
       buttons.push(
-        <li key={totalPagesC} className="page-item">
+        <li key={totalPages} className="page-item">
           <button
-            onClick={() => paginateC(totalPagesC)}
+            onClick={() => paginateC(totalPages)}
             className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
           >
-            {totalPagesC}
+            {totalPages}
           </button>
         </li>
       );
@@ -142,7 +142,7 @@ const Reminder = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/reminder/previewreminder/${filename}`,
+        `https://www.sstaxmentors.com/user/reminder/previewreminder/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -163,7 +163,7 @@ const Reminder = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/reminder/downloadreminder/${filename}`,
+        `https://www.sstaxmentors.com/user/reminder/downloadreminder/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

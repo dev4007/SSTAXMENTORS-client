@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar/NavigationBar";
+import { message } from "antd";
 
 function MyProfile() {
   let navigate = useNavigate();
@@ -16,7 +17,7 @@ function MyProfile() {
     const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("https://sstaxmentors-server.vercel.app/user/profile/profile", {
+        const response = await axios.get("https://www.sstaxmentors.com/user/profile/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -88,7 +89,7 @@ function MyProfile() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/profile/updateprofile",
+        "https://www.sstaxmentors.com/user/profile/updateprofile",
         editedData,
         {
           headers: {
@@ -99,11 +100,11 @@ function MyProfile() {
 
       if (response.data.error === "Email already in use") {
         setEmailError(true);
-        alert("Email is already in use");
+        message.info("Email is already in use");
       } else if (response.data.error) {
         alert("Invalid data or error occurred");
       } else {
-        alert("Profile updated successfully!");
+        message.success("Profile updated successfully!");
         setIsEditing(false);
       }
     } catch (error) {

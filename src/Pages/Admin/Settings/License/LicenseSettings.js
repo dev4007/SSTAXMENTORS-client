@@ -24,7 +24,7 @@ const LicenseSettings = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/license/Licensesnames"
+        "https://www.sstaxmentors.com/admin/settings/license/Licensesnames"
       );
       setNames(response.data);
     } catch (error) {
@@ -52,7 +52,7 @@ const LicenseSettings = () => {
       }
 
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/settings/license/addnewLicensefield",
+        "https://www.sstaxmentors.com/admin/settings/license/addnewLicensefield",
         {
           name: newName.trim(),
           description: newDescription.trim(),
@@ -88,7 +88,7 @@ const LicenseSettings = () => {
       }
 
       const response = await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/license/removeLicense/${id}`
+        `https://www.sstaxmentors.com/admin/settings/license/removeLicense/${id}`
       );
       setNames(names.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -118,7 +118,7 @@ const LicenseSettings = () => {
       }
 
       const response = await axios.put(
-        `https://sstaxmentors-server.vercel.app/admin/settings/license/toggleActiveFieldLicense/${id}`
+        `https://www.sstaxmentors.com/admin/settings/license/toggleActiveFieldLicense/${id}`
       );
 
       const updatedFields = names.map((field) => {

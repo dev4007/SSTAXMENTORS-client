@@ -24,7 +24,7 @@ const TransactionStatus = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/transaction/transactions",
+        "https://www.sstaxmentors.com/admin/transaction/transactions",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -154,7 +154,7 @@ const TransactionStatus = () => {
       };
 
     const response =  await axios.post(
-        `https://sstaxmentors-server.vercel.app/admin/transaction/updatedstatus`,
+        `https://www.sstaxmentors.com/admin/transaction/updatedstatus`,
         { invoiceNumber: transactionId, status },
         config
       );
@@ -173,7 +173,7 @@ const TransactionStatus = () => {
       const filename = files[0].filename; // Access the filename from the first element of the files array
 
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/transaction/preview/${filename}?transactionid=${transactionid}`,
+        `https://www.sstaxmentors.com/admin/transaction/preview/${filename}?transactionid=${transactionid}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

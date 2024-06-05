@@ -13,7 +13,7 @@ function Verify() {
         try {
           // Send POST request to backend endpoint with the token
           const response = await axios.post(
-            "https://sstaxmentors-server.vercel.app/user/verification/verify",
+            "https://www.sstaxmentors.com/user/verification/verify",
             { token }
           );
 

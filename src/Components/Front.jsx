@@ -13,7 +13,7 @@ export default function Front() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/dashboardImages",
+          "https://www.sstaxmentors.com/admin/dashboardImages",
           {
             headers: {
               Authorization: `Bearer ${token}`,

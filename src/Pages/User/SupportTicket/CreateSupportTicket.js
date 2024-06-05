@@ -20,7 +20,7 @@ const CreateSupportTicket = () => {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/getticketid",
+          "https://www.sstaxmentors.com/user/getticketid",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -71,7 +71,7 @@ const CreateSupportTicket = () => {
 
     try {
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/createsupportticket",
+        "https://www.sstaxmentors.com/user/createsupportticket",
         formData,
         {
           headers: {

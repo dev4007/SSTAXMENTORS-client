@@ -35,7 +35,7 @@ const Notifications = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/notification/getnotifications",
+          "https://www.sstaxmentors.com/user/notification/getnotifications",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -65,7 +65,7 @@ const Notifications = () => {
     };
   }, []);
 
-  const totalPagesC = Math.ceil(notifications.length / itemsPerPageC);
+  // const totalPages = Math.ceil(notifications.length / itemsPerPageC);
 
   const paginateC = (pageNumber) => {
     setCurrentPageC(pageNumber);
@@ -74,14 +74,14 @@ const Notifications = () => {
   const renderPaginationButtonsC = () => {
     const buttons = [];
     const maxButtons = 3; // Number of buttons to display
-    const maxPages = Math.min(totalPagesC, maxButtons);
+    const maxPages = Math.min(totalPages, maxButtons);
     const middleButton = Math.ceil(maxPages / 2);
     let startPage = Math.max(1, currentPageC - middleButton + 1);
-    let endPage = Math.min(totalPagesC, startPage + maxPages - 1);
+    let endPage = Math.min(totalPages, startPage + maxPages - 1);
 
-    if (currentPageC > middleButton && totalPagesC > maxButtons) {
-      startPage = Math.min(currentPageC - 1, totalPagesC - maxButtons + 1);
-      endPage = Math.min(startPage + maxButtons - 1, totalPagesC);
+    if (currentPageC > middleButton && totalPages > maxButtons) {
+      startPage = Math.min(currentPageC - 1, totalPages - maxButtons + 1);
+      endPage = Math.min(startPage + maxButtons - 1, totalPages);
     }
 
     for (let i = startPage; i <= endPage; i++) {
@@ -102,7 +102,7 @@ const Notifications = () => {
       );
     }
 
-    if (totalPagesC > maxButtons && endPage < totalPagesC) {
+    if (totalPages > maxButtons && endPage < totalPages) {
       buttons.push(
         <li key="ellipsis" className="page-item disabled">
           <span className="page-link bg-blue-500 text-white font-semibold py-2 px-4 rounded">
@@ -111,12 +111,12 @@ const Notifications = () => {
         </li>
       );
       buttons.push(
-        <li key={totalPagesC} className="page-item">
+        <li key={totalPages} className="page-item">
           <button
-            onClick={() => paginateC(totalPagesC)}
+            onClick={() => paginateC(totalPages)}
             className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
           >
-            {totalPagesC}
+            {totalPages}
           </button>
         </li>
       );
@@ -158,7 +158,7 @@ const Notifications = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/notification/previewnotification",
+        "https://www.sstaxmentors.com/user/notification/previewnotification",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -182,7 +182,7 @@ const Notifications = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/notification/download",
+        "https://www.sstaxmentors.com/user/notification/download",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
