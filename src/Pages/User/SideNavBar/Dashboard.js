@@ -24,7 +24,7 @@ const Dashboard = () => {
       try {
         // Fetch payment data for the client from the backend
         const response = await axios.get(
-          "http://localhost:5002/user/viewBill",
+          "https://sstaxmentors-server.vercel.app/user/viewBill",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

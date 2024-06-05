@@ -48,7 +48,7 @@ function Sidebar({ children }) {
         const token = localStorage.getItem("token");
 
         const response = await axios.get(
-          "http://localhost:5002/employee/emailname",
+          "https://sstaxmentors-server.vercel.app/employee/emailname",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -84,7 +84,7 @@ function Sidebar({ children }) {
       }
 
       const response = await axios.post(
-        "http://localhost:5002/employee/logout",
+        "https://sstaxmentors-server.vercel.app/employee/logout",
         null,
         {
           headers: {

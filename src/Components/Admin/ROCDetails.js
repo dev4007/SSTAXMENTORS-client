@@ -20,7 +20,7 @@ const ROCDetailsInNewTab = () => {
       const authToken = localStorage.getItem("token");
 
       const response = await axios.get(
-        `http://localhost:5002/user/previewROCFiling/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/previewROCFiling/${filename}`,
 
         {
           headers: {
@@ -43,7 +43,7 @@ const ROCDetailsInNewTab = () => {
       const authToken = localStorage.getItem("token");
 
       const response = await axios.get(
-        `http://localhost:5002/user/downloadROCFiling/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/downloadROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

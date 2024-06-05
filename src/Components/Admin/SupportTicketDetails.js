@@ -15,7 +15,7 @@ const SupportTicketDetails = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/getSupportTicketUsingTicketid/${ticketId}`,
+        `https://sstaxmentors-server.vercel.app/admin/getSupportTicketUsingTicketid/${ticketId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -39,7 +39,7 @@ const SupportTicketDetails = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/previewSupportTicketFile/${fileId}`,
+        `https://sstaxmentors-server.vercel.app/admin/previewSupportTicketFile/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -65,7 +65,7 @@ const SupportTicketDetails = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/downloadSupportTicketFile/${fileId}`,
+        `https://sstaxmentors-server.vercel.app/admin/downloadSupportTicketFile/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -90,7 +90,7 @@ const SupportTicketDetails = () => {
       const token = localStorage.getItem("token");
       // Update ticket status to resolved
       await axios.patch(
-        `http://localhost:5002/admin/resolveSupportTicket/${ticketId}`,
+        `https://sstaxmentors-server.vercel.app/admin/resolveSupportTicket/${ticketId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

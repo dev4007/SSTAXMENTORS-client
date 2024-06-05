@@ -12,7 +12,7 @@ const HomepageCarousel = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:5002/admin/Home/dashboardImages",
+          "https://sstaxmentors-server.vercel.app/admin/Home/dashboardImages",
           {
             headers: {
               Authorization: `Bearer ${token}`,

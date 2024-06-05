@@ -162,7 +162,7 @@ const Reminder = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:5002/admin/client/getClients",
+          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -253,7 +253,7 @@ const Reminder = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5002/admin/reminder/sendreminder",
+        "https://sstaxmentors-server.vercel.app/admin/reminder/sendreminder",
         formData,
         {
           headers: {

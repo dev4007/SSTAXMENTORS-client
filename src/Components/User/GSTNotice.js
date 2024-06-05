@@ -37,7 +37,7 @@ const UserGSTNotice = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5002/admin/getGSTNotice",
+        "https://sstaxmentors-server.vercel.app/admin/getGSTNotice",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ const UserGSTNotice = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5002/user/getCompanyNameOnlyDetails",
+        "https://sstaxmentors-server.vercel.app/user/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -102,7 +102,7 @@ const UserGSTNotice = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/downloadGSTNotice/${filename}`,
+        `https://sstaxmentors-server.vercel.app/admin/downloadGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -132,7 +132,7 @@ const UserGSTNotice = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/previewGSTNotice/${filename}`,
+        `https://sstaxmentors-server.vercel.app/admin/previewGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
