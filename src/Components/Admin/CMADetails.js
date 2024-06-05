@@ -19,7 +19,7 @@ const CMADetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/previewCMApreparation/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -43,7 +43,7 @@ const CMADetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/downloadCMApreparation/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

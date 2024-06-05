@@ -34,7 +34,7 @@ const PendingPayment = () => {
         localStorage.getItem("token") || sessionStorage.getItem("token");
 
       const userResponse = await axios.get(
-        "https://www.sstaxmentors.com/user/profile/profile",
+        "https://sstaxmentors-server.vercel.app/user/profile/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -43,7 +43,7 @@ const PendingPayment = () => {
       );
 
       const billResponse = await axios.post(
-        "https://www.sstaxmentors.com/user/payment/viewBill",
+        "https://sstaxmentors-server.vercel.app/user/payment/viewBill",
         {},
         {
           headers: {
@@ -97,7 +97,7 @@ const PendingPayment = () => {
     if (selectedOrder) {
       try {
         const response = await axios.get(
-          "https://www.sstaxmentors.com/admin/settings/payment/getPaymentQRImageUser",
+          "https://sstaxmentors-server.vercel.app/admin/settings/payment/getPaymentQRImageUser",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -205,7 +205,7 @@ const PendingPayment = () => {
         
         setLoader(true)
         const response = await axios.post(
-          "https://www.sstaxmentors.com/user/payment/insertTransaction",
+          "https://sstaxmentors-server.vercel.app/user/payment/insertTransaction",
           formData,
           {
             headers: {

@@ -38,7 +38,7 @@ const KYC = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/document/kyc/download/${category}`,
+        `https://sstaxmentors-server.vercel.app/user/document/kyc/download/${category}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -96,7 +96,7 @@ const KYC = () => {
       formData.append("file", getCategoryFile(category));
 
       await axios.post(
-        `https://www.sstaxmentors.com/user/upload/${category}`,
+        `https://sstaxmentors-server.vercel.app/user/upload/${category}`,
         formData,
         {
           headers: {
@@ -132,7 +132,7 @@ const KYC = () => {
       console.log("🚀 ~ handlePreview ~ filename:", filename)
 
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/previewkyc/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/previewkyc/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -163,7 +163,7 @@ const KYC = () => {
       const filename = fileInfo.kycSchema.filename;
 
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/document/kyc/downloadkyc/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/kyc/downloadkyc/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -200,7 +200,7 @@ const KYC = () => {
       // Handle the actual removal logic here
       const authToken = localStorage.getItem("token");
       axios
-        .delete(`https://www.sstaxmentors.com/user/document/kyc/remove/${documentToRemove}`, {
+        .delete(`https://sstaxmentors-server.vercel.app/user/document/kyc/remove/${documentToRemove}`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },

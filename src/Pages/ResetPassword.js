@@ -18,7 +18,7 @@
 //     }
 
 //     try {
-//       const response = await axios.post('https://www.sstaxmentors.com/login/reset-password', {
+//       const response = await axios.post('https://sstaxmentors-server.vercel.app/login/reset-password', {
 //         token,
 //         password,
 //         userType
@@ -136,7 +136,7 @@ function ResetPassword() {
     }
 
     try {
-      const response = await axios.post('https://www.sstaxmentors.com/login/reset-password', {
+      const response = await axios.post('https://sstaxmentors-server.vercel.app/login/reset-password', {
         token,
         password,
         userType

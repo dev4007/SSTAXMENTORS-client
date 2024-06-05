@@ -33,7 +33,7 @@ const SendGSTreturns = () => {
 
         // Fetch clients
         const clientsResponse = await axios.get(
-          "https://www.sstaxmentors.com/admin/client/getClients",
+          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -44,7 +44,7 @@ const SendGSTreturns = () => {
 
         // Fetch GST Returns Fields
         const gstReturnsFieldsResponse = await axios.get(
-          "https://www.sstaxmentors.com/admin/settings/gstreturns/getGSTReturnsFields"
+          "https://sstaxmentors-server.vercel.app/admin/settings/gstreturns/getGSTReturnsFields"
         );
         setGSTReturnsFields(gstReturnsFieldsResponse.data);
       } catch (error) {
@@ -62,7 +62,7 @@ const SendGSTreturns = () => {
 
       // Fetch companies
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/client/getCompanyNamesOfClient",
+        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: ` Bearer ${token}`,
@@ -103,7 +103,7 @@ const SendGSTreturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://www.sstaxmentors.com/admin/document/gstreturns/sendGSTreturns",
+        "https://sstaxmentors-server.vercel.app/admin/document/gstreturns/sendGSTreturns",
         dataForBackend,
         {
           headers: {
@@ -229,7 +229,7 @@ const SendGSTreturns = () => {
 
       // Fetch companies
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/client/getCompanyNamesOfClient",
+        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -26,7 +26,7 @@ const GSTRegistration = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          "https://www.sstaxmentors.com/user/getCompanyNameOnlyDetails",
+          "https://sstaxmentors-server.vercel.app/user/getCompanyNameOnlyDetails",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -79,7 +79,7 @@ const GSTRegistration = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const url = `https://www.sstaxmentors.com/user/getgstdoc/${companyName}`;
+      const url = `https://sstaxmentors-server.vercel.app/user/getgstdoc/${companyName}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -114,7 +114,7 @@ const GSTRegistration = () => {
   const handlePreview = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `https://www.sstaxmentors.com/user/previewGSTR/${file.name}`;
+      const url = `https://sstaxmentors-server.vercel.app/user/previewGSTR/${file.name}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -153,7 +153,7 @@ const GSTRegistration = () => {
   const handleDownload = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `https://www.sstaxmentors.com/user/downloadGSTR/${file.name}`;
+      const url = `https://sstaxmentors-server.vercel.app/user/downloadGSTR/${file.name}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -181,7 +181,7 @@ const GSTRegistration = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `https://www.sstaxmentors.com/user/deleteGSTR/${file.name}/${selectedCompany}`;
+      const url = `https://sstaxmentors-server.vercel.app/user/deleteGSTR/${file.name}/${selectedCompany}`;
       await axios.delete(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -209,7 +209,7 @@ const GSTRegistration = () => {
       dataForBackend.append("timestamp", new Date().toISOString());
 
       const token = localStorage.getItem("token");
-      const url = `https://www.sstaxmentors.com/user/gstregistration`;
+      const url = `https://sstaxmentors-server.vercel.app/user/gstregistration`;
 
       const response = await axios.post(url, dataForBackend, {
         headers: {

@@ -24,7 +24,7 @@ const Notification = () => {
       } else {
         try {
           // Check token expiration by sending a request to the backend
-          await axios.get("https://www.sstaxmentors.com/token/checktoken", {
+          await axios.get("https://sstaxmentors-server.vercel.app/token/checktoken", {
             headers: {
               Authorization: `Bearer ${token}`,
             },
@@ -73,7 +73,7 @@ const Notification = () => {
 
     try {
       const response = await axios.post(
-        "https://www.sstaxmentors.com/admin/sendnotification",
+        "https://sstaxmentors-server.vercel.app/admin/sendnotification",
         formData,
         {
           headers: {

@@ -20,7 +20,7 @@ const AdminBannerSettings = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://www.sstaxmentors.com/admin/settings/banner/getBannerSettingsImages",
+          "https://sstaxmentors-server.vercel.app/admin/settings/banner/getBannerSettingsImages",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -54,7 +54,7 @@ const AdminBannerSettings = () => {
     formData.append("image", loginImage);
     try {
       const token = localStorage.getItem("token");
-      await axios.post("https://www.sstaxmentors.com/admin/settings/banner/addBannerImage", formData, {
+      await axios.post("https://sstaxmentors-server.vercel.app/admin/settings/banner/addBannerImage", formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
@@ -62,7 +62,7 @@ const AdminBannerSettings = () => {
       });
       // Fetch images again
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/settings/banner/getBannerSettingsImages",
+        "https://sstaxmentors-server.vercel.app/admin/settings/banner/getBannerSettingsImages",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -86,7 +86,7 @@ const AdminBannerSettings = () => {
     formData.append("image", dashboardImage);
     try {
       const token = localStorage.getItem("token");
-      await axios.post("https://www.sstaxmentors.com/admin/settings/banner/addBannerImage", formData, {
+      await axios.post("https://sstaxmentors-server.vercel.app/admin/settings/banner/addBannerImage", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -94,7 +94,7 @@ const AdminBannerSettings = () => {
       });
       // Fetch images again
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/settings/banner/getBannerSettingsImages",
+        "https://sstaxmentors-server.vercel.app/admin/settings/banner/getBannerSettingsImages",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -115,7 +115,7 @@ const AdminBannerSettings = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `https://www.sstaxmentors.com/admin/settings/banner/getBannerImage/${imageName}`,
+        `https://sstaxmentors-server.vercel.app/admin/settings/banner/getBannerImage/${imageName}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ const AdminBannerSettings = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://www.sstaxmentors.com/admin/settings/banner/deleteBannerImage",
+        "https://sstaxmentors-server.vercel.app/admin/settings/banner/deleteBannerImage",
         { imageName: imageToDelete.imageName },
         {
           headers: {

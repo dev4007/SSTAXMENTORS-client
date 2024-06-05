@@ -48,7 +48,7 @@ const CreatePaymentBill = () => {
       try {
         const token = localStorage.getItem("token") 
         const response = await axios.get(
-          "https://www.sstaxmentors.com/admin/client/getClients",
+          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const CreatePaymentBill = () => {
             setLoader(true);
     
           await axios.post(
-            "https://www.sstaxmentors.com/admin/invoice/generateBill",
+            "https://sstaxmentors-server.vercel.app/admin/invoice/generateBill",
             formData,
             {
               headers: {
@@ -157,7 +157,7 @@ const CreatePaymentBill = () => {
           formData2.append("selectedClients", JSON.stringify(selectedClient));
     
           await axios.post(
-            "https://www.sstaxmentors.com/admin/reminder/sendreminder",
+            "https://sstaxmentors-server.vercel.app/admin/reminder/sendreminder",
             formData2,
             {
               headers: {
@@ -183,7 +183,7 @@ const CreatePaymentBill = () => {
             // const token = localStorage.getItem('token');
     
             await axios.post(
-              "https://www.sstaxmentors.com/admin/document/itreturns/sendITreturns",
+              "https://sstaxmentors-server.vercel.app/admin/document/itreturns/sendITreturns",
               formData3,
               {
                 headers: {
@@ -207,7 +207,7 @@ const CreatePaymentBill = () => {
     
             // const token = localStorage.getItem('token');
             await axios.post(
-              "https://www.sstaxmentors.com/admin/document/gstreturns/sendGSTreturns",
+              "https://sstaxmentors-server.vercel.app/admin/document/gstreturns/sendGSTreturns",
               dataForBackend,
               {
                 headers: {
@@ -231,7 +231,7 @@ const CreatePaymentBill = () => {
             const token =
               localStorage.getItem("token") 
             await axios.post(
-              "https://www.sstaxmentors.com/admin/document/gstreturns/sendGSTnotice",
+              "https://sstaxmentors-server.vercel.app/admin/document/gstreturns/sendGSTnotice",
               dataForBackend,
               {
                 headers: {
@@ -256,7 +256,7 @@ const CreatePaymentBill = () => {
             const token =
               localStorage.getItem("token") 
             await axios.post(
-              "https://www.sstaxmentors.com/admin/document/rocfilings/sendNewROCfilings",
+              "https://sstaxmentors-server.vercel.app/admin/document/rocfilings/sendNewROCfilings",
               dataForBackend,
               {
                 headers: {
@@ -280,7 +280,7 @@ const CreatePaymentBill = () => {
             const token =
               localStorage.getItem("token") 
             await axios.post(
-              "https://www.sstaxmentors.com/admin/document/cma/sendNewCMApreparation",
+              "https://sstaxmentors-server.vercel.app/admin/document/cma/sendNewCMApreparation",
               dataForBackend,
               {
                 headers: {
@@ -304,7 +304,7 @@ const CreatePaymentBill = () => {
             const token =
               localStorage.getItem("token") 
             await axios.post(
-              "https://www.sstaxmentors.com/admin/document/license/addNewLicense",
+              "https://sstaxmentors-server.vercel.app/admin/document/license/addNewLicense",
               dataForBackend,
               {
                 headers: {
@@ -365,7 +365,7 @@ const CreatePaymentBill = () => {
     const fetchInvoiceId = async () => {
       try {
         const response = await axios.get(
-          "https://www.sstaxmentors.com/admin/invoice/getInvoiceId"
+          "https://sstaxmentors-server.vercel.app/admin/invoice/getInvoiceId"
         );
         setInvoiceId(response.data.invoiceId);
       } catch (error) {
@@ -479,7 +479,7 @@ const CreatePaymentBill = () => {
     try {
       const token = localStorage.getItem("token") 
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/client/getCompanyNamesOfClient",
+        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -503,7 +503,7 @@ const CreatePaymentBill = () => {
 
     try {
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/transaction/getServiceAndSubServiceDetailsForPayment"
+        "https://sstaxmentors-server.vercel.app/admin/transaction/getServiceAndSubServiceDetailsForPayment"
       );
       setServices(Object.keys(response.data)); // Populate services dropdown with service names
       setResponseData(response.data);
@@ -534,7 +534,7 @@ const CreatePaymentBill = () => {
     const fetchClientDetails = async () => {
       try {
         const response = await axios.get(
-          `https://www.sstaxmentors.com/admin/getClientDetails/${selectedClient}`
+          `https://sstaxmentors-server.vercel.app/admin/getClientDetails/${selectedClient}`
         );
         setClientDetails(response.data);
       } catch (error) {
@@ -553,7 +553,7 @@ const CreatePaymentBill = () => {
   //     try {
   //       console.log(selectedCompany);
   //       const response = await axios.get(
-  //         `https://www.sstaxmentors.com/admin/getCompanyNameOnlyDetailsAdmin/${selectedCompany}`
+  //         `https://sstaxmentors-server.vercel.app/admin/getCompanyNameOnlyDetailsAdmin/${selectedCompany}`
           
   //       );
   //       setCompanyDetails(response.data);

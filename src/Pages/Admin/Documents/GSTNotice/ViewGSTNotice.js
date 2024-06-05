@@ -99,7 +99,7 @@ const ViewGSTNotices = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/client/manageclient",
+        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -270,7 +270,7 @@ const ViewGSTNotices = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://www.sstaxmentors.com/admin/settings/gstnotice/gstFields"
+          "https://sstaxmentors-server.vercel.app/admin/settings/gstnotice/gstFields"
         );
         setFields(response.data);
       } catch (error) {
@@ -301,7 +301,7 @@ const ViewGSTNotices = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://www.sstaxmentors.com/admin/document/gstnotice/getGSTNoticesAdmin",
+        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/getGSTNoticesAdmin",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -372,7 +372,7 @@ const ViewGSTNotices = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://www.sstaxmentors.com/admin/document/gstnotice/deleteGSTNoticeAdmin",
+        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/deleteGSTNoticeAdmin",
         { filename: modalContent.filename },
         {
           headers: {
@@ -427,7 +427,7 @@ const ViewGSTNotices = () => {
   // const handleDelete = async (filename) => {
   //   try {
   //     const token = localStorage.getItem('token');
-  //     await axios.post('https://www.sstaxmentors.com/admin/deleteGSTNoticeAdmin', { filename }, {
+  //     await axios.post('https://sstaxmentors-server.vercel.app/admin/deleteGSTNoticeAdmin', { filename }, {
   //       headers: {
   //         Authorization: `Bearer ${token}`,
   //       }
@@ -450,7 +450,7 @@ const ViewGSTNotices = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/document/gstnotice/previewGSTNotice/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/gstnotice/previewGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -474,7 +474,7 @@ const ViewGSTNotices = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://www.sstaxmentors.com/user/document/gstnotice/downloadGSTNotice/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/gstnotice/downloadGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

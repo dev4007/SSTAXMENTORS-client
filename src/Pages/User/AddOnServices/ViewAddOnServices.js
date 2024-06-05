@@ -27,7 +27,7 @@ function ViewAddOnServices() {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://www.sstaxmentors.com/user/addonservice/getUserAddOnService",
+        "https://sstaxmentors-server.vercel.app/user/addonservice/getUserAddOnService",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
