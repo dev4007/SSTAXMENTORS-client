@@ -169,7 +169,8 @@ const InvoiceHistory = () => {
                   <td className="py-2 px-4 border-b">
                     {formatDate(bill.timestamp)}
                   </td>
-                  <td className="py-2 px-4 border-b">{bill.createdBy ? bill.createdBy : 'Admin'}</td>
+                  <td className="py-2 px-4 border-b">{bill.createdBy ? bill.createdBy : 'Unknown'}</td>
+
                 </tr>
               ))}
             </tbody>

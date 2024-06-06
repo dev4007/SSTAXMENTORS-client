@@ -311,7 +311,7 @@ const ViewGSTReturns = () => {
       );
       if (response && response.data && response.data.gstReturns.length > 0) {
         setGSTReturnsData(response.data.gstReturns);
-        setSelectedClient(response.data.clients);
+        setSelectedClient(client);
         setIsViewingClient(true);
         // setIsViewingClient(true);
       } else {
@@ -392,9 +392,6 @@ const ViewGSTReturns = () => {
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
       message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -402,9 +399,6 @@ const ViewGSTReturns = () => {
       } else {
         message.error("Failed to delete IT return. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     }
   };
 
@@ -770,7 +764,7 @@ const ViewGSTReturns = () => {
         <hr></hr>
         <div className="container mx-auto p-5 md:p-10">
           <p className="font-bold text-3xl text-blue-500 mb-10">
-            GST RETURNS LIST 
+            GST RETURNS LIST
           </p>
           <div className="flex flex-wrap mt-2 md:mt-4">
             <div className="mb-2 md:mb-4 w-full">

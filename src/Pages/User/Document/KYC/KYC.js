@@ -108,7 +108,7 @@ const KYC = () => {
 
       console.log(`File uploaded successfully for category: ${category}`);
       fetchFileInfo(category, setFileInfoState(category));
-      message.success("file uploaded succesfully");
+      message.success("file uploaded successfully");
     } catch (error) {
       console.error("Error uploading file:", error);
       // Handle error here, e.g., display an error message to the user
@@ -344,7 +344,7 @@ const KYC = () => {
 
   return (
     <div>
-      <NavigationBar />
+      {!modalOpen && <NavigationBar />}
       <hr></hr>
       <div className="p-4 mx-5gis">
         <p className="font-bold text-3xl text-blue-500 ml-4 mb-10">

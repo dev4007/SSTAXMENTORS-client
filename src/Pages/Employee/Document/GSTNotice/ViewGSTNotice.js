@@ -326,7 +326,7 @@ const ViewGSTNotices = () => {
       console.log(response.data);
       if (response && response.data && response.data.gstNotices.length > 0) {
         setGSTNoticesData(response.data.gstNotices);
-        setSelectedClient(response.data.clients);
+        setSelectedClient(client);
         setIsViewingClient(true);
       } else {
         // console.error('Failed to fetch client details');
@@ -408,10 +408,8 @@ const ViewGSTNotices = () => {
       await fetchGSTNoticesData(selectedClient); // Refresh the table after deletion
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
-      message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      message.success("successfully deleted the file");
+     
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -419,9 +417,7 @@ const ViewGSTNotices = () => {
       } else {
         message.error("Failed to delete IT return. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+     
     }
   };
 

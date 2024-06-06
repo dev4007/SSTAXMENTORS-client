@@ -313,7 +313,7 @@ const ViewLicense = () => {
       );
       if (response && response.data && response.data.license.length > 0) {
         setLicenseData(response.data.license);
-        setSelectedClient(response.data.clients);
+        setSelectedClient(client);
         setIsViewingClient(true);
       } else {
         message.info(" No files available for this client.");
@@ -399,10 +399,8 @@ const ViewLicense = () => {
       await fetchLicenseData(selectedClient); // Refresh the table after deletion
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
-      message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      message.success("successfully deleted the file");
+     
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -410,9 +408,7 @@ const ViewLicense = () => {
       } else {
         message.error("Failed to delete License. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+     
     }
   };
 

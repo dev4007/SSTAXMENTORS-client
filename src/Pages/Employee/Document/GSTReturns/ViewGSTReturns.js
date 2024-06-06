@@ -324,7 +324,7 @@ const ViewGSTReturns = () => {
       );
       if (response && response.data && response.data.gstReturns.length > 0) {
         setGSTReturnsData(response.data.gstReturns);
-        setSelectedClient(response.data.clients);
+        setSelectedClient(client);
         setIsViewingClient(true);
         // setIsViewingClient(true);
       } else {
@@ -415,10 +415,8 @@ const ViewGSTReturns = () => {
       await fetchGSTReturnsData(selectedClient); // Refresh the table after deletion
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
-      message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      message.success("successfully deleted the file!");
+   
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -426,9 +424,7 @@ const ViewGSTReturns = () => {
       } else {
         message.error("Failed to delete IT return. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+     
     }
   };
 

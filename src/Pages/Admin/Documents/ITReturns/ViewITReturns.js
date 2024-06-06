@@ -394,10 +394,8 @@ const ViewITReturns = () => {
       await fetchITReturnsData(selectedClient); // Refresh the table after deletion
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
-      message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      message.success("successfully deleted the file");
+  
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -405,9 +403,6 @@ const ViewITReturns = () => {
       } else {
         message.error("Failed to delete IT return. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     }
   };
 

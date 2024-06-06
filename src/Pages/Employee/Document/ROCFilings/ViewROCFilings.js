@@ -178,7 +178,7 @@ const RocFilings = () => {
   const fetchRocFilingsData = async (client) => {
     try {
       setLoading(true);
-      console.log(client.email);
+      // console.log(client.email);
       const token = localStorage.getItem("token");
       const response = await axios.get(
         "https://sstaxmentors-server.vercel.app/admin/document/rocfilings/getROCFilingsAdmin",
@@ -419,10 +419,8 @@ const RocFilings = () => {
       await fetchRocFilingsData(selectedClient); // Refresh the table after deletion
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
-      message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      message.success("successfully deleted the file");
+     
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -430,9 +428,7 @@ const RocFilings = () => {
       } else {
         message.error("Failed to delete ROC Filings. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+    
     }
   };
 

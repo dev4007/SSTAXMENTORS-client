@@ -180,7 +180,7 @@ const ViewCMA = () => {
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const selectedClient = client.email;
+      // const selectedClient = client.email;
       const response = await axios.get(
         "https://sstaxmentors-server.vercel.app/admin/document/cma/getCMAAdmin",
         {
@@ -188,7 +188,7 @@ const ViewCMA = () => {
             Authorization: `Bearer ${token}`,
           },
           params: {
-            selectedClient: selectedClient,
+            selectedClient: client.email,
           },
         }
       );
@@ -198,7 +198,7 @@ const ViewCMA = () => {
         response.data.cmaPreparations.length > 0
       ) {
         setCMAData(response.data.cmaPreparations);
-        setSelectedClient(response.data.clients);
+        setSelectedClient(client);
         setIsViewingClient(true);
       } else {
         message.info(" No files available for this client.");
@@ -461,10 +461,8 @@ const ViewCMA = () => {
       await fetchCMAData(selectedClient); // Refresh the table after deletion
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
-      message.success("succesfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+      message.success("successfully deleted the file");
+     
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -472,9 +470,7 @@ const ViewCMA = () => {
       } else {
         message.error("Failed to delete CMA. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+     
     }
   };
 

@@ -417,9 +417,7 @@ const ViewITReturns = () => {
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
       message.success("Successfully deleted the file");
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
+     
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -427,9 +425,6 @@ const ViewITReturns = () => {
       } else {
         message.error("Failed to delete IT return. Please try again.");
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 3000);
     }
   };
 
