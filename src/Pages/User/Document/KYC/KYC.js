@@ -20,6 +20,9 @@ const KYC = () => {
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [documentToRemove, setDocumentToRemove] = useState(null);
+  // console.log("🚀 ~ KYC ~ documentToRemove:", documentToRemove)
+
+  const [fetchData, setFetchData] = useState(false);
 
   useEffect(() => {
     fetchFileInfo("aadhar", setAadharFileInfo);
@@ -129,7 +132,7 @@ const KYC = () => {
 
       const authToken = localStorage.getItem("token");
       const filename = fileInfo.kycSchema.filename;
-      console.log("🚀 ~ handlePreview ~ filename:", filename)
+      console.log("🚀 ~ handlePreview ~ filename:", filename);
 
       const response = await axios.get(
         `https://sstaxmentors-server.vercel.app/user/previewkyc/${filename}`,
@@ -200,17 +203,31 @@ const KYC = () => {
       // Handle the actual removal logic here
       const authToken = localStorage.getItem("token");
       axios
-        .delete(`https://sstaxmentors-server.vercel.app/user/document/kyc/remove/${documentToRemove}`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        })
+        .delete(
+          `https://sstaxmentors-server.vercel.app/user/document/kyc/remove/${documentToRemove}`,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        )
         .then(() => {
           console.log(
             `File removed successfully for category: ${documentToRemove}`
           );
-          fetchFileInfo(documentToRemove, setFileInfoState(documentToRemove));
-          setDocumentToRemove(null);
+          // fetchFileInfo(documentToRemove, setFileInfoState(documentToRemove));
+          // setDocumentToRemove(null);
+          if (documentToRemove === "aadhar") {
+            setAadharFileInfo(null);
+          } else if (documentToRemove === "pan") {
+            setPanFileInfo(null);
+          } else if (documentToRemove === "electricityBill") {
+            setElectricityBillFileInfo(null);
+          } else if (documentToRemove === "bankPassbook") {
+            setBankPassbookFileInfo(null);
+          } else {
+            console.log("nothing is found");
+          }
         })
         .catch((error) => {
           console.error("Error removing file:", error);
@@ -218,8 +235,8 @@ const KYC = () => {
         .finally(() => {
           setModalOpen(false);
         });
-      message.success("file deleted successfully!");
 
+      message.success("file deleted successfully!");
     } else {
       console.log("Removal canceled");
       setModalOpen(false);
