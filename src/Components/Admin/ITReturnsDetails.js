@@ -19,7 +19,7 @@ const ITDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/previewITReturns/${filename}`,
+        `https://sstaxmentors-server.vercel.app/admin/previewITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -43,7 +43,7 @@ const ITDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/downloadITReturns/${filename}`,
+        `https://sstaxmentors-server.vercel.app/admin/downloadITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

@@ -65,7 +65,7 @@ const SendCMApreparation = () => {
       try {
         const token = localStorage.getItem("token");
         const clientsResponse = await axios.get(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/getClients",
+          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -75,7 +75,7 @@ const SendCMApreparation = () => {
         setClients(clientsResponse.data);
 
         const cmaPreparationTypesResponse = await axios.get(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/cma/getCMApreparation"
+          "https://sstaxmentors-server.vercel.app/admin/settings/cma/getCMApreparation"
         );
         setCmaPreparationTypes(cmaPreparationTypesResponse.data);
       } catch (error) {
@@ -173,7 +173,7 @@ const SendCMApreparation = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/getCompanyNamesOfClient",
+        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -223,7 +223,7 @@ const SendCMApreparation = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/document/cma/sendNewCMApreparation",
+        "https://sstaxmentors-server.vercel.app/admin/document/cma/sendNewCMApreparation",
         dataForBackend,
         {
           headers: {

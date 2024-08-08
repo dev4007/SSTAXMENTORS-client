@@ -53,7 +53,7 @@ const UserROCFilings = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/rocfilings/getAllROCFilings",
+        "https://sstaxmentors-server.vercel.app/user/document/rocfilings/getAllROCFilings",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ const UserROCFilings = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/company/getCompanyNameOnlyDetails",
+        "https://sstaxmentors-server.vercel.app/user/company/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -119,7 +119,7 @@ const UserROCFilings = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/rocfilings/downloadROCFiling/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/downloadROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -149,7 +149,7 @@ const UserROCFilings = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/rocfilings/previewROCFiling/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/previewROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

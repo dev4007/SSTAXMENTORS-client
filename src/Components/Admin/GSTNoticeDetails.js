@@ -19,7 +19,7 @@ const GSTNoticeDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/previewGSTNotice/${filename}`,
+        `https://sstaxmentors-server.vercel.app/admin/previewGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -43,7 +43,7 @@ const GSTNoticeDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/downloadGSTNotice/${filename}`,
+        `https://sstaxmentors-server.vercel.app/admin/downloadGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

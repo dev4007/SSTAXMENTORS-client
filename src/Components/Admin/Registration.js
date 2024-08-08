@@ -35,7 +35,7 @@ function Registration() {
       const token = localStorage.getItem("token");
 
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/employee/getEmployeeId",
+        "https://sstaxmentors-server.vercel.app/admin/employee/getEmployeeId",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ function Registration() {
       console.log(dataToSend);
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/employee/addEmployee",
+        "https://sstaxmentors-server.vercel.app/admin/employee/addEmployee",
         dataToSend,
         {
           headers: {

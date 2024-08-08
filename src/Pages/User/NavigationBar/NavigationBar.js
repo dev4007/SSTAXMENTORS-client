@@ -14,7 +14,7 @@ function NavigationBar({ sidebarExpanded }) {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/navigation/emailname",
+          "https://sstaxmentors-server.vercel.app/user/navigation/emailname",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -58,7 +58,7 @@ function NavigationBar({ sidebarExpanded }) {
       }
 
       const response = await axios.post(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/navigation/logout",
+        "https://sstaxmentors-server.vercel.app/user/navigation/logout",
         null,
         {
           headers: {

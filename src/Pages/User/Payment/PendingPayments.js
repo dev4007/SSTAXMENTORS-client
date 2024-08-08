@@ -34,7 +34,7 @@ const PendingPayment = () => {
   useEffect(() => {
     const fetchUserPaymentHistory = async () => {
     const response = await axios.get(
-      "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/userPaymentHistory",
+      "https://sstaxmentors-server.vercel.app/user/userPaymentHistory",
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you use JWT for authentication
@@ -55,7 +55,7 @@ const PendingPayment = () => {
         localStorage.getItem("token") || sessionStorage.getItem("token");
 
       const userResponse = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/profile/profile",
+        "https://sstaxmentors-server.vercel.app/user/profile/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -64,7 +64,7 @@ const PendingPayment = () => {
       );
 
       const billResponse = await axios.post(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/payment/viewBill",
+        "https://sstaxmentors-server.vercel.app/user/payment/viewBill",
         {},
         {
           headers: {
@@ -118,7 +118,7 @@ const PendingPayment = () => {
     if (selectedOrder) {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/payment/getPaymentQRImageUser",
+          "https://sstaxmentors-server.vercel.app/admin/settings/payment/getPaymentQRImageUser",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -223,7 +223,7 @@ const PendingPayment = () => {
 
         setLoader(true);
         const response = await axios.post(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/payment/insertTransaction",
+          "https://sstaxmentors-server.vercel.app/user/payment/insertTransaction",
           formData,
           {
             headers: {

@@ -36,7 +36,7 @@ const SendLicense = () => {
 
         // Fetch clients
         const clientsResponse = await axios.get(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/getClients",
+          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -45,7 +45,7 @@ const SendLicense = () => {
         );
         setClients(clientsResponse.data);
         const LicenseResponse = await axios.get(
-          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/license/Licensesnames"
+          "https://sstaxmentors-server.vercel.app/admin/settings/license/Licensesnames"
         );
         setLicenseTypes(LicenseResponse.data);
       } catch (error) {
@@ -138,7 +138,7 @@ const SendLicense = () => {
 
       // Fetch companies
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/getCompanyNamesOfClient",
+        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -190,7 +190,7 @@ const SendLicense = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/document/license/addNewLicense",
+        "https://sstaxmentors-server.vercel.app/admin/document/license/addNewLicense",
         dataForBackend,
         {
           headers: {

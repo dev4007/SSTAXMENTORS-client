@@ -28,7 +28,7 @@ const AddOnServiceDetailsInNewTab = () => {
       setLoading(true)
 
       const response =await axios.post(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/solveService`,
+        `https://sstaxmentors-server.vercel.app/admin/solveService`,
         {
           serviceId: addOnServiceData.serviceId,
         },

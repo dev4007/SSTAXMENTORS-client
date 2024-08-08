@@ -41,7 +41,7 @@ const UserLicenses = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/license/getAllLicenses",
+        "https://sstaxmentors-server.vercel.app/user/document/license/getAllLicenses",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +74,7 @@ const UserLicenses = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/company/getCompanyNameOnlyDetails",
+        "https://sstaxmentors-server.vercel.app/user/company/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -106,7 +106,7 @@ const UserLicenses = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/license/downloadLicense/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/license/downloadLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -136,7 +136,7 @@ const UserLicenses = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/license/previewLicense/${filename}`,
+        `https://sstaxmentors-server.vercel.app/user/document/license/previewLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
