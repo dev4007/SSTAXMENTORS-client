@@ -40,7 +40,7 @@ const UserCMA = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5002/user/document/cma/getAllCMApreparations",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/cma/getAllCMApreparations",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ const UserCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5002/user/company/getCompanyNameOnlyDetails",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/company/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -111,7 +111,7 @@ const UserCMA = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/user/document/cma/downloadCMApreparation/${filename}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/cma/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -141,7 +141,7 @@ const UserCMA = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/user/document/cma/previewCMApreparation/${filename}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/document/cma/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

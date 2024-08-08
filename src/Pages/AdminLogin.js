@@ -22,7 +22,7 @@ function AdminLogin() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:5002/admin/loginImages");
+        const response = await axios.get("https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/loginImages");
         setLoginImages(response.data.loginImages);
       } catch (error) {
         message.error("Error loading images");
@@ -54,7 +54,7 @@ function AdminLogin() {
       if (userType === "employee") {
         const userLocation = await getLocation();
         const { latitude, longitude } = userLocation;
-        response = await axios.post("http://localhost:5002/login/login", {
+        response = await axios.post("https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/login/login", {
           email: email,
           password: password,
           userType: userType,
@@ -62,7 +62,7 @@ function AdminLogin() {
           longitude: longitude,
         });
       } else {
-        response = await axios.post("http://localhost:5002/login/login", {
+        response = await axios.post("https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/login/login", {
           email: email,
           password: password,
           userType: userType,

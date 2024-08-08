@@ -18,7 +18,7 @@
 //     }
 
 //     try {
-//       const response = await axios.post('http://localhost:5002/login/reset-password', {
+//       const response = await axios.post('https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/login/reset-password', {
 //         token,
 //         password,
 //         userType
@@ -136,7 +136,7 @@ function ResetPassword() {
     }
 
     try {
-      const response = await axios.post('http://localhost:5002/login/reset-password', {
+      const response = await axios.post('https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/login/reset-password', {
         token,
         password,
         userType

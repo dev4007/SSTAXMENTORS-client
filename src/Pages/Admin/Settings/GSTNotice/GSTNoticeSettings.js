@@ -23,7 +23,7 @@ const GSTNoticeSettings = () => {
   const fetchFields = async () => {
     try {
       setLoading(true);
-      const response = await axios.get("http://localhost:5002/admin/settings/gstnotice/gstFields");
+      const response = await axios.get("https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/gstnotice/gstFields");
       setFields(response.data);
     } catch (error) {
       message.error("Error fetching fields");
@@ -51,7 +51,7 @@ const GSTNoticeSettings = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5002/admin/settings/gstnotice/addNewGSTNoticeField",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/gstnotice/addNewGSTNoticeField",
         {
           name: newFieldName.trim(),
           description: newFieldDescription.trim(),
@@ -88,7 +88,7 @@ const GSTNoticeSettings = () => {
       }
 
       const response = await axios.delete(
-        `http://localhost:5002/admin/settings/gstnotice/removeGSTNoticeField/${id}`
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/gstnotice/removeGSTNoticeField/${id}`
       );
       setFields(fields.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -118,7 +118,7 @@ const GSTNoticeSettings = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:5002/admin/settings/gstnotice/toggleActiveFieldGST/${id}`
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/gstnotice/toggleActiveFieldGST/${id}`
       );
 
       const updatedFields = fields.map((field) => {

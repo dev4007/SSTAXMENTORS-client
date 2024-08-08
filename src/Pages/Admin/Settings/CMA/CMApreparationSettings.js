@@ -24,7 +24,7 @@ const CMApreparationSettings = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "http://localhost:5002/admin/settings/cma/getCMApreparation"
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/cma/getCMApreparation"
       );
       setFields(response.data);
     } catch (error) {
@@ -54,7 +54,7 @@ const CMApreparationSettings = () => {
       }
 
       const response = await axios.post(
-        "http://localhost:5002/admin/settings/cma/addNewCMApreparationField",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/cma/addNewCMApreparationField",
         {
           name: newFieldName.trim(),
           description: newFieldDescription.trim(),
@@ -90,7 +90,7 @@ const CMApreparationSettings = () => {
       }
 
       const response = await axios.delete(
-        `http://localhost:5002/admin/settings/cma/removeCMApreparationField/${id}`
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/cma/removeCMApreparationField/${id}`
       );
       setFields(fields.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -120,7 +120,7 @@ const CMApreparationSettings = () => {
       }
 
       const response = await axios.put(
-        `http://localhost:5002/admin/settings/cma/toggleActiveFieldCMA/${id}`
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/cma/toggleActiveFieldCMA/${id}`
       );
 
       const updatedFields = fields.map((field) => {

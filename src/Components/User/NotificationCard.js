@@ -13,7 +13,7 @@ const NotificationCard = ({ notification }) => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/download/${filename}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/download/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -40,7 +40,7 @@ const NotificationCard = ({ notification }) => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/admin/previewnotification/${filename}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/previewnotification/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

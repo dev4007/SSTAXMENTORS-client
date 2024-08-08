@@ -24,7 +24,7 @@ const Home = ({ images }) => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "http://localhost:5002/admin/Home/api/clients-counts",
+          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/Home/api/clients-counts",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const Home = ({ images }) => {
 
       // Make an HTTP GET request to fetch pending payments data
       const response = await axios.get(
-        "http://localhost:5002/admin/Home/api/pending-payments",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/Home/api/pending-payments",
         {
           headers: {
             Authorization: `Bearer ${token}`,

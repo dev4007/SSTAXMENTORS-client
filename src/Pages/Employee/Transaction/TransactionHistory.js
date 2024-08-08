@@ -29,7 +29,7 @@ const TransactionHistory = () => {
     try {
       const token = localStorage.getItem("token"); // Assuming you store the token in localStorage
       const response = await axios.get(
-        "http://localhost:5002/transactions/paymentHistory",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/transactions/paymentHistory",
         {
           headers: {
             Authorization: `Bearer ${token}`, // Include the token in the Authorization header

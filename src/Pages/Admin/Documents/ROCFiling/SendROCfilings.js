@@ -35,7 +35,7 @@ const SendROCfilings = () => {
 
         // Fetch clients
         const clientsResponse = await axios.get(
-          "http://localhost:5002/admin/client/getClients",
+          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -46,7 +46,7 @@ const SendROCfilings = () => {
 
         // Fetch ROC Filings Fields
         const rocFieldsResponse = await axios.get(
-          "http://localhost:5002/admin/settings/rocfilings/ROCfilingsfields"
+          "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/settings/rocfilings/ROCfilingsfields"
         );
         setROCFields(rocFieldsResponse.data);
       } catch (error) {
@@ -182,7 +182,7 @@ const SendROCfilings = () => {
 
       // Fetch companies
       const response = await axios.get(
-        "http://localhost:5002/admin/client/getCompanyNamesOfClient",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -234,7 +234,7 @@ const SendROCfilings = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5002/admin/document/rocfilings/sendNewROCfilings",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/document/rocfilings/sendNewROCfilings",
         dataForBackend,
         {
           headers: {

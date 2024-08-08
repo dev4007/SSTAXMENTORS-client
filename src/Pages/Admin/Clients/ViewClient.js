@@ -140,7 +140,7 @@ function ViewClient() {
     try {
       console.log(selectedclienttype);
       const response = await axios.put(
-        `http://localhost:5002/admin/client/changeclienttype/${selectedclienttype}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/changeclienttype/${selectedclienttype}`,
         { typeOfC: newType }
       );
       if (response.status === 200) {
@@ -169,7 +169,7 @@ function ViewClient() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5002/admin/client/manageclient",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/manageclient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -235,7 +235,7 @@ function ViewClient() {
         let response;
         if (confirmationAction === "block") {
           response = await axios.post(
-            "http://localhost:5002/admin/client/blockclient",
+            "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/blockclient",
             { email: selectedClient.email },
             {
               headers: {
@@ -245,7 +245,7 @@ function ViewClient() {
           );
         } else if (confirmationAction === "unblock") {
           response =await axios.post(
-            "http://localhost:5002/admin/client/unblockclient",
+            "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/unblockclient",
             { email: selectedClient.email },
             {
               headers: {
@@ -274,7 +274,7 @@ function ViewClient() {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/user/company/previewCompanyFile/${filename}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/company/previewCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -303,7 +303,7 @@ function ViewClient() {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `http://localhost:5002/user/company/downloadCompanyFile/${filename}`,
+        `https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/company/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -326,7 +326,7 @@ function ViewClient() {
   //   try {
   //     const token = localStorage.getItem("token");
   //     const response = await axios.post(
-  //       "http://localhost:5002/admin/client/unblockclient",
+  //       "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/unblockclient",
   //       { email: client.email },
   //       {
   //         headers: {
@@ -348,7 +348,7 @@ function ViewClient() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "http://localhost:5002/admin/client/viewEntireClientDetails",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/admin/client/viewEntireClientDetails",
         {
           params: { email: client.email },
           headers: {

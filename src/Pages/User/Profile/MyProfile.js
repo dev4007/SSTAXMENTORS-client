@@ -17,7 +17,7 @@ function MyProfile() {
     const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("http://localhost:5002/user/profile/profile", {
+        const response = await axios.get("https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/profile/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -89,7 +89,7 @@ function MyProfile() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "http://localhost:5002/user/profile/updateprofile",
+        "https://sstaxmentors-dev4s-projects-8f80d394.vercel.app/user/profile/updateprofile",
         editedData,
         {
           headers: {
