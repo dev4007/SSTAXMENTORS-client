@@ -13,7 +13,7 @@ function ForgotPasword() {
 
   const login = async () => {
     await axios
-      .post("https://sstaxmentors-server.vercel.app/login/forgot-password", {
+      .post("http://localhost:5002/login/forgot-password", {
         email: email,
         userType: userType, // Add userType to the data sent to the backend
       })

@@ -104,7 +104,7 @@ const ViewGSTNotices = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        "http://localhost:5002/admin/client/manageclient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -282,7 +282,7 @@ const ViewGSTNotices = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/gstnotice/gstFields"
+          "http://localhost:5002/admin/settings/gstnotice/gstFields"
         );
         setFields(response.data);
       } catch (error) {
@@ -313,7 +313,7 @@ const ViewGSTNotices = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/getGSTNoticesAdmin",
+        "http://localhost:5002/admin/document/gstnotice/getGSTNoticesAdmin",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -397,7 +397,7 @@ const ViewGSTNotices = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/deleteGSTNoticeAdmin",
+        "http://localhost:5002/admin/document/gstnotice/deleteGSTNoticeAdmin",
         { filename: modalContent.filename },
         {
           headers: {
@@ -454,7 +454,7 @@ const ViewGSTNotices = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/gstnotice/previewGSTNotice/${filename}`,
+        `http://localhost:5002/user/document/gstnotice/previewGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -478,7 +478,7 @@ const ViewGSTNotices = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/gstnotice/downloadGSTNotice/${filename}`,
+        `http://localhost:5002/user/document/gstnotice/downloadGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

@@ -20,7 +20,7 @@ function MyProfile() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/employee/Profile1",
+          "http://localhost:5002/employee/Profile1",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -65,7 +65,7 @@ function MyProfile() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/employee/updateprofile",
+        "http://localhost:5002/employee/updateprofile",
         editedData,
         {
           headers: {

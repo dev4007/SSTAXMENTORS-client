@@ -35,7 +35,7 @@ const Notifications = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/notification/getnotifications",
+          "http://localhost:5002/user/notification/getnotifications",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -158,7 +158,7 @@ const Notifications = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/notification/previewnotification",
+        "http://localhost:5002/user/notification/previewnotification",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -182,7 +182,7 @@ const Notifications = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/notification/download",
+        "http://localhost:5002/user/notification/download",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

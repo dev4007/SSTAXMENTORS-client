@@ -25,7 +25,7 @@ const CompanySettings = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/company/CompanyDetails",
+        "http://localhost:5002/admin/settings/company/CompanyDetails",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -77,7 +77,7 @@ const CompanySettings = () => {
       }
 
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/settings/company/addNewCompanyField",
+        "http://localhost:5002/admin/settings/company/addNewCompanyField",
         {
           mainName: mainName.trim(),
           subInputs: subInputs.map((input) => input.subInput.trim()),
@@ -114,7 +114,7 @@ const CompanySettings = () => {
       }
 
       const response = await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/company/removeCompanyField/${id}`
+        `http://localhost:5002/admin/settings/company/removeCompanyField/${id}`
       );
       setMainNames(mainNames.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -144,7 +144,7 @@ const CompanySettings = () => {
       }
 
       const response = await axios.put(
-        `https://sstaxmentors-server.vercel.app/admin/settings/company/toggleActiveFieldCompany/${id}`
+        `http://localhost:5002/admin/settings/company/toggleActiveFieldCompany/${id}`
       );
 
       const updatedFields = mainNames.map((field) => {

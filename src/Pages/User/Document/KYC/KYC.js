@@ -41,7 +41,7 @@ const KYC = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/kyc/download/${category}`,
+        `http://localhost:5002/user/document/kyc/download/${category}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -99,7 +99,7 @@ const KYC = () => {
       formData.append("file", getCategoryFile(category));
 
       await axios.post(
-        `https://sstaxmentors-server.vercel.app/user/upload/${category}`,
+        `http://localhost:5002/user/upload/${category}`,
         formData,
         {
           headers: {
@@ -132,10 +132,10 @@ const KYC = () => {
 
       const authToken = localStorage.getItem("token");
       const filename = fileInfo.kycSchema.filename;
-      console.log("🚀 ~ handlePreview ~ filename:", filename);
-
+      console.log("🚀 ~ handlePreview ~ filename:", filename)
+ 
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/previewkyc/${filename}`,
+        `http://localhost:5002/user/previewkyc/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -144,9 +144,18 @@ const KYC = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      let blob;
+      const filetype = filename.slice(-3).toLowerCase(); // Corrected this line
+      if (filetype === "pdf") {
+        blob = new Blob([response.data], { type: "application/pdf" });
+      } else if (["jpg", "jpeg", "png", "gif"].includes(filetype)) {
+        blob = new Blob([response.data], { type: `image/${filetype}` });
+      } else {
+        console.error("Unsupported file type");
+        return;
+      }
+      
       const url = window.URL.createObjectURL(blob);
-
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error previewing file:", error);
@@ -166,7 +175,7 @@ const KYC = () => {
       const filename = fileInfo.kycSchema.filename;
 
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/kyc/downloadkyc/${filename}`,
+        `http://localhost:5002/user/document/kyc/downloadkyc/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -204,7 +213,7 @@ const KYC = () => {
       const authToken = localStorage.getItem("token");
       axios
         .delete(
-          `https://sstaxmentors-server.vercel.app/user/document/kyc/remove/${documentToRemove}`,
+          `http://localhost:5002/user/document/kyc/remove/${documentToRemove}`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -299,7 +308,7 @@ const KYC = () => {
         <div className="mt-4 p-4 border border-gray-300 rounded-md shadow-md">
           <input
             type="file"
-            accept=".pdf"
+            accept=".pdf,.jpg,.jpeg,.png"
             onChange={(e) => handleFileChange(category, e.target.files[0])}
             className="mb-2"
           />
@@ -321,7 +330,17 @@ const KYC = () => {
     return (
       <div className="mt-4 p-4 border border-gray-300 rounded-md shadow-md ">
         <p className="mb-2">File Name: {kycSchema.filename}</p>
-        {kycSchema.filename.slice(-3).toLowerCase() === "pdf" && (
+       
+        {kycSchema.filename.slice(-3).toLowerCase() === "pdf" ? (
+          <button
+            id={`previewButton_${category}`}
+            onClick={() => handlePreview(category)}
+            disabled={!status || loading}
+            className="bg-green-500 text-white px-4 py-2 rounded-md mr-2"
+          >
+            Preview
+          </button>
+        ) : (
           <button
             id={`previewButton_${category}`}
             onClick={() => handlePreview(category)}
@@ -331,6 +350,8 @@ const KYC = () => {
             Preview
           </button>
         )}
+        
+   
         <button
           id={`downloadButton_${category}`}
           onClick={() => handleDownload(category)}
@@ -365,7 +386,7 @@ const KYC = () => {
       <hr></hr>
       <div className="p-4 mx-5gis">
         <p className="font-bold text-3xl text-blue-500 ml-4 mb-10">
-          KYC DOCUMENTS
+          KYC DOCUMENTS (Personal Documents)
         </p>
         <div>
           <label className="block m-4 text-gray-700 text-lg ">

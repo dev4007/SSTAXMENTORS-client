@@ -23,6 +23,10 @@ const UserCMA = () => {
   const [currentPageC, setCurrentPageC] = useState(1);
   const [itemsPerPageC, setItemsPerPageC] = useState(50);
 
+    // Filter companies with at least one company type set to true
+    const filteredCompanies = companyNames.filter(company => 
+      Object.values(company.companyType).some(type => type === true)
+    );
   useEffect(() => {
     fetchCMA();
     fetchCompanyNames();
@@ -36,7 +40,7 @@ const UserCMA = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/document/cma/getAllCMApreparations",
+        "http://localhost:5002/user/document/cma/getAllCMApreparations",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -74,7 +78,7 @@ const UserCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyNameOnlyDetails",
+        "http://localhost:5002/user/company/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -107,7 +111,7 @@ const UserCMA = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/downloadCMApreparation/${filename}`,
+        `http://localhost:5002/user/document/cma/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -137,7 +141,7 @@ const UserCMA = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/previewCMApreparation/${filename}`,
+        `http://localhost:5002/user/document/cma/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -394,9 +398,9 @@ const UserCMA = () => {
                 className="block w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
               >
                 <option value="">All Companies</option>
-                {companyNames.map((companyName) => (
-                  <option key={companyName} value={companyName}>
-                    {companyName}
+                {filteredCompanies.map((company) => (
+                  <option key={company.companyName} value={company.companyName}>
+                    {company.companyName}
                   </option>
                 ))}
               </select>
@@ -413,30 +417,35 @@ const UserCMA = () => {
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th className="border bg-gray-200 px-4 py-2">Sno</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the File
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Sno
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Description
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      File Name
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">Remarks</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the Uploader
+
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Uploaded By
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">Preview</th>
-                    <th className="border bg-gray-200 px-4 py-2">Download</th>
-                    <th className="border bg-gray-200 px-4 py-2">View</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Preview
+                    </th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Download
+                    </th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      View
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {slicedHistoryC.length > 0 ? (
                     slicedHistoryC.map((CMA, index) => (
                       <tr key={CMA._id}>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {filteredCMA.length - startIndexC - index}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {truncateText(
                             extractFilenameAfterUnderscore(
                               CMA.files[0].filename
@@ -444,16 +453,11 @@ const UserCMA = () => {
                             20
                           )}
                         </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(CMA.description, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(CMA.remarks, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
+
+                        <td className="border px-4 py-2 text-center">
                           {truncateText(CMA.name, 20)}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {CMA.files[0].filename.slice(-3).toLowerCase() ===
                             "pdf" && (
                             <button
@@ -469,7 +473,7 @@ const UserCMA = () => {
                             </button>
                           )}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           <button
                             onClick={() =>
                               handleDownload(CMA.files[0].filename)
@@ -482,7 +486,7 @@ const UserCMA = () => {
                               : "Download"}
                           </button>
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           <button
                             onClick={() => handleViewDetails(CMA)}
                             className="bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded"

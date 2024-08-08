@@ -98,7 +98,7 @@ const ViewLicense = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        "http://localhost:5002/admin/client/manageclient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ const ViewLicense = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/license/Licensesnames"
+          "http://localhost:5002/admin/settings/license/Licensesnames"
         );
         setFields(response.data);
       } catch (error) {
@@ -301,7 +301,7 @@ const ViewLicense = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/license/getLicenseAdmin",
+        "http://localhost:5002/admin/document/license/getLicenseAdmin",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -360,7 +360,7 @@ const ViewLicense = () => {
   // const handleDelete = async (filename) => {
   //   try {
   //     const token = localStorage.getItem('token');
-  //     await axios.post('https://sstaxmentors-server.vercel.app/admin/deleteLicenseAdmin', { filename }, {
+  //     await axios.post('http://localhost:5002/admin/deleteLicenseAdmin', { filename }, {
   //       headers: {
   //         Authorization: `Bearer ${token}`,
   //       }
@@ -388,7 +388,7 @@ const ViewLicense = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/license/deleteLicenseAdmin",
+        "http://localhost:5002/admin/document/license/deleteLicenseAdmin",
         { filename: modalContent.filename },
         {
           headers: {
@@ -444,7 +444,7 @@ const ViewLicense = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/license/previewLicense/${filename}`,
+        `http://localhost:5002/user/document/license/previewLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -465,7 +465,7 @@ const ViewLicense = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/license/downloadLicense/${filename}`,
+        `http://localhost:5002/user/document/license/downloadLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

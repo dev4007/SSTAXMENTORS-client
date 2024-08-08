@@ -89,7 +89,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyDetails",
+        "http://localhost:5002/user/company/getCompanyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -126,7 +126,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/company/previewCompanyFile/${filename}`,
+        `http://localhost:5002/user/company/previewCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -147,7 +147,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/company/downloadCompanyFile/${filename}`,
+        `http://localhost:5002/user/company/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -178,7 +178,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/deleteCompany",
+        "http://localhost:5002/user/deleteCompany",
         { clientId: modalContent.companyId },
         {
           headers: {
@@ -267,6 +267,11 @@ const ViewCompanies = () => {
     companyDetails.length
   );
   const slicedHistoryC = companyDetails.slice(startIndexC, endIndexC);
+  console.log("🚀 ~ ViewCompanies ~ slicedHistoryC:", slicedHistoryC)
+
+  const gstNumber = slicedHistoryC?.[0]?.subInputValues.GST["GST Number"].value;
+  console.log("🚀 ~ ViewCompanies ~ gstNumber:", gstNumber)
+  
 
   return (
     <div className="bg-gray-100">
@@ -309,38 +314,60 @@ const ViewCompanies = () => {
               </span>
               <span>{company.officeNumber || "Not Specified"}</span>
             </div>
-
-            {showMoreMap[company._id] && (
-              <div className="mt-4 ">
-                <h4 className="text-lg font-semibold text-gray-800">
-                  Document Files:
-                </h4>
-                {company.documentFiles.map((file, index) => (
-                  <div key={index} className="mt-2">
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">
+                GST Number:
+              </span>
+              <span>{company?.subInputValues.GST["GST Number"].value}</span>
+            </div>
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">
+                PAN Number:
+              </span>
+              <span>{company?.subInputValues.PAN["PAN Number"].value}</span>
+      
+      {console.log(company?.subInputValues.PAN.doc)}
+      
+             
+                  <div key={company?.subInputValues.PAN.doc} className="mt-2">
+                    
                     <div className="mb-2">
-                      <span className="text-gray-500 font-semibold text-md mr-2 ">
+                      <span className="text-gray-500 font-semibold text-md mr-2">
                         Filename:{" "}
                       </span>
-                      <span>{getFileName(file.filename)}</span>
+                      <span>{getFileName(company?.subInputValues.PAN.doc.fileName)}</span>
                     </div>
                     <div className="mb-4">
-                      {file.type === "application/pdf" && (
+                      {company?.subInputValues.PAN.doc.fileType === "image/png" && (
                         <button
-                          onClick={() => handlePreview(file.filename)}
-                          className="mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                          onClick={() => handlePreview(company?.subInputValues.PAN.doc.fileName)}
+                          className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                         >
-                          Preview
+                          Preview {company?.subInputValues.PAN.doc.fileName}
                         </button>
                       )}
                       <button
-                        onClick={() => handleDownload(file.filename)}
+                        onClick={() => handleDownload(company?.subInputValues.PAN.doc.fileName)}
                         className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
                       >
                         Download
                       </button>
                     </div>
                   </div>
-                ))}
+            
+
+            </div>
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">
+                VAN Number:
+              </span>
+              <span>{company?.subInputValues.VAN["VAN Number"].value}</span>
+            </div>
+
+            {showMoreMap[company._id] && (
+              <div className="mt-4 ">
+                
+             
 
                 <h4 className="text-lg font-semibold text-gray-800 mt-4">
                   Company Type Files:
@@ -359,7 +386,7 @@ const ViewCompanies = () => {
                           onClick={() => handlePreview(file.filename)}
                           className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                         >
-                          Preview
+                          Preview 
                         </button>
                       )}
                       <button
@@ -436,7 +463,7 @@ const getAddress = (address) => {
 const getCompanyType = (companyType) => {
   if (!companyType) return "Not Specified";
   const selectedTypes = Object.keys(companyType).filter(
-    (key) => companyType[key]
+    (key) => companyType[key] && key !== '_id' // Exclude the _id key
   );
   return selectedTypes.length > 0 ? selectedTypes.join(", ") : "Not Specified";
 };

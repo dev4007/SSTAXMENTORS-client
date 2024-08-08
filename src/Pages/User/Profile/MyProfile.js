@@ -17,7 +17,7 @@ function MyProfile() {
     const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get("https://sstaxmentors-server.vercel.app/user/profile/profile", {
+        const response = await axios.get("http://localhost:5002/user/profile/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -89,7 +89,7 @@ function MyProfile() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/profile/updateprofile",
+        "http://localhost:5002/user/profile/updateprofile",
         editedData,
         {
           headers: {
@@ -271,20 +271,20 @@ function MyProfile() {
                 Address
               </h3>
               <div className="grid grid-cols-2 gap-4">
-                {/* <div>
-                <label htmlFor="officenumber" className="block text-sm font-semibold mb-1 text-gray-600">
-                  Office Number:
+           <div>
+                <label htmlFor="address" className="block text-sm font-semibold mb-1 text-gray-600">
+                  House Number:
                 </label>
                 <input
                   type="text"
-                  id="officenumber"
-                  name="officenumber"
-                  value={editedData.officenumber}
+                  id="address"
+                  name="address"
+                  value={editedData.address}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 border ${isEditing ? 'border-blue-500' : 'border-gray-300'} rounded`}
                   readOnly={!isEditing}
                 />
-              </div> */}
+              </div> 
                 <div>
                   <label
                     htmlFor="streetname"

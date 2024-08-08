@@ -31,7 +31,7 @@ const SupportTickets = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/supportticket/getMyTickets",
+          "http://localhost:5002/user/supportticket/getMyTickets",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -146,7 +146,7 @@ const SupportTickets = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/supportticket/previewSupportTicket/${fileId}`,
+        `http://localhost:5002/user/supportticket/previewSupportTicket/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -167,7 +167,7 @@ const SupportTickets = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/supportticket/downloadSupportTicket/${fileId}`,
+        `http://localhost:5002/user/supportticket/downloadSupportTicket/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -242,7 +242,7 @@ const SupportTickets = () => {
         const token = localStorage.getItem("token");
         console.log(deleteticket);
         await axios.post(
-          "https://sstaxmentors-server.vercel.app/user/deleteSupportTicket",
+          "http://localhost:5002/user/deleteSupportTicket",
           { ticketId: deleteticket },
           {
             headers: {

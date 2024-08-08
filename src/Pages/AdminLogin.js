@@ -6,12 +6,11 @@ import Cookies from "js-cookie"; // Import js-cookie
 import ImageCarousel from "../Components/LoginPageCarousel";
 import logo from "../Images/Logo.png";
 import backgroundImage from "../Images/background.png";
-import { saveLoginToken } from "../services/index.js";
 
-function Login() {
+function AdminLogin() {
   const [email, setEmail] = useState(Cookies.get("email") || ""); // Initialize with cookie value if exists
   const [password, setPassword] = useState(Cookies.get("password") || ""); // Initialize with cookie value if exists
-  const [userType, setUserType] = useState("user");
+  const [userType, setUserType] = useState("employee");
   const [loading, setLoading] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [loginError, setLoginError] = useState(false);
@@ -71,7 +70,8 @@ function Login() {
       }
       if (response.data.success === true) {
         const { token, role } = response.data;
-        saveLoginToken(token, role);
+        localStorage.setItem("token", token);
+        localStorage.setItem("role", role);
         message.success("Login Successful!");
 
         if (rememberMe) {
@@ -84,16 +84,17 @@ function Login() {
           Cookies.remove("rememberMe");
         }
 
-        if (role === "user") {
-          navigate("/user/userdashboard");
-         } else {
+      if (role === "employee") {
+          navigate("/employee/employeedashboard");
+        } else {
           navigate("/admin/admindashboard");
         }
 
         setLoginSuccess(true);
-      } else if (
-        userType === "user" &&
-        response.data.message === "User has been blocked"
+      } 
+       else if (
+        userType === "employee" &&
+        response.data.message === "Employee has been blocked"
       ) {
         message.info("You have been blocked");
       } else {
@@ -128,6 +129,35 @@ function Login() {
             <a href="/">
               <img src={logo} alt="Logo" className="w-full mb-8" />
             </a>
+            <div className="mb-8">
+              <label className="block mb-2 text-gray-400">User Type:</label>
+              <div className="flex space-x-4">
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    checked={userType === "employee"}
+                    onChange={() => setUserType("employee")}
+                    style={{
+                      marginRight: "0.5rem",
+                      backgroundColor: "#3c82f6",
+                    }}
+                  />
+                  <span className="text-gray-700">Employee</span>
+                </label>
+                <label className="inline-flex items-center">
+                  <input
+                    type="radio"
+                    checked={userType === "admin"}
+                    onChange={() => setUserType("admin")}
+                    style={{
+                      marginRight: "0.5rem",
+                      backgroundColor: "#3c82f6",
+                    }}
+                  />
+                  <span className="text-gray-700">Admin</span>
+                </label>
+              </div>
+            </div>
             <div className="mb-8">
               <label className="block mb-2 text-gray-400">Email:</label>
               <input
@@ -168,11 +198,6 @@ function Login() {
             </div>
 
             <div className="flex justify-between mb-6 mt-3">
-              {userType === "user" && (
-                <div className="text-blue-500">
-                  <Link to="/register">Don't have an account?</Link>
-                </div>
-              )}
               <div className="text-blue-500">
                 <Link to="/forgot-password">Forgot Password?</Link>
               </div>
@@ -219,4 +244,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default AdminLogin;

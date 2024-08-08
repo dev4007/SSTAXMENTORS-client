@@ -18,7 +18,7 @@ const PaymentSettings = () => {
     const fetchPaymentImage = async () => {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/PaymentQR"
+          "http://localhost:5002/admin/PaymentQR"
         );
         if (response.data.paymentImages.length > 0) {
           const filename = response.data.paymentImages[0].image.filename;
@@ -43,7 +43,7 @@ const PaymentSettings = () => {
   const fetchPaymentImagePreview = async (filename) => {
     try {
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/getPaymentQRImage",
+        "http://localhost:5002/admin/getPaymentQRImage",
         {
           responseType: "blob",
           params: { filename }, // Pass filename as a parameter
@@ -61,7 +61,7 @@ const PaymentSettings = () => {
 
   const handlePaymentDelete = async () => {
     try {
-      await axios.post("https://sstaxmentors-server.vercel.app/admin/deletePaymentQR");
+      await axios.post("http://localhost:5002/admin/deletePaymentQR");
       setPaymentImage(null);
       setErrorMessage("");
       message.success("Successfully deleted payment image");
@@ -92,7 +92,7 @@ const PaymentSettings = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/addPaymentQRImage",
+        "http://localhost:5002/admin/addPaymentQRImage",
         formData,
         {
           headers: {
@@ -103,7 +103,7 @@ const PaymentSettings = () => {
       );
       message.success("Payment image uploaded successfully");
       // Refetch payment image after upload
-      const response = await axios.get("https://sstaxmentors-server.vercel.app/admin/PaymentQR");
+      const response = await axios.get("http://localhost:5002/admin/PaymentQR");
       if (response.data.paymentImages.length > 0) {
         setPaymentImage(response.data.paymentImages[0]);
       }

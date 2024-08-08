@@ -27,7 +27,7 @@ function ViewAddOnServices() {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/addonservice/getUserAddOnService",
+        "http://localhost:5002/user/addonservice/getUserAddOnService",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -49,26 +49,7 @@ function ViewAddOnServices() {
     }
   };
 
-  // const handleViewDetails = (service) => {
-  //   setSelectedService(service);
-  //   setIsViewingService(true);
-  // };
-
-  const handleViewDetails = (index) => {
-    const addonserviceData = index;
-
-    // Store data in local storage
-    localStorage.setItem("addonservice", JSON.stringify(addonserviceData));
-
-    // Open new tab
-    const addonserviceWindow = window.open("/addonservice", "_blank");
-
-    if (!addonserviceWindow) {
-      alert(
-        "Please allow pop-ups for this website to view addonservice details."
-      );
-    }
-  };
+ 
 
   const handleBack = () => {
     setSelectedService(null);
@@ -224,12 +205,27 @@ function ViewAddOnServices() {
                 <p className="text-gray-600 overflow-auto break-words">
                   Description: {service.description}
                 </p>
-                <button
-                  onClick={() => handleViewDetails(service)}
-                  className="text-blue-500 mt-2"
-                >
-                  View Details
-                </button>
+
+                <div>
+                <p className="text-lg font-semibold mt-3">Services:-</p>
+                {service.services ? (
+                  Object.entries(service.services).map(
+                    ([category, services]) => (
+                      <div key={category}>
+                        <p className="font-semibold">{category}</p>
+                        <ul>
+                          {services.map((subService, index) => (
+                            <li key={index} className="text-sm p-2">{subService}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  )
+                ) : (
+                  <p>No services available</p>
+                )}
+              </div>
+               
               </div>
             ))
           )}

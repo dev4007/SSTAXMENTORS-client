@@ -24,7 +24,7 @@ const Dashboard = () => {
       try {
         // Fetch payment data for the client from the backend
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/viewBill",
+          "http://localhost:5002/user/viewBill",
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -153,17 +153,27 @@ const Dashboard = () => {
                 text="My Documents"
                 dropdownItems={[
                   { text: "KYC", to: "KYC" },
-                  { text: "GST Registration", to: "gstregistration" },
-                  { text: "GST Returns", to: "gstreturns" },
-                  { text: "IT Returns", to: "itreturns" },
-                  { text: "ROC Filings", to: "rocfilings" },
-                  { text: "License", to: "license" },
-                  { text: "CMA Preparation", to: "cma" },
-                  { text: "GST Notice", to: "gstnotice" },
-                  // { text: "Others", to: "othersa" },
+                  
                 ]}
               />
             )}
+
+              {/* Add Documents */}
+              {!showPayments && (
+                <SidebarItem
+                  icon={<Files size={20} />}
+                  text="Company Documents"
+                  dropdownItems={[
+                    { text: "GST Registration", to: "gstregistration" },
+                    { text: "GST Returns", to: "gstreturns" },
+                    { text: "IT Returns", to: "itreturns" },
+                    { text: "ROC Filings", to: "rocfilings" },
+                    { text: "License", to: "license" },
+                    { text: "CMA Preparation", to: "cma" },
+                    { text: "GST Notice", to: "gstnotice" },
+                  ]}
+                />
+              )}
             {/* Add On Services */}
             {!showPayments && (
               <SidebarItem

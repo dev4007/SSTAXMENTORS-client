@@ -13,8 +13,10 @@ const UserGSTReturns = () => {
   const [selectedGSTReturns, setSelectedGSTReturns] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [companyNames, setCompanyNames] = useState([]);
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredGSTReturns, setFilteredGSTReturns] = useState([]);
+ 
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15); // Change this value as per your requirement
   let isMounted = true;
@@ -37,7 +39,7 @@ const UserGSTReturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/getGSTReturns",
+        "http://localhost:5002/admin/getGSTReturns",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,7 +72,7 @@ const UserGSTReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/getCompanyNameOnlyDetails",
+        "http://localhost:5002/user/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -90,7 +92,7 @@ const UserGSTReturns = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/downloadGSTReturns/${filename}`,
+        `http://localhost:5002/admin/downloadGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -120,7 +122,7 @@ const UserGSTReturns = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/previewGSTReturns/${filename}`,
+        `http://localhost:5002/admin/previewGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -161,11 +163,14 @@ const UserGSTReturns = () => {
   };
 
   const handleCompanyChange = (event) => {
+    console.log("🚀 ~ handleCompanyChange ~ event:", event.target.value)
     setSelectedCompany(event.target.value);
     filterGSTReturns(event.target.value);
   };
 
   const filterGSTReturns = (company) => {
+  console.log("🚀 ~ filterGSTReturns ~ company:", company)
+ 
     if (company === "") {
       setFilteredGSTReturns(gstReturns);
     } else {
@@ -401,30 +406,34 @@ const UserGSTReturns = () => {
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th className="border bg-gray-200 px-4 py-2">Sno</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the File
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Sno
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Description
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      File Name
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">Remarks</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the Uploader
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Uploaded By
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">Preview</th>
-                    <th className="border bg-gray-200 px-4 py-2">Download</th>
-                    <th className="border bg-gray-200 px-4 py-2">View</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Preview
+                    </th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Download
+                    </th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      View
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {slicedHistoryC.length > 0 ? (
                     slicedHistoryC.map((GSTReturns, index) => (
                       <tr key={GSTReturns._id}>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2  text-center">
                           {filteredGSTReturns.length - startIndexC - index}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2  text-center">
                           {truncateText(
                             extractFilenameAfterUnderscore(
                               GSTReturns.files[0].filename
@@ -432,16 +441,11 @@ const UserGSTReturns = () => {
                             20
                           )}
                         </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(GSTReturns.description, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(GSTReturns.remarks, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
+
+                        <td className="border px-4 py-2  text-center">
                           {truncateText(GSTReturns.name, 20)}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2  text-center">
                           {GSTReturns.files[0].filename
                             .slice(-3)
                             .toLowerCase() === "pdf" && (
@@ -460,7 +464,7 @@ const UserGSTReturns = () => {
                             </button>
                           )}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2  text-center">
                           <button
                             onClick={() =>
                               handleDownload(GSTReturns.files[0].filename)
@@ -475,7 +479,7 @@ const UserGSTReturns = () => {
                               : "Download"}
                           </button>
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2  text-center">
                           <button
                             onClick={() => handleViewDetails(GSTReturns)}
                             className="bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded"

@@ -45,12 +45,22 @@ const Navbar = () => {
           <span className='hamburger-bottom'></span>
         </button>
         {/* Login/Signup Button */}
+        <div className='flex space-x-4'>
         <Link
           to='/login'
           className='hidden p-3 px-6 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight md:block'
         >
-          Login / Signup
+          Login
         </Link>
+      
+        <Link
+          to='/register'
+          className='hidden p-3 px-6 text-white bg-brightRed rounded-full baseline hover:bg-brightRedLight md:block'
+        >
+          Signup
+        </Link>
+      </div>
+      
       </div>
 
       {/* Mobile Menu */}

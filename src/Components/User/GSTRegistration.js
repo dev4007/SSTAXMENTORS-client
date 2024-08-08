@@ -9,6 +9,7 @@ const GSTRegistration = () => {
 
   const [selectedCompany, setSelectedCompany] = useState("");
   const [file, setFile] = useState(null);
+  console.log("🚀 ~ GSTRegistration ~ file:", file)
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
 
   const [companyNames, setCompanyNames] = useState([]);
@@ -26,7 +27,7 @@ const GSTRegistration = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/getCompanyNameOnlyDetails",
+          "http://localhost:5002/user/getCompanyNameOnlyDetails",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -79,7 +80,7 @@ const GSTRegistration = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const url = `https://sstaxmentors-server.vercel.app/user/getgstdoc/${companyName}`;
+      const url = `http://localhost:5002/user/getgstdoc/${companyName}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -114,36 +115,35 @@ const GSTRegistration = () => {
   const handlePreview = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `https://sstaxmentors-server.vercel.app/user/previewGSTR/${file.name}`;
-
+      const url = `http://localhost:5002/user/previewGSTR/${file.name}`;
+  
       const response = await axios.get(url, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
         responseType: "blob",
       });
-
-      // Check if the content-type of the response indicates a PDF
-      const isPDF = response.headers["content-type"]
-        .toLowerCase()
-        .includes("pdf");
-      // Show preview button only if the file is a PDF
+  
+      const contentType = response.headers["content-type"].toLowerCase();
+      const isPDF = contentType.includes("pdf");
+      const isImage = contentType.includes("image/");
+  
       if (isPDF) {
-        const blobResponse = await axios.get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          responseType: "blob",
+        const blob = new Blob([response.data], {
+          type: contentType,
         });
-
-        const blob = new Blob([blobResponse.data], {
-          type: blobResponse.headers["content-type"],
+  
+        const objectUrl = URL.createObjectURL(blob);
+        window.open(objectUrl, "_blank");
+      } else if (isImage) {
+        const blob = new Blob([response.data], {
+          type: contentType,
         });
-
+  
         const objectUrl = URL.createObjectURL(blob);
         window.open(objectUrl, "_blank");
       } else {
-        console.log("File is not a PDF. Preview not supported.");
+        console.log("File is neither a PDF nor an image. Preview not supported.");
       }
     } catch (error) {
       console.error("Error handling preview:", error);
@@ -153,7 +153,7 @@ const GSTRegistration = () => {
   const handleDownload = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `https://sstaxmentors-server.vercel.app/user/downloadGSTR/${file.name}`;
+      const url = `http://localhost:5002/user/downloadGSTR/${file.name}`;
 
       const response = await axios.get(url, {
         headers: {
@@ -181,7 +181,7 @@ const GSTRegistration = () => {
   const handleDelete = async () => {
     try {
       const token = localStorage.getItem("token");
-      const url = `https://sstaxmentors-server.vercel.app/user/deleteGSTR/${file.name}/${selectedCompany}`;
+      const url = `http://localhost:5002/user/deleteGSTR/${file.name}/${selectedCompany}`;
       await axios.delete(url, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -209,7 +209,7 @@ const GSTRegistration = () => {
       dataForBackend.append("timestamp", new Date().toISOString());
 
       const token = localStorage.getItem("token");
-      const url = `https://sstaxmentors-server.vercel.app/user/gstregistration`;
+      const url = `http://localhost:5002/user/gstregistration`;
 
       const response = await axios.post(url, dataForBackend, {
         headers: {
@@ -270,7 +270,7 @@ const GSTRegistration = () => {
                   File Name: {previousFile && previousFile.name}
                 </p>
 
-                {file?.name.toLowerCase().endsWith(".pdf") && (
+                {file?.name.toLowerCase().endsWith(".pdf") || file?.name.toLowerCase().match(/\.(jpg|jpeg|png|gif)$/) && (
                   <button
                     onClick={handlePreview}
                     className="bg-green-500 text-white px-4 py-2 rounded-md mr-2"

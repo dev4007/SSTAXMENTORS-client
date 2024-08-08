@@ -26,7 +26,7 @@ const GSTReturnsSettings = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/gstreturns/getGSTReturnsFields"
+        "http://localhost:5002/admin/settings/gstreturns/getGSTReturnsFields"
       );
       setFields(response.data);
     } catch (error) {
@@ -55,7 +55,7 @@ const GSTReturnsSettings = () => {
       }
 
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/settings/gstreturns/addNewGSTReturnsField",
+        "http://localhost:5002/admin/settings/gstreturns/addNewGSTReturnsField",
         {
           name: newFieldName.trim(),
           description: newFieldDescription.trim(),
@@ -92,7 +92,7 @@ const GSTReturnsSettings = () => {
       }
 
       const response = await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/gstreturns/removeGSTReturnsField/${id}`
+        `http://localhost:5002/admin/settings/gstreturns/removeGSTReturnsField/${id}`
       );
       setFields(fields.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -122,7 +122,7 @@ const GSTReturnsSettings = () => {
       }
 
       const response = await axios.put(
-        `https://sstaxmentors-server.vercel.app/admin/settings/gstreturns/toggleActiveFieldGSTR/${id}`
+        `http://localhost:5002/admin/settings/gstreturns/toggleActiveFieldGSTR/${id}`
       );
 
       const updatedFields = fields.map((field) => {

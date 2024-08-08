@@ -22,7 +22,7 @@ const EmailSettingsPage = () => {
   const fetchEmailSettings = async () => {
     try {
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/email/getEmailSettingsFields"
+        "http://localhost:5002/admin/settings/email/getEmailSettingsFields"
       );
       setEmailSettings(response.data);
     } catch (error) {
@@ -39,7 +39,7 @@ const EmailSettingsPage = () => {
   const addEmailSetting = async () => {
     try {
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/settings/email/addNewEmailField",
+        "http://localhost:5002/admin/settings/email/addNewEmailField",
         newEmailSetting
       );
       fetchEmailSettings();
@@ -53,7 +53,7 @@ const EmailSettingsPage = () => {
   const deleteEmailSetting = async (id) => {
     try {
       await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/email/deleteEmailField/${id}`
+        `http://localhost:5002/admin/settings/email/deleteEmailField/${id}`
       );
       fetchEmailSettings();
     } catch (error) {
@@ -65,7 +65,7 @@ const EmailSettingsPage = () => {
   const updateEmailSetting = async (id, updatedEmailSetting) => {
     try {
       const response = await axios.put(
-        `https://sstaxmentors-server.vercel.app/admin/settings/email/updateEmailField/${id}`,
+        `http://localhost:5002/admin/settings/email/updateEmailField/${id}`,
         updatedEmailSetting
       );
 

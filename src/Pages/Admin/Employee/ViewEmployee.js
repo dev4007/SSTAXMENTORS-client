@@ -91,7 +91,7 @@ function ViewEmployees() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/employee/manageemployee",
+        "http://localhost:5002/admin/employee/manageemployee",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -132,7 +132,7 @@ function ViewEmployees() {
         let response;
         if (confirmationAction === "block") {
         response = await axios.post(
-          "https://sstaxmentors-server.vercel.app/admin/employee/blockemployee",
+          "http://localhost:5002/admin/employee/blockemployee",
           { email: selectedEmployee.email },
           {
             headers: {
@@ -142,7 +142,7 @@ function ViewEmployees() {
         )
       }else if (confirmationAction === "unblock") {
         response =  await axios.post(
-          "https://sstaxmentors-server.vercel.app/admin/employee/unblockemployee",
+          "http://localhost:5002/admin/employee/unblockemployee",
           { email: selectedEmployee.email },
           {
             headers: {
@@ -171,7 +171,7 @@ function ViewEmployees() {
   //   try {
   //     const token = localStorage.getItem("token");
   //    const response =  await axios.post(
-  //       "https://sstaxmentors-server.vercel.app/admin/employee/unblockemployee",
+  //       "http://localhost:5002/admin/employee/unblockemployee",
   //       { email: employee.email },
   //       {
   //         headers: {

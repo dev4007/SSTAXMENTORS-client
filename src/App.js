@@ -7,6 +7,7 @@ import {BrowserRouter as Router ,Routes,Route} from 'react-router-dom'
 import Homepage from './Pages/Homepage'
 
 const Login = lazy(()=> import("./Pages/Login"));
+const AdminLogin = lazy(()=> import("./Pages/AdminLogin"));
 const DashboardUser = lazy(()=> import("./Pages/User/SideNavBar/Dashboard"));
 const DashboardAdmin = lazy(()=> import("./Pages/Admin/SideNavBar/Dashboard"));
 const DashboardEmployee = lazy(()=> import("./Pages/Employee/SideNavBar/DashboardE"));
@@ -46,6 +47,8 @@ function App() {
         {/* <Route path="/" element={<Login/>}></Route> */}
         <Route path="/" element={<Homepage/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
+        <Route path="/admin" element={<AdminLogin/>}></Route>
+
         <Route path="/forgot-password" element={<ForgotPassword/>}></Route>
         {/* <Route path="/thankyou" element={<Thankyou/>}></Route> */}
         <Route path="/user/userdashboard/*" element={<DashboardUser/>}></Route>

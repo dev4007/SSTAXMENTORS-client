@@ -105,7 +105,7 @@ const ViewITReturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        "http://localhost:5002/admin/client/manageclient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -282,7 +282,7 @@ const ViewITReturns = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/itreturns/getITReturnsFields"
+          "http://localhost:5002/admin/settings/itreturns/getITReturnsFields"
         );
         setFields(response.data);
       } catch (error) {
@@ -313,7 +313,7 @@ const ViewITReturns = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/itreturns/getITReturnsAdmin",
+        "http://localhost:5002/admin/document/itreturns/getITReturnsAdmin",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -405,7 +405,7 @@ const ViewITReturns = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/itreturns/deleteITReturnAdmin",
+        "http://localhost:5002/admin/document/itreturns/deleteITReturnAdmin",
         { filename: modalContent.filename },
         {
           headers: {
@@ -460,7 +460,7 @@ const ViewITReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/itreturns/previewITReturns/${filename}`,
+        `http://localhost:5002/user/document/itreturns/previewITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -484,7 +484,7 @@ const ViewITReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/itreturns/downloadITReturns/${filename}`,
+        `http://localhost:5002/user/document/itreturns/downloadITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

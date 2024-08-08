@@ -25,7 +25,7 @@ const ITReturnsSettings = () => {
     try {
       setLoading(true);
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/itreturns/getITReturnsFields"
+        "http://localhost:5002/admin/settings/itreturns/getITReturnsFields"
       );
       setFields(response.data);
     } catch (error) {
@@ -54,7 +54,7 @@ const ITReturnsSettings = () => {
       }
 
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/settings/itreturns/addNewITReturnsField",
+        "http://localhost:5002/admin/settings/itreturns/addNewITReturnsField",
         {
           name: newFieldName.trim(),
           description: newFieldDescription.trim(),
@@ -91,7 +91,7 @@ const ITReturnsSettings = () => {
       }
 
       const response = await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/itreturns/removeITReturnsField/${id}`
+        `http://localhost:5002/admin/settings/itreturns/removeITReturnsField/${id}`
       );
       setFields(fields.filter((field) => field._id !== id));
       setError(response.data.message);
@@ -121,7 +121,7 @@ const ITReturnsSettings = () => {
       }
 
       const response = await axios.put(
-        `https://sstaxmentors-server.vercel.app/admin/settings/itreturns/toggleActiveFieldITR/${id}`
+        `http://localhost:5002/admin/settings/itreturns/toggleActiveFieldITR/${id}`
       );
 
       const updatedFields = fields.map((field) => {

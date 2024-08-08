@@ -33,7 +33,7 @@ const SendITreturns = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
+          "http://localhost:5002/admin/client/getClients",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -57,7 +57,7 @@ const SendITreturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
+        "http://localhost:5002/admin/client/getCompanyNamesOfClient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -81,7 +81,7 @@ const SendITreturns = () => {
     const fetchITReturnsTypes = async (c) => {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/itreturns/getITReturnsFields"
+          "http://localhost:5002/admin/settings/itreturns/getITReturnsFields"
         );
         setITReturnsTypes(response.data);
       } catch (error) {
@@ -204,7 +204,7 @@ const SendITreturns = () => {
 
     try {
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/itreturns/sendITreturns",
+        "http://localhost:5002/admin/document/itreturns/sendITreturns",
         formData,
         {
           headers: {

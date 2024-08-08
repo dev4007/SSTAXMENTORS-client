@@ -19,7 +19,7 @@ const ReminderDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/previewreminder/${filename}`,
+        `http://localhost:5002/admin/previewreminder/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -40,7 +40,7 @@ const ReminderDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/downloadreminder/${filename}`,
+        `http://localhost:5002/admin/downloadreminder/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

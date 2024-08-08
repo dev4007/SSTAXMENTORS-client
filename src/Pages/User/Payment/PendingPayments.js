@@ -17,7 +17,7 @@ const PendingPayment = () => {
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
 
-  const [fileList, setFileList] = useState([]);
+
   const [qrCodeSrc, setQRCodeSrc] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
   const [currentPageC, setCurrentPageC] = useState(1);
@@ -28,13 +28,34 @@ const PendingPayment = () => {
   const navigate = useNavigate();
   let isMounted = true;
 
+  const [paymentHistory, setPaymentHistory] = useState([]);
+  console.log("🚀 ~ PendingPayment ~ paymentHistory:", paymentHistory)
+
+  useEffect(() => {
+    const fetchUserPaymentHistory = async () => {
+    const response = await axios.get(
+      "http://localhost:5002/user/userPaymentHistory",
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you use JWT for authentication
+        },
+      }
+    );
+    setPaymentHistory(response.data);
+    };
+
+    fetchUserPaymentHistory();
+  }, []);
+
+
+
   const fetchData = async () => {
     try {
       const token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
 
       const userResponse = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/profile/profile",
+        "http://localhost:5002/user/profile/profile",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -43,7 +64,7 @@ const PendingPayment = () => {
       );
 
       const billResponse = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/payment/viewBill",
+        "http://localhost:5002/user/payment/viewBill",
         {},
         {
           headers: {
@@ -97,7 +118,7 @@ const PendingPayment = () => {
     if (selectedOrder) {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/payment/getPaymentQRImageUser",
+          "http://localhost:5002/admin/settings/payment/getPaymentQRImageUser",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -153,7 +174,7 @@ const PendingPayment = () => {
     setTransactionId("");
     setAmountPaid("");
     setPaymentMethod("");
-    setFileList([]);
+  
   };
 
   const handleDone = () => {
@@ -168,7 +189,7 @@ const PendingPayment = () => {
     setTransactionId("");
     setAmountPaid("");
     setPaymentMethod("");
-    setFileList([]); // Clear the fileList state
+
   };
 
   const handleSubmit = async () => {
@@ -179,15 +200,14 @@ const PendingPayment = () => {
         if (
           !transactionId ||
           !amountPaid ||
-          !paymentMethod ||
-          fileList.length === 0
+          !paymentMethod 
         ) {
           message.error(
             "Please provide transaction ID, amount paid, and upload file"
           );
           return;
         }
-        
+
         const formData = new FormData();
         formData.append("invoiceNumber", selectedOrder.invoiceId);
         formData.append("transactionId", transactionId);
@@ -199,13 +219,11 @@ const PendingPayment = () => {
         // formData.append("payment", selectedOrder._id);
         formData.append("paymentMethod", paymentMethod);
 
-        fileList.forEach((file) => {
-          formData.append("files", file.originFileObj);
-        });
-        
-        setLoader(true)
+  
+
+        setLoader(true);
         const response = await axios.post(
-          "https://sstaxmentors-server.vercel.app/user/payment/insertTransaction",
+          "http://localhost:5002/user/payment/insertTransaction",
           formData,
           {
             headers: {
@@ -214,21 +232,21 @@ const PendingPayment = () => {
             },
           }
         );
-   
+
         handleDone();
         message.success("Transaction submitted successfully");
-        setLoader(false)
+        setLoader(false);
         // window.location.reload();
       } else if (paymentStatus === "failure") {
         message.error("Try Again");
         setShowPaymentStatus(false);
-        setLoader(false)
+        setLoader(false);
         setSelectedOrder(selectedOrder);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
       message.error("something wrong");
-      setLoader(false)
+      setLoader(false);
     }
   };
 
@@ -322,7 +340,9 @@ const PendingPayment = () => {
             .sort((a, b) => b.invoiceId.localeCompare(a.invoiceId))
             .map((order, index) => {
               // Format the due date using moment.js
-              const formattedDueDate = moment(order.duedate).format("L");
+              const formattedDueDate = moment(order.duedate).format(
+                "DD MMMM YYYY"
+              );
 
               // Truncate the description if it's too long
               let truncatedDescription = order.description;
@@ -344,14 +364,18 @@ const PendingPayment = () => {
                       Remaining Time: {order.remainingTime}
                     </p>
                     <p className="text-gray-600">
-                      Due Date: {formattedDueDate.substring(0, 10)}
+                      Due Date: {formattedDueDate}
                     </p>
+
                     <button
                       className="bg-blue-500 text-white py-2 px-10 rounded mt-4"
                       onClick={() => handlePay(order)}
                     >
                       Pay
                     </button>
+
+                 
+
                   </div>
                   <div className="border-l-2 border-gray-200 pl-4">
                     <p className="text-xl font-semibold">
@@ -470,103 +494,98 @@ const PendingPayment = () => {
                               <option value="failure">Failure</option>
                             </select>
                           </div>
-                          {paymentStatus === "success" && (
-                            <>
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="transactionId"
-                                  className="block text-sm font-medium text-gray-700"
-                                >
-                                  Transaction ID
-                                </label>
-                                <input
-                                  type="text"
-                                  className="w-full mt-1 block py-2 px-3 border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm placeholder-gray-400 focus:placeholder-gray-500"
-                                  id="transactionId"
-                                  value={transactionId}
-                                  onChange={(e) =>
-                                    setTransactionId(e.target.value)
-                                  }
-                                />
-                              </div>
-                              <div className="mb-3">
-                                <label
-                                  htmlFor="amountPaid"
-                                  className="block text-sm font-medium text-gray-700"
-                                >
-                                  Amount Paid
-                                </label>
-                                <input
-                                  type="text"
-                                  className="w-full mt-1 block py-2 px-3 border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm placeholder-gray-400 focus:placeholder-gray-500"
-                                  id="amountPaid"
-                                  value={amountPaid}
-                                  onChange={(e) =>
-                                    setAmountPaid(e.target.value)
-                                  }
-                                />
-                              </div>
-                              <div className="flex items-center">
-                                <label className="mr-2">
-                                  <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="Google Pay"
-                                    checked={paymentMethod === "Google Pay"}
-                                    onChange={(e) =>
-                                      setPaymentMethod(e.target.value)
-                                    }
-                                  />
-                                  Google Pay
-                                </label>
-                                <label className="mr-2">
-                                  <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="Phone Pay"
-                                    checked={paymentMethod === "Phone Pay"}
-                                    onChange={(e) =>
-                                      setPaymentMethod(e.target.value)
-                                    }
-                                  />
-                                  Phone Pe
-                                </label>
 
-                                <label>
-                                  <input
-                                    type="radio"
-                                    name="paymentMethod"
-                                    value="Paytm"
-                                    checked={paymentMethod === "Paytm"}
-                                    onChange={(e) =>
-                                      setPaymentMethod(e.target.value)
-                                    }
-                                  />
-                                  Paytm
-                                </label>
-                              </div>
-
-                              <div className="mb-3 mt-2">
-                                <label className="block text-sm font-medium text-gray-700">
-                                  Upload the Proof
-                                </label>
-                                <Upload
-                                  fileList={fileList}
-                                  onChange={({ fileList }) =>
-                                    setFileList(fileList)
+                          <>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="transactionId"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Transaction ID
+                              </label>
+                              <input
+                                type="text"
+                                className="w-full mt-1 block py-2 px-3 border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm placeholder-gray-400 focus:placeholder-gray-500"
+                                id="transactionId"
+                                value={transactionId}
+                                onChange={(e) =>
+                                  setTransactionId(e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="mb-3">
+                              <label
+                                htmlFor="amountPaid"
+                                className="block text-sm font-medium text-gray-700"
+                              >
+                                Amount Paid
+                              </label>
+                              <input
+                                type="text"
+                                className="w-full mt-1 block py-2 px-3 border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md shadow-sm placeholder-gray-400 focus:placeholder-gray-500"
+                                id="amountPaid"
+                                value={amountPaid}
+                                onChange={(e) => setAmountPaid(e.target.value)}
+                              />
+                            </div>
+                            <div className="flex items-center mb-3">
+                              <label className="mr-4">
+                                <input
+                                  type="radio"
+                                  name="paymentMethod"
+                                  value="Google Pay"
+                                  checked={paymentMethod === "Google Pay"}
+                                  onChange={(e) =>
+                                    setPaymentMethod(e.target.value)
                                   }
-                                  beforeUpload={() => false}
-                                >
-                                  <Button
-                                    className="mt-1"
-                                    icon={<UploadOutlined />}
-                                  >
-                                    Select File
-                                  </Button>
-                                </Upload>
-                              </div>
-                            </>
-                          )}
+                                  className="mr-2"
+                                />
+                                Google Pay
+                              </label>
+                              <label className="mr-2">
+                                <input
+                                  type="radio"
+                                  name="paymentMethod"
+                                  value="Phone Pay"
+                                  checked={paymentMethod === "Phone Pay"}
+                                  onChange={(e) =>
+                                    setPaymentMethod(e.target.value)
+                                  }
+                                  className="mr-2"
+                                />
+                                Phone Pay
+                              </label>
+                            </div>
+
+                            <div className="flex items-center mb-3">
+                              <label className="mr-4">
+                                <input
+                                  type="radio"
+                                  name="paymentMethod"
+                                  value="Paytm"
+                                  checked={paymentMethod === "Paytm"}
+                                  onChange={(e) =>
+                                    setPaymentMethod(e.target.value)
+                                  }
+                                  className="mr-2"
+                                />
+                                Paytm
+                              </label>
+                              <label className="mr-2">
+                                <input
+                                  type="radio"
+                                  name="paymentMethod"
+                                  value="Bank Pay Account"
+                                  checked={paymentMethod === "Bank Pay Account"}
+                                  onChange={(e) =>
+                                    setPaymentMethod(e.target.value)
+                                  }
+                                  className="mr-2"
+                                />
+                                Bank Pay Account
+                              </label>
+                            </div>
+                          </>
                         </div>
 
                         <div className="sm:flex-shrink-0">

@@ -13,6 +13,7 @@ const UserROCFilings = () => {
   const [selectedROCFilings, setSelectedROCFilings] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [companyNames, setCompanyNames] = useState([]);
+  console.log("🚀 ~ UserROCFilings ~ companyNames:", companyNames)
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredROCFilings, setFilteredROCFilings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,13 +32,28 @@ const UserROCFilings = () => {
     };
   }, []);
 
+    // Filter companies with at least one company type set to true
+    // const filteredCompanies = companyNames.filter(company => 
+    //   Object.values(company.companyType).some(type => type === true)
+    // );
+     // Filter companies where soleProprietorship is true
+
+  
+  const filteredCompanies = companyNames.filter(company => 
+    company.companyType.limitedLiabilityPartnerships === true ||
+    company.companyType.privateLimitedCompany === true ||
+    company.companyType.publicLimitedCompany === true ||
+    company.companyType.onePersonCompany === true
+  );
+
+
   const fetchROCFilings = async () => {
     isMounted = true;
 
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/document/rocfilings/getAllROCFilings",
+        "http://localhost:5002/user/document/rocfilings/getAllROCFilings",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -71,7 +87,7 @@ const UserROCFilings = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyNameOnlyDetails",
+        "http://localhost:5002/user/company/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -103,7 +119,7 @@ const UserROCFilings = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/downloadROCFiling/${filename}`,
+        `http://localhost:5002/user/document/rocfilings/downloadROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -133,7 +149,7 @@ const UserROCFilings = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/previewROCFiling/${filename}`,
+        `http://localhost:5002/user/document/rocfilings/previewROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -393,9 +409,9 @@ const UserROCFilings = () => {
                 className="block w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
               >
                 <option value="">All Companies</option>
-                {companyNames.map((companyName) => (
-                  <option key={companyName} value={companyName}>
-                    {companyName}
+                {filteredCompanies.map((company) => (
+                  <option key={company.companyName} value={company.companyName}>
+                    {company.companyName}
                   </option>
                 ))}
               </select>
@@ -412,16 +428,15 @@ const UserROCFilings = () => {
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th className="border bg-gray-200 px-4 py-2">Sno</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the File
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Sno
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Description
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      File Name
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">Remarks</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the Uploader
+
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Uploaded By
                     </th>
                     <th className="border bg-gray-200 px-4 py-2">Preview</th>
                     <th className="border bg-gray-200 px-4 py-2">Download</th>
@@ -432,11 +447,11 @@ const UserROCFilings = () => {
                   {slicedHistoryC.length > 0 ? (
                     slicedHistoryC.map((ROCFilings, index) => (
                       <tr key={ROCFilings._id}>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {filteredROCFilings.length - startIndexC - index}
                         </td>
                         {/* <td className="border px-4 py-2"></td> */}
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {truncateText(
                             extractFilenameAfterUnderscore(
                               ROCFilings.files[0].filename
@@ -444,16 +459,11 @@ const UserROCFilings = () => {
                             20
                           )}
                         </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(ROCFilings.description, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(ROCFilings.remarks, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
+
+                        <td className="border px-4 py-2 text-center">
                           {truncateText(ROCFilings.name, 20)}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {ROCFilings.files[0].filename
                             .slice(-3)
                             .toLowerCase() === "pdf" && (
@@ -472,7 +482,7 @@ const UserROCFilings = () => {
                             </button>
                           )}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           <button
                             onClick={() =>
                               handleDownload(ROCFilings.files[0].filename)
@@ -487,7 +497,7 @@ const UserROCFilings = () => {
                               : "Download"}
                           </button>
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           <button
                             onClick={() => handleViewDetails(ROCFilings)}
                             className="bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded"

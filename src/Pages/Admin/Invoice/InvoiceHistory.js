@@ -30,7 +30,7 @@ const InvoiceHistory = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/invoice/viewbill",
+        "http://localhost:5002/admin/invoice/viewbill",
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -37,7 +37,7 @@ const UserGSTNotice = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/getGSTNotice",
+        "http://localhost:5002/admin/getGSTNotice",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -70,7 +70,7 @@ const UserGSTNotice = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/getCompanyNameOnlyDetails",
+        "http://localhost:5002/user/getCompanyNameOnlyDetails",
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -102,7 +102,7 @@ const UserGSTNotice = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/downloadGSTNotice/${filename}`,
+        `http://localhost:5002/admin/downloadGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -132,7 +132,7 @@ const UserGSTNotice = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/previewGSTNotice/${filename}`,
+        `http://localhost:5002/admin/previewGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -413,30 +413,27 @@ const UserGSTNotice = () => {
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th className="border bg-gray-200 px-4 py-2">Sno</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the File
+                    <th className="border bg-gray-200 px-4 py-2 text-center">Sno</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                     File Name
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Description
+                    
+                    <th className="border bg-gray-200 px-4 py-2 text-center">
+                      Uploaded By
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2">Remarks</th>
-                    <th className="border bg-gray-200 px-4 py-2">
-                      Name of the Uploader
-                    </th>
-                    <th className="border bg-gray-200 px-4 py-2">Preview</th>
-                    <th className="border bg-gray-200 px-4 py-2">Download</th>
-                    <th className="border bg-gray-200 px-4 py-2">View</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">Preview</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">Download</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">View</th>
                   </tr>
                 </thead>
                 <tbody>
                   {slicedHistoryC.length > 0 ? (
                     slicedHistoryC.map((GSTNotice, index) => (
                       <tr key={GSTNotice._id}>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {filteredGSTNotice.length - startIndexC - index}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {truncateText(
                             extractFilenameAfterUnderscore(
                               GSTNotice.files[0].filename
@@ -444,16 +441,11 @@ const UserGSTNotice = () => {
                             20
                           )}
                         </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(GSTNotice.description, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
-                          {truncateText(GSTNotice.remarks, 20)}
-                        </td>
-                        <td className="border px-4 py-2">
+                      
+                        <td className="border px-4 py-2 text-center">
                           {truncateText(GSTNotice.name, 20)}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           {GSTNotice.files[0].filename
                             .slice(-3)
                             .toLowerCase() === "pdf" && (
@@ -472,7 +464,7 @@ const UserGSTNotice = () => {
                             </button>
                           )}
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           <button
                             onClick={() =>
                               handleDownload(GSTNotice.files[0].filename)
@@ -487,7 +479,7 @@ const UserGSTNotice = () => {
                               : "Download"}
                           </button>
                         </td>
-                        <td className="border px-4 py-2">
+                        <td className="border px-4 py-2 text-center">
                           <button
                             onClick={() => handleViewDetails(GSTNotice)}
                             className="bg-transparent hover:bg-gray-500 text-gray-700 font-semibold hover:text-white py-2 px-4 border border-gray-500 hover:border-transparent rounded"

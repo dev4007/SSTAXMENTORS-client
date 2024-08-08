@@ -23,7 +23,7 @@ const HistoryPage = () => {
     isMounted = true;
     try {
       const token = localStorage.getItem("token");
-      const response = await axios.get("https://sstaxmentors-server.vercel.app/user/historyu", {
+      const response = await axios.get("http://localhost:5002/user/historyu", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

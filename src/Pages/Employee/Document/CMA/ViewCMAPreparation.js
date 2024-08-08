@@ -105,7 +105,7 @@ const ViewCMA = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        "http://localhost:5002/admin/client/manageclient",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -148,7 +148,7 @@ const ViewCMA = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/cma/getCMApreparation"
+          "http://localhost:5002/admin/settings/cma/getCMApreparation"
         );
         setFields(response.data);
       } catch (error) {
@@ -182,7 +182,7 @@ const ViewCMA = () => {
       const token = localStorage.getItem("token");
       // const selectedClient = client.email;
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/cma/getCMAAdmin",
+        "http://localhost:5002/admin/document/cma/getCMAAdmin",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -380,7 +380,7 @@ const ViewCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/previewCMApreparation/${filename}`,
+        `http://localhost:5002/user/document/cma/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -404,7 +404,7 @@ const ViewCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/downloadCMApreparation/${filename}`,
+        `http://localhost:5002/user/document/cma/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -450,7 +450,7 @@ const ViewCMA = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/cma/deleteCMAAdmin",
+        "http://localhost:5002/admin/document/cma/deleteCMAAdmin",
         { filename: modalContent.filename },
         {
           headers: {
