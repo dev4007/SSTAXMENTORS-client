@@ -19,7 +19,7 @@ const NotificationDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/previewnotification",
+        `${process.env.REACT_APP_API_URL}/admin/previewnotification`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -42,7 +42,7 @@ const NotificationDetailsInNewTab = () => {
   const handleDownload = async (filename) => {
     try {
       const authToken = localStorage.getItem("token");
-      const response = await axios.get("https://sstaxmentors-server.vercel.app/admin/download", {
+      const response = await axios.get(`${process.env.REACT_APP_API_URL}/admin/download`, {
         headers: {
           Authorization: `Bearer ${authToken}`,
         },

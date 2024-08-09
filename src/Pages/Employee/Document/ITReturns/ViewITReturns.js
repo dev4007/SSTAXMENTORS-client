@@ -105,7 +105,7 @@ const ViewITReturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -282,7 +282,7 @@ const ViewITReturns = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/itreturns/getITReturnsFields"
+          `${process.env.REACT_APP_API_URL}/admin/settings/itreturns/getITReturnsFields`
         );
         setFields(response.data);
       } catch (error) {
@@ -313,7 +313,7 @@ const ViewITReturns = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/itreturns/getITReturnsAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/itreturns/getITReturnsAdmin`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -405,7 +405,7 @@ const ViewITReturns = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/itreturns/deleteITReturnAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/itreturns/deleteITReturnAdmin`,
         { filename: modalContent.filename },
         {
           headers: {
@@ -460,7 +460,7 @@ const ViewITReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/itreturns/previewITReturns/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/itreturns/previewITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -484,7 +484,7 @@ const ViewITReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/itreturns/downloadITReturns/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/itreturns/downloadITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

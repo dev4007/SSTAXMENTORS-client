@@ -40,7 +40,7 @@ const UserCMA = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/document/cma/getAllCMApreparations",
+        `${process.env.REACT_APP_API_URL}/user/document/cma/getAllCMApreparations`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +78,7 @@ const UserCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyNameOnlyDetails",
+        `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -111,7 +111,7 @@ const UserCMA = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/downloadCMApreparation/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/cma/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -141,7 +141,7 @@ const UserCMA = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/previewCMApreparation/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/cma/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

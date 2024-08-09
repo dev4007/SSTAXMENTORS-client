@@ -30,7 +30,7 @@ const UserPaymentHistory = () => {
   const fetchUserPaymentHistory = async () => {
     try {
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/userPaymentHistory",
+        `${process.env.REACT_APP_API_URL}/user/userPaymentHistory`,
         {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you use JWT for authentication

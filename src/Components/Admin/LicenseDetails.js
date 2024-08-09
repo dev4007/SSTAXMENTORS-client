@@ -19,7 +19,7 @@ const LicenseDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/previewLicense/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/previewLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -40,7 +40,7 @@ const LicenseDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/downloadLicense/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/downloadLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

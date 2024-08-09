@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar/NavigationBar";
 
 function AddCompany() {
+
   let isMounted = true;
   let navigate = useNavigate();
   const [companyName, setCompanyName] = useState("");
@@ -30,6 +31,10 @@ function AddCompany() {
   const [officeNumber, setOfficeNumber] = useState("");
   const [subInputValues, setSubInputValues] = useState({});
   const [error, setError] = useState({});
+  const [gstFile, setGstFile] = useState(null);
+  const [panFile, setPanFile] = useState(null);
+  const [vanFile, setVanFile] = useState(null);
+  const [files, setFiles] = useState({});
   const formRef = useRef(null); // Create a ref for the form
   const [loading, setLoading] = useState(false);
 
@@ -42,7 +47,7 @@ function AddCompany() {
     onePersonCompany: " One Person Company",
   };
 
-  const handleCheckboxChange = (key) => {
+  const handleCheckboxChange = (key)=> {
     setCompanyType((prev) => {
       // Reset all to false and set the selected one to true
       const newCompanyType = Object.keys(prev).reduce((acc, curr) => {
@@ -52,7 +57,7 @@ function AddCompany() {
       return newCompanyType;
     });
   };
-  
+
 
   useEffect(() => {
     fetchCompanyDetails();
@@ -62,10 +67,10 @@ function AddCompany() {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/CompanyDetails",
+        `${process.env.REACT_APP_API_URL}/admin/client/CompanyDetails`,
         {
           headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${token}`
           },
         }
       );
@@ -85,16 +90,9 @@ function AddCompany() {
     }
   };
 
-  // const handleCheckboxChange = (event) => {
-  //   const { name, checked } = event.target;
-  //   setCompanyType((prevCompanyType) => ({
-  //     ...prevCompanyType,
-  //     [name]: checked,
-  //   }));
-  // };
   const handleFileUpload = (mainName, file) => {
     if (!file) return;
-  
+
     // Create an object to store file details
     const fileDetails = {
       fileName: file.name,  // Store the original file name
@@ -102,17 +100,23 @@ function AddCompany() {
       fileType: file.type,           // Store the file type
       fileSize: file.size,           // Store the file size
     };
-  
+
     // Update your state with the file details
     setSubInputValues((prevValues) => ({
       ...prevValues,
       [mainName]: {
         ...prevValues[mainName],
-        "doc": fileDetails,  // Use file.name or a custom key for unique identification
+        file_data: fileDetails,  // Use file.name or a custom key for unique identification
       },
     }));
+
+    setFiles((prevFiles) => ({
+      ...prevFiles,
+      [mainName]: file,
+    }));
+
   };
-  
+
 
 
   const handleCheckboxReset = () => {
@@ -153,6 +157,19 @@ function AddCompany() {
     setOfficeNumber(event.target.value);
   };
 
+
+  const handleGstFileUpload = (event) => {
+    setGstFile(event.target.files[0]);
+  };
+
+  const handlePanFileUpload = (event) => {
+    setPanFile(event.target.files[0]);
+  };
+
+  const handleVanFileUpload = (event) => {
+    setVanFile(event.target.files[0]);
+  };
+
   const handleReset = () => {
     // setSelectedClient('');
     setCompanyName("");
@@ -162,57 +179,66 @@ function AddCompany() {
     setSubInputValues([]);
     setCompanyTypeFiles(null);
     setDocumentFiles(null);
+    setGstFile(null);
+    setPanFile(null);
+    setVanFile(null);
+    setFiles({});
   };
+
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent the default form submission
+  
     const formData = new FormData();
     formData.append("companyName", companyName);
     formData.append("companyType", JSON.stringify(companyType));
     formData.append("address", JSON.stringify(address));
     formData.append("officeNumber", officeNumber);
     formData.append("subInputValues", JSON.stringify(subInputValues));
-
+    
+    // Append files to FormData
+    Object.entries(files).forEach(([key, file]) => {
+      if (file) {
+        formData.append(key, file); // Append each file with its field name
+      }
+    });
+  
+    // Append additional files if present
     if (companyTypeFiles) {
       Array.from(companyTypeFiles).forEach((file) => {
-        formData.append("companyTypeFiles", file);
+        formData.append("companyTypeFiles", file); // Append each file to a single field
       });
     }
-
-    // if (documentFiles) {
-    //   Array.from(documentFiles).forEach((file) => {
-    //     formData.append("documentFiles", file);
-    //   });
-    // }
-
+  
     try {
-      setLoading(true);
-
+      setLoading(true); // Start loading state
+  
       const authToken = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/company/addcompany",
+        `${process.env.REACT_APP_API_URL}/user/company/addcompany`,
         formData,
         {
           headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`, // Pass auth token for authorization
+            "Content-Type": "multipart/form-data", // Set the content type for file uploads
           },
         }
       );
-      if(response){
+  
+      if (response.status === 200) { // Check for successful response
         message.success("Successfully registered new company");
-        formRef.current.reset();
-        handleReset();
+        formRef.current.reset(); // Reset form
+        handleReset(); // Additional reset functions
         handleCheckboxReset(); // Reset the checkbox state
-        navigate('/user/userdashboard/view-company')
+        navigate('/user/userdashboard/view-company'); // Navigate to another page
       }
-
     } catch (error) {
       message.error("Error! Try again later");
-      // console.error('Error uploading files:', error);
+      console.error('Error uploading files:', error); // Log error details for debugging
     } finally {
-      setLoading(false);
+      setLoading(false); // End loading state
     }
   };
+  
 
   return (
     <div>
@@ -251,7 +277,7 @@ function AddCompany() {
                       checked={companyType[key]}
                       onChange={() => handleCheckboxChange(key)}
                     />
-                    {displayName} {/* Display name */}
+                    {displayName} 
                   </label>
                 </div>
               ))}
@@ -390,92 +416,62 @@ function AddCompany() {
               />
             </div>
             <div className="mb-4">
-            {companyDetails.map((mainName) => (
-              <div key={mainName._id} className="mb-2">
-                <p className="font-normal text-lg mb-5 text-gray-500">
-                  {mainName.mainName}:
-                </p>
-                {mainName.subInputs.map((subInput, index) => (
-                  <div key={index} className="flex mb-2">
-                    <div className="max-w-24 ml-6">{subInput}: </div>
-                    {subInput.toLowerCase() === "image" ? (
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          handleFileUpload(mainName.mainName, e.target.files[0])
-                        }
-                        className="border w-9/12 border-gray-300 px-3 py-2 ml-auto flex-shrink-0 rounded focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                      />
-                    ) : (
-                      <input
-                        type="text"
-                        value={
-                          subInputValues[mainName.mainName]?.[subInput]?.value || ""
-                        }
-                        onChange={(e) =>
-                          handleInputChange(
-                            mainName.mainName,
-                            subInput,
-                            e.target.value
-                          )
-                        }
-                        className="border w-9/12 border-gray-300 px-3 py-2 ml-auto flex-shrink-0 rounded focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                        placeholder={`Enter ${subInput}`}
-                      />
-                    )}
-                  </div>
-                ))}
-                {/* If you still want a separate file upload field for non-image files, you can include it here */}
-                <div className="flex mb-2">
-                  <div className="max-w-24 ml-6">Upload File:</div>
-                  <input
-                    type="file"
-                    onChange={(e) => handleFileUpload(mainName.mainName, e.target.files[0])}
-                    className="border w-9/12 border-gray-300 px-3 py-2 ml-auto flex-shrink-0 rounded focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
-                  />
-                </div>
-              </div>
-            ))}
-            
-          </div>
+              {companyDetails.map((mainName) => (
+                <div key={mainName._id} className="mb-2">
+                  <p className="font-normal text-lg mb-5 text-gray-500">
+                    {mainName.mainName}:
+                  </p>
+                  {mainName.subInputs.map((subInput, index) => (
+                    <div key={index} className="flex mb-2">
+                      <div className="max-w-24 ml-6">{subInput}: </div>
+                      {subInput.toLowerCase() === "image" ? (
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) =>
+                            handleFileUpload(mainName.mainName, e.target.files[0])
+                          }
+                          className="border w-9/12 border-gray-300 px-3 py-2 ml-auto flex-shrink-0 rounded focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
+                        />
+                      ) : (
+                        <input
+                          type="text"
+                          value={
+                            subInputValues[mainName.mainName]?.[subInput]?.value || ""
+                          }
+                          onChange={(e) =>
+                            handleInputChange(
+                              mainName.mainName,
+                              subInput,
+                              e.target.value
+                            )
+                          }
+                          className="border w-9/12 border-gray-300 px-3 py-2 ml-auto flex-shrink-0 rounded focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
+                          placeholder={`Enter ${subInput}`}
+                        />
+                      )}
+                    </div>
+                  ))}
 
-         
-     
-       {/*
-            <div className="mb-4">
-              <label
-                htmlFor="documentFiles"
-                className="flex font-regular text-lg my-6 text-gray-500"
-              >
-                Upload Documents Related to
-                <span>&nbsp;</span>
-                {companyDetails.map((mainName, index) => (
-                  <div key={mainName._id}>
-                    {index !== 0 && (
-                      <span className="text-gray-500">&nbsp;</span>
-                    )}
-                    <span className="text-gray-500">
-                      {mainName.mainName}
-                      {index !== companyDetails.length - 1 ? "," : ":"}
-                    </span>
+            
+                  <div className="flex mb-2">
+                    <div className="max-w-24 ml-6">Upload File:</div>
+                    <input
+                      type="file"
+                      onChange={(e) => handleFileUpload(mainName.mainName, e.target.files[0])}
+                      className="border w-9/12 border-gray-300 px-3 py-2 ml-auto flex-shrink-0 rounded focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200"
+                    />
                   </div>
-                ))}
-              </label>
-              <input
-                type="file"
-                id="documentFiles"
-                onChange={handleDocumentFileUpload}
-                multiple
-                className="border border-gray-300 px-3 py-2 rounded w-full"
-              />
+                </div>
+              ))}
+
             </div>
-              */}
+
             <div className="flex justify-center items-center mt-10 mb-5">
               <button
                 type="submit"
                 className="flex justify-center items-center w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                // onClick={handleSubmit}
+              // onClick={handleSubmit}
               >
                 {loading ? "Loading..." : "Submit"}
               </button>

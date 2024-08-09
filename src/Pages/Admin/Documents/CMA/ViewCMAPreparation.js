@@ -98,7 +98,7 @@ const ViewCMA = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ const ViewCMA = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/cma/getCMApreparation"
+          `${process.env.REACT_APP_API_URL}/admin/settings/cma/getCMApreparation`
         );
         setFields(response.data);
       } catch (error) {
@@ -168,7 +168,7 @@ const ViewCMA = () => {
       const token = localStorage.getItem("token");
       const selectedClient = client.email;
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/cma/getCMAAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/cma/getCMAAdmin`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -367,7 +367,7 @@ const ViewCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/previewCMApreparation/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/cma/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -391,7 +391,7 @@ const ViewCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/cma/downloadCMApreparation/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/cma/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -414,7 +414,7 @@ const ViewCMA = () => {
   //     try {
   //       const token = localStorage.getItem('token');
 
-  //         await axios.post('https://sstaxmentors-server.vercel.app/admin/deleteCMAAdmin', { filename }, {
+  //         await axios.post('http://localhost:5002/admin/deleteCMAAdmin', { filename }, {
   //           headers: {
   //             Authorization: `Bearer ${token}`,
   //           }
@@ -440,7 +440,7 @@ const ViewCMA = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/cma/deleteCMAAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/cma/deleteCMAAdmin`,
         { filename: modalContent.filename },
         {
           headers: {

@@ -7,15 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 
 function ViewKYC() {
-    const [clientData, setClientData] = useState([]);
-    const [filteredClientData, setFilteredClientData] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [isViewingClient, setIsViewingClient] = useState(false);
-    const [selectedClient, setSelectedClient] = useState(null);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [filterOption, setFilterOption] = useState("all");
-    const [searchQueryC, setSearchQueryC] = useState("");
-    const [currentPageClient, setCurrentPageClient] = useState(1);
+  const [clientData, setClientData] = useState([]);
+  const [filteredClientData, setFilteredClientData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isViewingClient, setIsViewingClient] = useState(false);
+  const [selectedClient, setSelectedClient] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterOption, setFilterOption] = useState("all");
+  const [searchQueryC, setSearchQueryC] = useState("");
+  const [currentPageClient, setCurrentPageClient] = useState(1);
   const [itemsPerPageClient] = useState(15); // Adjust items per page as needed
   const [currentPageITReturns, setCurrentPageITReturns] = useState(1);
   const [itemsPerPageITReturns] = useState(15);
@@ -26,62 +26,59 @@ function ViewKYC() {
   const [KYCData, setKYCData] = useState([]);
   const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
-        fetchClientData();
-      }, []);
-    
-      useEffect(() => {
-        filterClientData();
-      }, [clientData, searchQueryC, filterOption]);
-    
-      const fetchClientData = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const response = await axios.get(
-            "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setClientData(response.data.clients);
-        } catch (error) {
-          console.error("Error fetching clientData:", error);
+  useEffect(() => {
+    fetchClientData();
+  }, []);
+
+  useEffect(() => {
+    filterClientData();
+  }, [clientData, searchQueryC, filterOption]);
+
+  const fetchClientData = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      };
+      );
+      setClientData(response.data.clients);
+    } catch (error) {
+      console.error("Error fetching clientData:", error);
+    }
+  };
 
+  const filterClientData = () => {
+    let filteredClientData = clientData.filter((client) => {
+      const fullName = `${client.firstname} ${client.lastname}`.toLowerCase();
+      return (
+        fullName.includes(searchQueryC.toLowerCase()) ||
+        client.email.toLowerCase().includes(searchQueryC.toLowerCase())
+      );
+    });
 
-      const filterClientData = () => {
-        let filteredClientData = clientData.filter((client) => {
-          const fullName = `${client.firstname} ${client.lastname}`.toLowerCase();
-          return (
-            fullName.includes(searchQueryC.toLowerCase()) ||
-            client.email.toLowerCase().includes(searchQueryC.toLowerCase())
-          );
-        });
-    
-        if (filterOption !== "all") {
-          filteredClientData = filteredClientData.filter(
-            (client) => client.status === filterOption
-          );
-        }
-    
-        setFilteredClientData(filteredClientData);
-      };
-    
-      const handleClientBack = () => {
-        setIsViewingClient(false);
-        setSelectedClient(null);
-      };
-      const handleBack = () => {
-        
-          // If not viewing IT return details, go back to client table
-          handleClientBack();
-        
-      };
+    if (filterOption !== "all") {
+      filteredClientData = filteredClientData.filter(
+        (client) => client.status === filterOption
+      );
+    }
 
-      const totalPagesC = Math.ceil(clientData.length / itemsPerPageC);
+    setFilteredClientData(filteredClientData);
+  };
+
+  const handleClientBack = () => {
+    setIsViewingClient(false);
+    setSelectedClient(null);
+  };
+  const handleBack = () => {
+    // If not viewing IT return details, go back to client table
+    handleClientBack();
+  };
+
+  const totalPagesC = Math.ceil(clientData.length / itemsPerPageC);
 
   const paginateC = (pageNumber) => {
     setCurrentPageC(pageNumber);
@@ -153,7 +150,7 @@ function ViewKYC() {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/kyc/getKYCOfClient",
+        `${process.env.REACT_APP_API_URL}/admin/document/kyc/getKYCOfClient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -163,13 +160,13 @@ function ViewKYC() {
           },
         }
       );
-     console.log(response.data)
-      if (response.data && response.data.kycdata.length>0) {
-        console.log('Yes')
+      console.log(response.data);
+      if (response.data && response.data.kycdata.length > 0) {
+        console.log("Yes");
         setKYCData(response.data.kycdata);
         setSelectedClient(client);
         setIsViewingClient(true);
-        console.log(KYCData)
+        console.log(KYCData);
       } else {
         // Display an alert when there are no files available
         setIsViewingClient(false);
@@ -181,142 +178,159 @@ function ViewKYC() {
     }
   };
 
+  //   const handleBack = () => {
+  //     if (selectedITReturnIndex !== -1) {
+  //       // If viewing IT return details, go back to IT files table
+  //       handleITReturnBack();
+  //     } else {
+  //       // If not viewing IT return details, go back to client table
+  //       handleClientBack();
+  //     }
+  //   };
 
+  const handleFilter = (filter) => {
+    setFilterOption(filter);
+  };
 
-    //   const handleBack = () => {
-    //     if (selectedITReturnIndex !== -1) {
-    //       // If viewing IT return details, go back to IT files table
-    //       handleITReturnBack();
-    //     } else {
-    //       // If not viewing IT return details, go back to client table
-    //       handleClientBack();
-    //     }
-    //   };
-    
-      const handleFilter = (filter) => {
-        setFilterOption(filter);
-      };
-    
-      const handlePreview = async (filename, email) => {
-        try {
-            const authToken = localStorage.getItem("token");
-    
-            // Send request to fetch the file
-            const response = await axios.get(
-                `https://sstaxmentors-server.vercel.app/user/document/kyc/previewkycAE/${filename}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                    params: {
-                        email: email
-                    },
-                    responseType: "arraybuffer",
-                }
-            );
-    
-            // Create blob from response data
-            const blob = new Blob([response.data], { type: "application/pdf" });
-            const url = window.URL.createObjectURL(blob);
-    
-            // Open the file preview in a new tab
-            window.open(url, "_blank");
-    
-        } catch (error) {
-            console.error("Error previewing file:", error);
+  const handlePreview = async (filename, email) => {
+    try {
+      const authToken = localStorage.getItem("token");
+
+      // Send request to fetch the file
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/user/document/kyc/previewkycAE/${filename}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          params: {
+            email: email,
+          },
+          responseType: "arraybuffer",
         }
-    };
-    
-    const handleDownload = async (filename, email) => {
-        try {
-            const authToken = localStorage.getItem("token");
-    
-            // Send request to download the file
-            const response = await axios.get(
-                `https://sstaxmentors-server.vercel.app/user/document/kyc/downloadkycAE/${filename}`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                    params: {
-                        email: email
-                    },
-                    responseType: "arraybuffer",
-                }
-            );
-    
-            // Create blob from response data
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-    
-            // Create a link element to trigger the download
-            const link = document.createElement("a");
-            link.href = url;
-            link.setAttribute("download", filename);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-    
-        } catch (error) {
-            console.error("Error downloading file:", error);
-        }
-    };
-    
-    
-    
+      );
 
-  
-if (isViewingClient) {
+      // Create blob from response data
+      const blob = new Blob([response.data], { type: "application/pdf" });
+      const url = window.URL.createObjectURL(blob);
+
+      // Open the file preview in a new tab
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Error previewing file:", error);
+    }
+  };
+
+  const handleDownload = async (filename, email) => {
+    try {
+      const authToken = localStorage.getItem("token");
+
+      // Send request to download the file
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/user/document/kyc/downloadkycAE/${filename}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          params: {
+            email: email,
+          },
+          responseType: "arraybuffer",
+        }
+      );
+
+      // Create blob from response data
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      // Create a link element to trigger the download
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading file:", error);
+    }
+  };
+
+  if (isViewingClient) {
     return (
       <>
-
         <NavigationBar />
 
         <button
-                  onClick={handleBack}
-                  className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded m-5 ml-10"
-                >
-                  Back
-                </button>
-        
-       <div className="m-5">
-  {KYCData.map((item, index) => (
-    <div key={index} className={"m-5 shadow-lg rounded-md" + (index !== KYCData.length - 1 ? " border-r-2 border-gray-200" : "")}>
-      <div className="p-4 grid grid-cols-2 m-20 min-h-40 relative">
-        <div className="flex items-center">
-          <div className="absolute top-0 left-0 h-full bg-gray-200 " style={{ width: '1px', left: 'calc(33.33% - 0.5px)' }}></div>
-          <h5 className="font-semibold text-3xl text-blue-700">{item.category.toUpperCase()}</h5>
+          onClick={handleBack}
+          className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded m-5 ml-10"
+        >
+          Back
+        </button>
+
+        <div className="m-5">
+          {KYCData.map((item, index) => (
+            <div
+              key={index}
+              className={
+                "m-5 shadow-lg rounded-md" +
+                (index !== KYCData.length - 1
+                  ? " border-r-2 border-gray-200"
+                  : "")
+              }
+            >
+              <div className="p-4 grid grid-cols-2 m-20 min-h-40 relative">
+                <div className="flex items-center">
+                  <div
+                    className="absolute top-0 left-0 h-full bg-gray-200 "
+                    style={{ width: "1px", left: "calc(33.33% - 0.5px)" }}
+                  ></div>
+                  <h5 className="font-semibold text-3xl text-blue-700">
+                    {item.category.toUpperCase()}
+                  </h5>
+                </div>
+                <div>
+                  <p className="text-gray-600 mb-2">
+                    Filename:{" "}
+                    {item.filename.slice(item.filename.indexOf("_") + 1)}
+                  </p>
+                  <p className="text-gray-600 mb-2">
+                    Timestamp: {item.timestamp.slice(8, 10)}/
+                    {item.timestamp.slice(5, 7)}/{item.timestamp.slice(0, 4)}
+                  </p>
+                  <div className="mt-4">
+                    {item.filename.slice(-3).toLowerCase() === "pdf" && (
+                      <button
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg mr-2"
+                        onClick={() => {
+                          handlePreview(item.filename, item.userEmail);
+                        }}
+                      >
+                        Preview
+                      </button>
+                    )}
+                    <button
+                      className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg"
+                      onClick={() => {
+                        handleDownload(item.filename, item.userEmail);
+                      }}
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div>
-          <p className="text-gray-600 mb-2">Filename: {item.filename.slice(item.filename.indexOf('_') + 1)}</p>
-          <p className="text-gray-600 mb-2">Timestamp: {item.timestamp.slice(8, 10)}/{item.timestamp.slice(5, 7)}/{item.timestamp.slice(0, 4)}</p>
-          <div className="mt-4">
-          {item.filename
-                        .slice(-3)
-                        .toLowerCase() === "pdf" && (
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg mr-2" onClick={()=>{handlePreview(item.filename,item.userEmail)}}>Preview</button>)}
-            <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg" onClick={()=>{handleDownload(item.filename,item.userEmail)}}>Download</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  ))}
-</div>
-
-
-
-
-        </>
-        )
-    }
+      </>
+    );
+  }
 
   return (
     <div>
       <NavigationBar />
       <hr></hr>
       <div className="container mx-auto p-5 md:p-10">
-        <p className="font-bold text-3xl text-blue-500 mb-10">
-        KYC{" "}
-        </p>
+        <p className="font-bold text-3xl text-blue-500 mb-10">KYC </p>
         <div className="flex flex-wrap mt-2 md:mt-4">
           <div className="mb-2 md:mb-4 w-full">
             <div className="flex flex-col md:flex-row justify-between border border-t-3 border-b-3 border-gray-200 p-3 md:p-5">
@@ -463,11 +477,9 @@ if (isViewingClient) {
             </ul>
           </div>
         </div>
-        
       </div>
     </div>
-
-  )
+  );
 }
 
-export default ViewKYC
+export default ViewKYC;

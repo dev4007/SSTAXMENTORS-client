@@ -104,7 +104,7 @@ const ViewGSTNotices = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -282,7 +282,7 @@ const ViewGSTNotices = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/gstnotice/gstFields"
+          `${process.env.REACT_APP_API_URL}/admin/settings/gstnotice/gstFields`
         );
         setFields(response.data);
       } catch (error) {
@@ -313,7 +313,7 @@ const ViewGSTNotices = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/getGSTNoticesAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/gstnotice/getGSTNoticesAdmin`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -397,7 +397,7 @@ const ViewGSTNotices = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/deleteGSTNoticeAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/gstnotice/deleteGSTNoticeAdmin`,
         { filename: modalContent.filename },
         {
           headers: {
@@ -454,7 +454,7 @@ const ViewGSTNotices = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/gstnotice/previewGSTNotice/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/gstnotice/previewGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -478,7 +478,7 @@ const ViewGSTNotices = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/gstnotice/downloadGSTNotice/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/gstnotice/downloadGSTNotice/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

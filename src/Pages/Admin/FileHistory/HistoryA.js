@@ -21,7 +21,7 @@ const HistoryPage = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/history/api/history",
+        `${process.env.REACT_APP_API_URL}/admin/history/api/history`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

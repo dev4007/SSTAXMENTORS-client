@@ -16,7 +16,7 @@ const AddOnServices = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/addonservice/getAddOnServices",
+          `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/getAddOnServices`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -34,7 +34,7 @@ const AddOnServices = () => {
 
   const handleAddAddOnService = async () => {
     try {
-      await axios.post("https://sstaxmentors-server.vercel.app/admin/settings/addonservice/addNewAddOnService", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/admin/settings/addonservice/addNewAddOnService`, {
         name: newAddOnService,
       });
       setErrorMessage("");
@@ -43,7 +43,7 @@ const AddOnServices = () => {
       // Refresh add-on services list
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/addonservice/getAddOnServices",
+        `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/getAddOnServices`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -67,13 +67,13 @@ const AddOnServices = () => {
   const handleRemoveAddOnService = async (addOnServiceId) => {
     try {
       await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/addonservice/deleteAddOnService/${addOnServiceId}`
+       `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/deleteAddOnService/${addOnServiceId}`
       );
       setErrorMessage("");
       // Refresh add-on services list
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/addonservice/getAddOnServices",
+        `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/getAddOnServices`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -100,13 +100,13 @@ const AddOnServices = () => {
     });
     try {
       await axios.delete(
-        `https://sstaxmentors-server.vercel.app/admin/settings/addonservice/deleteSubService/${addOnServiceId}/${subServiceIndex}`
+       `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/deleteSubService/${addOnServiceId}/${subServiceIndex}`
       );
       setErrorMessage("");
       // Refresh add-on services list
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/addonservice/getAddOnServices",
+        `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/getAddOnServices`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,14 +134,14 @@ const AddOnServices = () => {
   const handleSubmitSubServices = async (addOnServiceId) => {
     try {
       await axios.post(
-        `https://sstaxmentors-server.vercel.app/admin/settings/addonservice/addSubServices/${addOnServiceId}`,
+       `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/addSubServices/${addOnServiceId}`,
         { subServices: newSubServices[addOnServiceId] }
       );
       setErrorMessage("");
       // Refresh add-on services list
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/settings/addonservice/getAddOnServices",
+        `${process.env.REACT_APP_API_URL}/admin/settings/addonservice/getAddOnServices`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

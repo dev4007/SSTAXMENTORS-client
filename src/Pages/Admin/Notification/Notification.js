@@ -38,7 +38,7 @@ const Notification = () => {
 
     try {
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/notification/sendnotification",
+        `${process.env.REACT_APP_API_URL}/admin/notification/sendnotification`,
         formData,
         {
           headers: {

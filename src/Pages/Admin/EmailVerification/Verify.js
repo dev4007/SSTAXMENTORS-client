@@ -19,7 +19,7 @@ function Verify() {
           // Send POST request to backend endpoint with the token
           const response = await axios.post(
             `${process.env.REACT_APP_API_URL}/user/verification/verify` ,
-            { token }
+            { token } 
           );
          
           if (response.status === 200) {

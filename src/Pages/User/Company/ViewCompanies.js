@@ -89,7 +89,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyDetails",
+        `${process.env.REACT_APP_API_URL}/user/company/getCompanyDetails`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -107,7 +107,7 @@ const ViewCompanies = () => {
       setCompanyDetails(response.data);
     } catch (error) {
       console.error("Error fetching company details:", error);
-      console.log("Error", error.response);
+    
       if (isMounted && error.response && error.response.status === 500) {
         alert("Session expired. Please login again.");
         navigate("/");
@@ -126,7 +126,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/company/previewCompanyFile/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/company/previewCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -147,7 +147,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/company/downloadCompanyFile/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/company/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -161,9 +161,11 @@ const ViewCompanies = () => {
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", filename);
-      document.body.appendChild(link);
+      document.body.appendChild(link)
+;
       link.click();
-      document.body.removeChild(link);
+      document.body.removeChild(link)
+;
     } catch (error) {
       console.error("Error downloading file:", error);
     }
@@ -178,7 +180,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/user/deleteCompany",
+        `${process.env.REACT_APP_API_URL}/user/deleteCompany`,
         { clientId: modalContent.companyId },
         {
           headers: {
@@ -228,9 +230,8 @@ const ViewCompanies = () => {
         >
           <button
             onClick={() => paginateC(i)}
-            className={`page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded ${
-              currentPageC === i ? "current-page" : ""
-            }`}
+            className={`page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded ${currentPageC === i ? "current-page" : ""
+              }`}
           >
             {i}
           </button>
@@ -267,11 +268,7 @@ const ViewCompanies = () => {
     companyDetails.length
   );
   const slicedHistoryC = companyDetails.slice(startIndexC, endIndexC);
-  console.log("🚀 ~ ViewCompanies ~ slicedHistoryC:", slicedHistoryC)
 
-  const gstNumber = slicedHistoryC?.[0]?.subInputValues.GST["GST Number"].value;
-  console.log("🚀 ~ ViewCompanies ~ gstNumber:", gstNumber)
-  
 
   return (
     <div className="bg-gray-100">
@@ -315,59 +312,104 @@ const ViewCompanies = () => {
               <span>{company.officeNumber || "Not Specified"}</span>
             </div>
             <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">
-                GST Number:
-              </span>
+              <span className="text-gray-500 font-semibold text-md mr-2">GST Number:</span>
               <span>{company?.subInputValues.GST["GST Number"].value}</span>
-            </div>
-            <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">
-                PAN Number:
-              </span>
-              <span>{company?.subInputValues.PAN["PAN Number"].value}</span>
-      
-      {console.log(company?.subInputValues.PAN.doc)}
-      
-             
-                  <div key={company?.subInputValues.PAN.doc} className="mt-2">
-                    
-                    <div className="mb-2">
-                      <span className="text-gray-500 font-semibold text-md mr-2">
-                        Filename:{" "}
-                      </span>
-                      <span>{getFileName(company?.subInputValues.PAN.doc.fileName)}</span>
-                    </div>
-                    <div className="mb-4">
-                      {company?.subInputValues.PAN.doc.fileType === "image/png" && (
-                        <button
-                          onClick={() => handlePreview(company?.subInputValues.PAN.doc.fileName)}
-                          className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                        >
-                          Preview {company?.subInputValues.PAN.doc.fileName}
-                        </button>
-                      )}
-                      <button
-                        onClick={() => handleDownload(company?.subInputValues.PAN.doc.fileName)}
-                        className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
-                      >
-                        Download
-                      </button>
-                    </div>
+
+              {company?.subInputValues?.GST?.file_data ?
+                <div key={company?.subInputValues.GST.file_data} className="mt-4">
+
+                  <div className="mb-2">
+                    <span className="text-gray-500 font-semibold text-md mr-2">
+                      Filename:{
+" "}
+                    </span>
+                    <span>{getFileName(company?.subInputValues.GST.file_data.fileName)}</span>
                   </div>
-            
+                  <div className="mb-4">
+              
+                      <button
+                        onClick={() => handlePreview(company?.subInputValues.GST.file_data.fileName)}
+                        className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                      >
+                        Preview
+                      </button>
+                  
+                    <button
+                      onClick={() => handleDownload(company?.subInputValues.GST.file_data.fileName)}
+                      className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+                : null}
+            </div>
+
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">PAN Number:</span>
+              <span>{company?.subInputValues.PAN["PAN Number"].value}</span>
+
+              {company?.subInputValues?.PAN?.file_data ?
+                <div key={company?.subInputValues.PAN.file_data} className="mt-4">
+
+                  <div className="mb-2">
+                    <span className="text-gray-500 font-semibold text-md mr-2">
+                      Filename:{
+" "}
+                    </span>
+                    <span>{getFileName(company?.subInputValues.PAN.file_data.fileName)}</span>
+                  </div>
+                  <div className="mb-4">
+                      <button
+                        onClick={() => handlePreview(company?.subInputValues.PAN.file_data.fileName)}
+                        className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                      >
+                        Preview
+                      </button>
+                    <button
+                      onClick={() => handleDownload(company?.subInputValues.PAN.file_data.fileName)}
+                      className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+                : null}
 
             </div>
             <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">
-                VAN Number:
-              </span>
+              <span className="text-gray-500 font-semibold text-md mr-2">VAN Number:</span>
               <span>{company?.subInputValues.VAN["VAN Number"].value}</span>
+              {company?.subInputValues?.VAN?.file_data ?
+                <div key={company?.subInputValues.VAN.file_data} className="mt-4">
+
+                  <div className="mb-2">
+                    <span className="text-gray-500 font-semibold text-md mr-2">
+                      Filename:{
+" "}
+                    </span>
+                    <span>{getFileName(company?.subInputValues.VAN.file_data.fileName)}</span>
+                  </div>
+                  <div className="mb-4">
+                      <button
+                        onClick={() => handlePreview(company?.subInputValues.VAN.file_data.fileName)}
+                        className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                      >
+                        Preview
+                      </button>
+                    <button
+                      onClick={() => handleDownload(company?.subInputValues.VAN.file_data.fileName)}
+                      className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
+                    >
+                      Download
+                    </button>
+                  </div>
+                </div>
+                : null}
             </div>
 
             {showMoreMap[company._id] && (
               <div className="mt-4 ">
-                
-             
 
                 <h4 className="text-lg font-semibold text-gray-800 mt-4">
                   Company Type Files:
@@ -376,7 +418,8 @@ const ViewCompanies = () => {
                   <div key={index} className="mt-2">
                     <div className="mb-2">
                       <span className="text-gray-500 font-semibold text-md mr-2">
-                        Filename:{" "}
+                        Filename:{
+" "}
                       </span>
                       <span>{getFileName(file.filename)}</span>
                     </div>
@@ -386,7 +429,7 @@ const ViewCompanies = () => {
                           onClick={() => handlePreview(file.filename)}
                           className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
                         >
-                          Preview 
+                          Preview
                         </button>
                       )}
                       <button
@@ -409,7 +452,7 @@ const ViewCompanies = () => {
           </div>
         ))}
         <ul className="pagination flex justify-center items-center my-4">
-          <li className={`page-item ${currentPageC === 1 ? "disabled" : ""}`}>
+          <li className={`page-item p-2 ${currentPageC === 1 ? "disabled" : ""}`}>
             <button
               onClick={() => paginateC(currentPageC - 1)}
               className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
@@ -419,9 +462,8 @@ const ViewCompanies = () => {
           </li>
           {renderPaginationButtonsC()}
           <li
-            className={`page-item ${
-              currentPageC === totalPagesC ? "disabled" : ""
-            }`}
+            className={`page-item p-2 ${currentPageC === totalPagesC ? "disabled" : ""
+              }`}
           >
             <button
               onClick={() => paginateC(currentPageC + 1)}
@@ -455,9 +497,8 @@ const ViewCompanies = () => {
 const getAddress = (address) => {
   if (!address) return "Not Specified";
   const { streetName, city, state, country, postalCode, landmark } = address;
-  return `${streetName}, ${city}, ${state}, ${country} - ${postalCode}, Landmark: ${
-    landmark || "Not Specified"
-  }`;
+  return `${streetName}, ${city}, ${state}, ${country} - ${postalCode}, Landmark: ${landmark || "Not Specified"
+    }`;
 };
 
 const getCompanyType = (companyType) => {

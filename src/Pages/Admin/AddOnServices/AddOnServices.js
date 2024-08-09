@@ -67,7 +67,7 @@ const AddOnServicePage = () => {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
+          `${process.env.REACT_APP_API_URL}/admin/client/getClients`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -183,7 +183,7 @@ const AddOnServicePage = () => {
       try {
         const authToken = localStorage.getItem("token");
         const response = await axios.get(
-          `https://sstaxmentors-server.vercel.app/admin/addonservice/getalladdonservices`,
+         `${process.env.REACT_APP_API_URL}/admin/addonservice/getalladdonservices`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -212,7 +212,7 @@ const AddOnServicePage = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.post(
-        `https://sstaxmentors-server.vercel.app/admin/addonservice/openService`,
+       `${process.env.REACT_APP_API_URL}/admin/addonservice/openService`,
         {
           serviceId: serviceId,
         },
@@ -250,7 +250,7 @@ const AddOnServicePage = () => {
     try {
       const authToken = localStorage.getItem("token");
       await axios.post(
-        `https://sstaxmentors-server.vercel.app/admin/addonservice/solveService`,
+       `${process.env.REACT_APP_API_URL}/admin/addonservice/solveService`,
         {
           serviceId: selectedServiceId,
         },
@@ -262,7 +262,7 @@ const AddOnServicePage = () => {
       );
 
       // Refresh the add-on services list
-      // const response = await axios.get(`https://sstaxmentors-server.vercel.app/admin/getaddonservices`, {
+      // const response = await axios.get(`http://localhost:5002/admin/getaddonservices`, {
       //   headers: {
       //     Authorization: `Bearer ${authToken}`,
       //   },
@@ -283,7 +283,7 @@ const AddOnServicePage = () => {
       setLoading(true);
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/getServiceDetails/${serviceId}`,
+       `${process.env.REACT_APP_API_URL}/admin/getServiceDetails/${serviceId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

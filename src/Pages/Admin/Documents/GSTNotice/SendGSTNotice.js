@@ -33,7 +33,7 @@ const SendGSTNotice = () => {
 
         // Fetch clients
         const clientsResponse = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/client/getClients",
+          `${process.env.REACT_APP_API_URL}/admin/client/getClients`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -56,7 +56,7 @@ const SendGSTNotice = () => {
 
       // Fetch companies based on the selected client
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
+        `${process.env.REACT_APP_API_URL}/admin/client/getCompanyNamesOfClient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -76,7 +76,7 @@ const SendGSTNotice = () => {
     const fetchGSTNoticeTypes = async () => {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/gstnotice/gstFields"
+          `${process.env.REACT_APP_API_URL}/admin/settings/gstnotice/gstFields`
         );
         setGSTNoticeTypes(response.data);
       } catch (error) {
@@ -176,7 +176,7 @@ const SendGSTNotice = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstnotice/sendGSTnotice",
+        `${process.env.REACT_APP_API_URL}/admin/document/gstnotice/sendGSTnotice`,
         dataForBackend,
         {
           headers: {
@@ -214,7 +214,7 @@ const SendGSTNotice = () => {
 
       // Fetch companies based on the selected client
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/getCompanyNamesOfClient",
+        `${process.env.REACT_APP_API_URL}/admin/client/getCompanyNamesOfClient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -56,7 +56,7 @@ const SupportTicket = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -224,7 +224,7 @@ const SupportTicket = () => {
       const token = localStorage.getItem("token");
       const selectedClient = client.email;
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/supportticket/getClientsSupportTickets?clientEmail=${selectedClient}`,
+       `${process.env.REACT_APP_API_URL}/admin/supportticket/getClientsSupportTickets?clientEmail=${selectedClient}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -294,7 +294,7 @@ const SupportTicket = () => {
       const token = localStorage.getItem("token");
       // Update ticket status to resolved
       await axios.patch(
-        `https://sstaxmentors-server.vercel.app/admin/supportticket/resolveSupportTicket/${ticketId}`,
+       `${process.env.REACT_APP_API_URL}/admin/supportticket/resolveSupportTicket/${ticketId}`,
         null,
         {
           headers: {
@@ -322,7 +322,7 @@ const SupportTicket = () => {
       const authToken = localStorage.getItem("token");
       console.log(fileId);
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/supportticket/previewSupportTicket/${fileId}`,
+       `${process.env.REACT_APP_API_URL}/user/supportticket/previewSupportTicket/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -343,7 +343,7 @@ const SupportTicket = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/supportticket/downloadSupportTicket/${fileId}`,
+       `${process.env.REACT_APP_API_URL}/user/supportticket/downloadSupportTicket/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -381,7 +381,7 @@ const SupportTicket = () => {
       // setSelectedSupportTicketIndex(index);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/supportticket/getSupportTicketUsingTicketid/${ticketId}`,
+       `${process.env.REACT_APP_API_URL}/admin/supportticket/getSupportTicketUsingTicketid/${ticketId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

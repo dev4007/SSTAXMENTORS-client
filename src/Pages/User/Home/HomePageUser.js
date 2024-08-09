@@ -24,7 +24,7 @@ function HomePageUser() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/user/home/api/clients-counts",
+          `${process.env.REACT_APP_API_URL}/user/home/api/clients-counts`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

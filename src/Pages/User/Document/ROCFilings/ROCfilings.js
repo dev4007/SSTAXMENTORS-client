@@ -13,7 +13,7 @@ const UserROCFilings = () => {
   const [selectedROCFilings, setSelectedROCFilings] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState("");
   const [companyNames, setCompanyNames] = useState([]);
-  console.log("🚀 ~ UserROCFilings ~ companyNames:", companyNames)
+
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredROCFilings, setFilteredROCFilings] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,7 +53,7 @@ const UserROCFilings = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/document/rocfilings/getAllROCFilings",
+        `${process.env.REACT_APP_API_URL}/user/document/rocfilings/getAllROCFilings`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,7 +87,7 @@ const UserROCFilings = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/user/company/getCompanyNameOnlyDetails",
+        `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -119,7 +119,7 @@ const UserROCFilings = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/downloadROCFiling/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/rocfilings/downloadROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -149,7 +149,7 @@ const UserROCFilings = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/previewROCFiling/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/rocfilings/previewROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

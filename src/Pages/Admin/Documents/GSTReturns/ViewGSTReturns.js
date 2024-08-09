@@ -98,7 +98,7 @@ const ViewGSTReturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -134,7 +134,7 @@ const ViewGSTReturns = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/gstreturns/getGSTReturnsFields"
+          `${process.env.REACT_APP_API_URL}/admin/settings/gstreturns/getGSTReturnsFields`
         );
         setFields(response.data);
       } catch (error) {
@@ -299,7 +299,7 @@ const ViewGSTReturns = () => {
       setLoading(true);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstreturns/getGSTReturnsAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/gstreturns/getGSTReturnsAdmin`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -380,7 +380,7 @@ const ViewGSTReturns = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/gstreturns/deleteGSTReturnAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/gstreturns/deleteGSTReturnAdmin`,
         { filename: modalContent.filename },
         {
           headers: {
@@ -434,7 +434,7 @@ const ViewGSTReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/gstreturns/previewGSTReturns/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/gstreturns/previewGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -458,7 +458,7 @@ const ViewGSTReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/gstreturns/downloadGSTReturns/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/gstreturns/downloadGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

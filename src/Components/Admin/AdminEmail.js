@@ -14,7 +14,7 @@ function AdminEmailComponent() {
     async function fetchEmails() {
       try {
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/getAdminsEmail"
+          `${process.env.REACT_APP_API_URL}/admin/getAdminsEmail`
         );
         setEmails(response.data.adminEmails);
         // setSelectedEmail(response.data.email);
@@ -49,7 +49,7 @@ function AdminEmailComponent() {
 
   const handleSubmit = async () => {
     try {
-      await axios.post("https://sstaxmentors-server.vercel.app/admin/emails", {
+      await axios.post(`${process.env.REACT_APP_API_URL}/admin/emails`, {
         email: newEmail,
         password: newPassword,
       });
@@ -64,7 +64,7 @@ function AdminEmailComponent() {
     if (selected !== selectedEmail) {
       try {
         const response = await axios.post(
-          "https://sstaxmentors-server.vercel.app/admin/selectAdminsEmail",
+         `${process.env.REACT_APP_API_URL}/admin/selectAdminsEmail`,
           {
             email: selected,
           }

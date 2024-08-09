@@ -105,7 +105,7 @@ const RocFilings = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/client/manageclient",
+        `${process.env.REACT_APP_API_URL}/admin/client/manageclient`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -149,7 +149,7 @@ const RocFilings = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "https://sstaxmentors-server.vercel.app/admin/settings/rocfilings/ROCfilingsfields"
+          `${process.env.REACT_APP_API_URL}/admin/settings/rocfilings/ROCfilingsfields`
         );
         setFields(response.data);
       } catch (error) {
@@ -181,7 +181,7 @@ const RocFilings = () => {
       // console.log(client.email);
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        "https://sstaxmentors-server.vercel.app/admin/document/rocfilings/getROCFilingsAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/rocfilings/getROCFilingsAdmin`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -408,7 +408,7 @@ const RocFilings = () => {
     try {
       const token = localStorage.getItem("token");
       await axios.post(
-        "https://sstaxmentors-server.vercel.app/admin/document/rocfilings/deleteROCFilingAdmin",
+        `${process.env.REACT_APP_API_URL}/admin/document/rocfilings/deleteROCFilingAdmin`,
         { filename: modalContent.filename },
         {
           headers: {
@@ -465,7 +465,7 @@ const RocFilings = () => {
       const authToken = localStorage.getItem("token");
 
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/previewROCFiling/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/rocfilings/previewROCFiling/${filename}`,
 
         {
           headers: {
@@ -488,7 +488,7 @@ const RocFilings = () => {
       const authToken = localStorage.getItem("token");
 
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/document/rocfilings/downloadROCFiling/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/document/rocfilings/downloadROCFiling/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

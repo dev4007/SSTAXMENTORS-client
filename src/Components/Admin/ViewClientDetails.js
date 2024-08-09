@@ -26,7 +26,7 @@ const ClientDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/previewCompanyFile/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/previewCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -55,7 +55,7 @@ const ClientDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/user/downloadCompanyFile/${filename}`,
+       `${process.env.REACT_APP_API_URL}/user/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

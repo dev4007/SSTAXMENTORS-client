@@ -19,7 +19,7 @@ const GSTReturnDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/previewGSTReturns/${filename}`,
+       `${process.env.REACT_APP_API_URL}/admin/previewGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -43,7 +43,7 @@ const GSTReturnDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `https://sstaxmentors-server.vercel.app/admin/downloadGSTReturns/${filename}`,
+       `${process.env.REACT_APP_API_URL}/admin/downloadGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
