@@ -23,10 +23,6 @@ const UserCMA = () => {
   const [currentPageC, setCurrentPageC] = useState(1);
   const [itemsPerPageC, setItemsPerPageC] = useState(50);
 
-    // Filter companies with at least one company type set to true
-    const filteredCompanies = companyNames.filter(company => 
-      Object.values(company.companyType).some(type => type === true)
-    );
   useEffect(() => {
     fetchCMA();
     fetchCompanyNames();
@@ -40,7 +36,7 @@ const UserCMA = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/document/cma/getAllCMApreparations`,
+       `${process.env.REACT_APP_API_URL}/user/document/cma/getAllCMApreparations`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,7 +74,7 @@ const UserCMA = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
+       `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -111,7 +107,7 @@ const UserCMA = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/cma/downloadCMApreparation/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/document/cma/downloadCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -141,7 +137,7 @@ const UserCMA = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/cma/previewCMApreparation/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/document/cma/previewCMApreparation/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -398,9 +394,9 @@ const UserCMA = () => {
                 className="block w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
               >
                 <option value="">All Companies</option>
-                {filteredCompanies.map((company) => (
-                  <option key={company.companyName} value={company.companyName}>
-                    {company.companyName}
+                {companyNames.map((companyName) => (
+                  <option key={companyName} value={companyName}>
+                    {companyName}
                   </option>
                 ))}
               </select>
@@ -417,25 +413,17 @@ const UserCMA = () => {
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th className="border bg-gray-200 px-4 py-2 text-center">
-                      Sno
-                    </th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">Sno</th>
                     <th className="border bg-gray-200 px-4 py-2 text-center">
                       File Name
                     </th>
-
+                   
                     <th className="border bg-gray-200 px-4 py-2 text-center">
-                      Uploaded By
+                     Uploaded By
                     </th>
-                    <th className="border bg-gray-200 px-4 py-2 text-center">
-                      Preview
-                    </th>
-                    <th className="border bg-gray-200 px-4 py-2 text-center">
-                      Download
-                    </th>
-                    <th className="border bg-gray-200 px-4 py-2 text-center">
-                      View
-                    </th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">Preview</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">Download</th>
+                    <th className="border bg-gray-200 px-4 py-2 text-center">View</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -453,7 +441,7 @@ const UserCMA = () => {
                             20
                           )}
                         </td>
-
+                       
                         <td className="border px-4 py-2 text-center">
                           {truncateText(CMA.name, 20)}
                         </td>

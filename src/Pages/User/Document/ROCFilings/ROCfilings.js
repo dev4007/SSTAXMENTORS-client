@@ -87,7 +87,7 @@ const UserROCFilings = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
+        `${process.env.REACT_APP_API_URL}/user/company/getCompanyRCODetails`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,

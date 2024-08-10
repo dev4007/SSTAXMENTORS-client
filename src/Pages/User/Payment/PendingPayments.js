@@ -367,6 +367,7 @@ const PendingPayment = () => {
                       Due Date: {formattedDueDate}
                     </p>
 
+                   
                     <button
                       className="bg-blue-500 text-white py-2 px-10 rounded mt-4"
                       onClick={() => handlePay(order)}

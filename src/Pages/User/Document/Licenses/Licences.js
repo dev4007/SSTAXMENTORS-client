@@ -23,11 +23,6 @@ const UserLicenses = () => {
   const [currentPageC, setCurrentPageC] = useState(1);
   const [itemsPerPageC, setItemsPerPageC] = useState(50);
 
-     // Filter companies with at least one company type set to true
-     const filteredCompanies = companyNames.filter(company => 
-      Object.values(company.companyType).some(type => type === true)
-    );
-  
   useEffect(() => {
     fetchLicenses();
     fetchCompanyNames();
@@ -41,7 +36,7 @@ const UserLicenses = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/document/license/getAllLicenses`,
+       `${process.env.REACT_APP_API_URL}/user/document/license/getAllLicenses`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -106,7 +101,7 @@ const UserLicenses = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/license/downloadLicense/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/document/license/downloadLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -136,7 +131,7 @@ const UserLicenses = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/license/previewLicense/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/document/license/previewLicense/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -397,9 +392,9 @@ const UserLicenses = () => {
                 className="block w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
               >
                 <option value="">All Companies</option>
-                {filteredCompanies.map((company) => (
-                  <option key={company.companyName} value={company.companyName}>
-                    {company.companyName}
+                {companyNames.map((companyName) => (
+                  <option key={companyName} value={companyName}>
+                    {companyName}
                   </option>
                 ))}
               </select>
@@ -416,13 +411,13 @@ const UserLicenses = () => {
               <table className="w-full table-auto border-collapse border border-gray-300">
                 <thead>
                   <tr>
-                    <th className="border bg-gray-200 px-4 py-2 text-center">Sno</th>
-                    <th className="border bg-gray-200 px-4 py-2 text-center">
-                     File Name
+                  <th className="border bg-gray-200 px-4 py-2 text-center">Sno</th>
+                  <th className="border bg-gray-200 px-4 py-2 text-center">
+                    File Name
                     </th>
-                  
+                   
                     <th className="border bg-gray-200 px-4 py-2 text-center">
-                    Uploaded File
+                      Uploaded By
                     </th>
                     <th className="border bg-gray-200 px-4 py-2 text-center">Preview</th>
                     <th className="border bg-gray-200 px-4 py-2 text-center">Download</th>
@@ -444,7 +439,7 @@ const UserLicenses = () => {
                             20
                           )}
                         </td>
-                       
+                  
                         <td className="border px-4 py-2 text-center">
                           {truncateText(Licenses.name, 20)}
                         </td>

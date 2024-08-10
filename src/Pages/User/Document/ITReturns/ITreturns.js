@@ -13,9 +13,7 @@ const UserITReturns = () => {
   const [loadingDownload, setLoadingDownload] = useState({});
   const [selectedITReturn, setSelectedITReturn] = useState(null);
   const [selectedCompany, setSelectedCompany] = useState("");
-  
   const [companyNames, setCompanyNames] = useState([]);
- 
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredITReturns, setFilteredITReturns] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,14 +22,6 @@ const UserITReturns = () => {
   const [showAlert, setShowAlert] = useState(false);
   const [currentPageC, setCurrentPageC] = useState(1);
   const [itemsPerPageC, setItemsPerPageC] = useState(50);
-
-    // Filter companies with at least one company type set to true
-    const filteredCompanies = companyNames.filter(company => 
-      Object.values(company.companyType).some(type => type === true)
-    );
-    console.log("🚀 ~ UserITReturns ~ filteredCompanies:", filteredCompanies)
-   
-
 
   useEffect(() => {
     fetchITReturns();
@@ -46,7 +36,7 @@ const UserITReturns = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/document/itreturns/getITReturns`,
+         `${process.env.REACT_APP_API_URL}/user/document/itreturns/getITReturns`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -80,7 +70,7 @@ const UserITReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
+         `${process.env.REACT_APP_API_URL}/user/company/getCompanyNameOnlyDetails`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -113,7 +103,7 @@ const UserITReturns = () => {
       setLoadingDownload({ ...loadingDownload, [filename]: true });
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/itreturns/downloadITReturns/${filename}`,
+         `${process.env.REACT_APP_API_URL}/user/document/itreturns/downloadITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -143,7 +133,7 @@ const UserITReturns = () => {
 
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/itreturns/previewITReturns/${filename}`,
+         `${process.env.REACT_APP_API_URL}/user/document/itreturns/previewITReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -186,17 +176,15 @@ const UserITReturns = () => {
   const handleCompanyChange = (event) => {
     setSelectedCompany(event.target.value);
     filterITReturns(event.target.value);
-
   };
+
   const filterITReturns = (company) => {
- 
     if (company === "") {
       setFilteredITReturns(itReturns);
     } else {
       const filtered = itReturns.filter(
         (itReturn) => itReturn.selectedClientGroup === company
       );
-
       setFilteredITReturns(filtered);
     }
   };
@@ -305,7 +293,6 @@ const UserITReturns = () => {
     filteredITReturns.length
   );
   const slicedHistoryC = filteredITReturns.slice(startIndexC, endIndexC);
- 
 
   return (
     <div>
@@ -400,21 +387,22 @@ const UserITReturns = () => {
           </div>
         ) : (
           <div className="mt-4 mx-5">
-          <label className="block mb-2">
-          <p className="text-xl text-gray-600">Select Company:</p>
-          <select
-            value={selectedCompany}
-            onChange={handleCompanyChange}
-            className="block w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
-          >
-            <option value="">All Companies</option>
-            {filteredCompanies.map((company) => (
-              <option key={company.companyName} value={company.companyName}>
-                {company.companyName}
-              </option>
-            ))}
-          </select>
-        </label>
+            <label className="block mb-2 ">
+              <p className="text-xl text-gray-600">Select Company:</p>
+              <select
+                value={selectedCompany}
+                onChange={handleCompanyChange}
+                className="block w-full border border-gray-300 rounded-md px-3 py-2 mt-1 focus:outline-none focus:border-blue-500"
+              >
+                <option value="">All Companies</option>
+                {companyNames.map((companyName) => (
+                  <option key={companyName} value={companyName}>
+                    {companyName}
+                  </option>
+                ))}
+              </select>
+            </label>
+
             <input
               type="text"
               value={searchQuery}
@@ -428,9 +416,8 @@ const UserITReturns = () => {
                   <tr>
                     <th className="border bg-gray-200 px-4 py-2 text-center">Sno</th>
                     <th className="border bg-gray-200 px-4 py-2 text-center">
-                    File Name
+                     File Name
                     </th>
-                    
                     <th className="border bg-gray-200 px-4 py-2 text-center">
                       Uploaded By
                     </th>

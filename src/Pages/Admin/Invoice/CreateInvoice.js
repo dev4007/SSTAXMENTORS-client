@@ -608,7 +608,7 @@ const CreatePaymentBill = () => {
             <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
               {/* <div className="max-w-2xl  w-full bg-white p-8 rounded-md shadow-md"> */}
               <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
-                CREATE PAYMENT BILL{" "}
+                CREATE PAYMENT BILL
               </p>
               {/* {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>} */}
 
