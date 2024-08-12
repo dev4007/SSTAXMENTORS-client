@@ -10,6 +10,7 @@ const RegistrationForm = () => {
   let navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
+  console.log("🚀 ~ RegistrationForm ~ formData:", formData)
 
   const nextStep = () => {
     setStep(step + 1);
@@ -20,17 +21,14 @@ const RegistrationForm = () => {
   };
 
   const submitForm = async () => {
-    console.log("Form submitted:", formData); // Log the form data
-    const allFormData = JSON.parse(localStorage.getItem("formData"));
-    console.log("All form data:", allFormData);
-    // Handle submission to a server or perform other actions
-
+    const allFormData = JSON.parse(localStorage.getItem("formData")) || {};
+    const combinedData = { ...allFormData, ...formData };
     try {
-      await axios.post(`${process.env.REACT_APP_API_URL}/user/registration/register`, formData);
+      await axios.post(`${process.env.REACT_APP_API_URL}/user/registration/register`, combinedData);
       message.info("Check your mail inbox, Verify your email");
       const role = localStorage.getItem("role");
       if (role === "user") {
-        navigate("/");
+        navigate("/thank-you");
       }
       // console.log('Form data sent successfully!');
     } catch (error) {

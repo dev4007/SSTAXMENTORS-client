@@ -11,12 +11,10 @@ import moment from "moment";
 const PendingPayment = () => {
   const [orders, setOrders] = useState([]);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [showPaymentStatus, setShowPaymentStatus] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState("");
+
   const [transactionId, setTransactionId] = useState("");
   const [amountPaid, setAmountPaid] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
-
 
   const [qrCodeSrc, setQRCodeSrc] = useState("");
   const [showFullDescription, setShowFullDescription] = useState(false);
@@ -28,40 +26,10 @@ const PendingPayment = () => {
   const navigate = useNavigate();
   let isMounted = true;
 
-  const [paymentHistory, setPaymentHistory] = useState([]);
-  console.log("🚀 ~ PendingPayment ~ paymentHistory:", paymentHistory)
-
-  useEffect(() => {
-    const fetchUserPaymentHistory = async () => {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_URL}/user/userPaymentHistory`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`, // Assuming you use JWT for authentication
-        },
-      }
-    );
-    setPaymentHistory(response.data);
-    };
-
-    fetchUserPaymentHistory();
-  }, []);
-
-
-
   const fetchData = async () => {
     try {
       const token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
-
-      const userResponse = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/profile/profile`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
 
       const billResponse = await axios.post(
         `${process.env.REACT_APP_API_URL}/user/payment/viewBill`,
@@ -72,9 +40,8 @@ const PendingPayment = () => {
           },
         }
       );
-
-      if (billResponse.data.temp && billResponse.data.temp.length > 0) {
-        const newOrders = billResponse.data.temp.map((bill) => ({
+      if (billResponse.data.payments) {
+        const newOrders = billResponse.data.payments.map((bill) => ({
           _id: bill._id,
           invoiceId: bill.invoiceId,
           amount: bill.amount,
@@ -83,11 +50,15 @@ const PendingPayment = () => {
           duedate: bill.duedate,
           description: bill.description,
           paymentMethod: bill.paymentMethod,
-
           remainingTime: calculateRemainingTime(bill.duedate),
+          transactions: bill.transactions
+            ? bill.transactions.map((pay) => ({
+                status: pay.status,
+              }))
+            : [],
         }));
+
         setOrders(newOrders);
-        // console.log(newOrders)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -102,9 +73,6 @@ const PendingPayment = () => {
 
   useEffect(() => {
     fetchData();
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   useEffect(() => {
@@ -150,7 +118,7 @@ const PendingPayment = () => {
   const handlePay = (order) => {
     setSelectedOrder(order);
     setAmountPaid(order.amount);
-    setShowPaymentStatus(false);
+
     const modal = document.getElementById("qrCodeModal");
     if (modal) {
       modal.classList.add("show");
@@ -158,9 +126,7 @@ const PendingPayment = () => {
     }
   };
 
-  const handleProceed = () => {
-    setShowPaymentStatus(true);
-  };
+
 
   const handleCancel = () => {
     const modal = document.getElementById("qrCodeModal");
@@ -169,12 +135,10 @@ const PendingPayment = () => {
       modal.style.display = "none";
     }
     setSelectedOrder(null);
-    setShowPaymentStatus(false);
-    setPaymentStatus("");
+
     setTransactionId("");
     setAmountPaid("");
     setPaymentMethod("");
-  
   };
 
   const handleDone = () => {
@@ -184,26 +148,20 @@ const PendingPayment = () => {
       modal.style.display = "none";
     }
     setSelectedOrder(null);
-    setShowPaymentStatus(false);
-    setPaymentStatus("");
     setTransactionId("");
     setAmountPaid("");
     setPaymentMethod("");
-
+    fetchData();
   };
 
   const handleSubmit = async () => {
     try {
       const token =
         localStorage.getItem("token") || sessionStorage.getItem("token");
-      if (paymentStatus === "success") {
-        if (
-          !transactionId ||
-          !amountPaid ||
-          !paymentMethod 
-        ) {
+    
+        if (!amountPaid || !paymentMethod) {
           message.error(
-            "Please provide transaction ID, amount paid, and upload file"
+            "Please provide , amount paid, and upload file"
           );
           return;
         }
@@ -218,8 +176,6 @@ const PendingPayment = () => {
         formData.append("payment", selectedOrder._id);
         // formData.append("payment", selectedOrder._id);
         formData.append("paymentMethod", paymentMethod);
-
-  
 
         setLoader(true);
         const response = await axios.post(
@@ -237,12 +193,7 @@ const PendingPayment = () => {
         message.success("Transaction submitted successfully");
         setLoader(false);
         // window.location.reload();
-      } else if (paymentStatus === "failure") {
-        message.error("Try Again");
-        setShowPaymentStatus(false);
-        setLoader(false);
-        setSelectedOrder(selectedOrder);
-      }
+    
     } catch (error) {
       console.error("Error submitting form:", error);
       message.error("something wrong");
@@ -322,7 +273,7 @@ const PendingPayment = () => {
   const startIndexC = (currentPageC - 1) * itemsPerPageC;
   const endIndexC = Math.min(startIndexC + itemsPerPageC, unpaidBills.length);
   const slicedHistoryC = unpaidBills.slice(startIndexC, endIndexC);
-  // console.log("slicedHistoryC: ", slicedHistoryC);
+  console.log("slicedHistoryC: ", slicedHistoryC);
   const toggleDescription = () => {
     setShowFullDescription(!showFullDescription);
   };
@@ -367,16 +318,21 @@ const PendingPayment = () => {
                       Due Date: {formattedDueDate}
                     </p>
 
-                   
-                    <button
-                      className="bg-blue-500 text-white py-2 px-10 rounded mt-4"
-                      onClick={() => handlePay(order)}
-                    >
-                      Pay
-                    </button>
-
-                 
-
+                    {order.transactions?.[0]?.status === "Pending" ? (
+                      <button
+                        className="bg-blue-500 text-white py-2 px-10 rounded mt-4 "
+                        disabled
+                      >
+                        Pending
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-blue-500 text-white py-2 px-10 rounded mt-4"
+                        onClick={() => handlePay(order)}
+                      >
+                        Pay
+                      </button>
+                    )}
                   </div>
                   <div className="border-l-2 border-gray-200 pl-4">
                     <p className="text-xl font-semibold">
@@ -478,25 +434,7 @@ const PendingPayment = () => {
                       </div>
                       <div className="mt-2 sm:flex lg:justify-evenly">
                         <div className="mt-2 sm:mt-0 sm:ml-4">
-                          <div className="mb-3">
-                            <label
-                              htmlFor="paymentStatus"
-                              className="block text-sm font-medium text-gray-700"
-                            >
-                              Payment Status
-                            </label>
-                            <select
-                              className="mt-1 block w-full border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                              id="paymentStatus"
-                              onChange={(e) => setPaymentStatus(e.target.value)}
-                            >
-                              <option value="">Select</option>
-                              <option value="success">Success</option>
-                              <option value="failure">Failure</option>
-                            </select>
-                          </div>
-
-                          <>
+                          
                             <div className="mb-3">
                               <label
                                 htmlFor="transactionId"
@@ -586,7 +524,7 @@ const PendingPayment = () => {
                                 Bank Pay Account
                               </label>
                             </div>
-                          </>
+                   
                         </div>
 
                         <div className="sm:flex-shrink-0">

@@ -121,19 +121,13 @@ const ClientDetailsInNewTab = () => {
                     <strong>Address:</strong> {clientData.address}
                   </p>
                   <p class="mb-2 text-lg">
-                    <strong>Street Name:</strong> {clientData.streetname}
-                  </p>
-                  <p class="mb-2 text-lg">
-                    <strong>City:</strong> {clientData.city}
-                  </p>
-                  <p class="mb-2 text-lg">
                     <strong>Is Verified:</strong>{" "}
                     {clientData.isverified ? "Yes" : "No"}
                   </p>
                 </div>
                 <div>
                   <p class="mb-2 text-lg">
-                    <strong>Landmark:</strong> {clientData.landmark}
+                    <strong>Landmark:</strong> {clientData.landmark ? clientData.landmark : "Not Available"} 
                   </p>
                   <p class="mb-2 text-lg">
                     <strong>State:</strong> {clientData.state}

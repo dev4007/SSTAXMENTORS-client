@@ -24,8 +24,8 @@ function Verify() {
          
           if (response.status === 200) {
             setVerificationStatus("success");
-            const { token, userType } = response.data;
-            saveLoginToken(token, userType);
+            // const { token, userType } = response.data;
+            // saveLoginToken(token, userType);
             // message.success("Your email has been verified successfully!");
           } else {
             console.error("Failed to send verification request.");
@@ -42,14 +42,14 @@ function Verify() {
   }, [token]); // Re-run the effect if token changes
 
   const handleLoginClick = () => {
-    navigate("/user/userdashboard"); // Use navigate for routing
+    navigate("/login"); // Use navigate for routing
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-blue-500 to-purple-500">
       <div className="max-w-md mx-auto p-8 rounded-lg shadow-lg bg-white">
         <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
-          Email Verified!
+          Email Verification!!
         </h2>
         <p className="text-lg text-gray-600 mb-8">
           {verificationStatus === "success"

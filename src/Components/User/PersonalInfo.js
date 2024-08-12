@@ -1,24 +1,40 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const PersonalInfo = ({ formData, setFormData, nextStep }) => {
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const formik = useFormik({
+    initialValues: {
+      firstName: formData.firstName || "",
+      lastName: formData.lastName || "",
+      dob: formData.dob || "",
+      state: formData.state || "Telangana",
+      address: formData.address || "",
+      landmark: formData.landmark || "",
+      country:"India",
+    },
+    validationSchema: Yup.object({
+      firstName: Yup.string().required("First Name is required"),
+      lastName: Yup.string().required("Last Name is required"),
+      dob: Yup.date().required("Date of Birth is required").nullable(),
+      state: Yup.string().required("State is required"),
+      address: Yup.string().required("Address is required"),
+      landmark: Yup.string(),
+      country: Yup.string().required("Country is required"),
+    }),
+    onSubmit: (values) => {
+      setFormData(values);
+      localStorage.setItem("formData", JSON.stringify(values));
+      nextStep();
+    },
+  });
 
   useEffect(() => {
-    // Initialize formData.country with "India" if it's not already set
-    if (!formData.country) {
-      setFormData({ ...formData, country: "India" });
+    if (!formik.values.country) {
+      formik.setFieldValue("country", "India");
     }
   }, []);
 
-  const saveDataAndProceed = () => {
-    localStorage.setItem("formData", JSON.stringify(formData));
-    nextStep();
-  };
-
-  // Array of states in India
   const statesInIndia = [
     "Andhra Pradesh",
     "Arunachal Pradesh",
@@ -48,145 +64,133 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
     "Uttar Pradesh",
     "Uttarakhand",
     "West Bengal",
-  ].sort(); // Sort states in alphabetical order
+  ].sort();
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
       <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
-        <h2 className="text-3xl mb-10 font-semibold  text-center bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
+        <h2 className="text-3xl mb-10 font-semibold text-center bg-gradient-to-r from-blue-500 to-purple-500 text-transparent bg-clip-text">
           REGISTRATION FORM
         </h2>
-
-        {/* <hr className='my-6'></hr> */}
         <h2 className="text-2xl font-bold mb-6">Personal Information</h2>
 
-        <label className="block mb-4">
-          First Name:
-          <input
-            type="text"
-            id="firstName"
-            name="firstName"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-          
-          />
-        </label>
+        <form onSubmit={formik.handleSubmit}>
+          <label className="block mb-4">
+            First Name:
+            <input
+              type="text"
+              id="firstName"
+              name="firstName"
+              onChange={formik.handleChange}
+              value={formik.values.firstName}
+              className={`border ${formik.touched.firstName && formik.errors.firstName ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.firstName && formik.errors.firstName && (
+              <p className="text-red-500">{formik.errors.firstName}</p>
+            )}
+          </label>
 
-        {/* Other form fields */}
-        {/* Example: */}
-        <label className="block mb-4">
-          Last Name:
+          <label className="block mb-4">
+            Last Name:
+            <input
+              type="text"
+              id="lastName"
+              name="lastName"
+              onChange={formik.handleChange}
+              value={formik.values.lastName}
+              className={`border ${formik.touched.lastName && formik.errors.lastName ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.lastName && formik.errors.lastName && (
+              <p className="text-red-500">{formik.errors.lastName}</p>
+            )}
+          </label>
+
+          <label className="block mb-4">
+            Date of Birth:
+            <input
+              type="date"
+              id="dob"
+              name="dob"
+              onChange={formik.handleChange}
+              value={formik.values.dob}
+              className={`border ${formik.touched.dob && formik.errors.dob ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.dob && formik.errors.dob && (
+              <p className="text-red-500">{formik.errors.dob}</p>
+            )}
+          </label>
+
+          <label className="block mb-4">
+            State:
+            <select
+              id="state"
+              name="state"
+              value={formik.values.state}
+              className={`border ${formik.touched.state && formik.errors.state ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+              onChange={formik.handleChange}
+            >
+              <option value="">Select State</option>
+              {statesInIndia.map((state) => (
+                <option key={state} value={state}>
+                  {state}
+                </option>
+              ))}
+            </select>
+            {formik.touched.state && formik.errors.state && (
+              <p className="text-red-500">{formik.errors.state}</p>
+            )}
+          </label>
+
+          <label className="block mb-4">
+            City/Town/Village/District
+            <input
+              type="text"
+              id="address"
+              name="address"
+              onChange={formik.handleChange}
+              value={formik.values.address}
+              className={`border ${formik.touched.address && formik.errors.address ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.address && formik.errors.address && (
+              <p className="text-red-500">{formik.errors.address}</p>
+            )}
+          </label>
+          <label className="block mb-4">
+          Landmark (optional):
           <input
-            type="text"
-            id="lastName"
-            name="lastName"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-          />
-        </label>
-        <label className="block mb-4">
-          Date of Birth:
-          <input
-            type="date"
-            id="dob"
-            name="dob"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-          />
-        </label>
-        <label className="block mb-4">
-          House Number:
-          <input
-            type="text"
-            id="hno"
-            name="hno"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-          />
-        </label>
-        <label className="block mb-4">
-          Street-Name:
-          <input
-            type="text"
-            id="streetname"
-            name="streetname"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-          />
-        </label>
-        <label className="block mb-4">
-          City:
-          <input
-            type="text"
-            id="city"
-            name="city"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-          />
-        </label>
-        <label className="block mb-4">
-          Landmark:
-          <textarea
             type="text"
             id="landmark"
             name="landmark"
-            onChange={handleChange}
-            className="border border-gray-400 px-3 py-2 rounded w-full"
+            onChange={formik.handleChange}
+            value={formik.values.landmark}
+            className={`border ${formik.touched.landmark && formik.errors.landmark ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
           />
-        </label>
-        <label className="block mb-4">
-          State:
-          <select
-            id="state"
-            name="state"
-            value={formData.state || "Telangana"} // Set the value dynamically based on formData.state
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-            onChange={handleChange}
-          >
-            <option value="">Select State</option>
-            {statesInIndia.map((state) => (
-              <option key={state} value={state}>
-                {state}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block mb-4">
-          Country:
-          <select
-            id="country"
-            name="country"
-            value={formData.country || "India"} // Set the value dynamically based on formData.country
-            className="border border-gray-400 px-3 py-2 rounded w-full"
-            onChange={handleChange}
-          >
-            <option value="India">India</option>
-          </select>
-        </label>
-
-        {/* Add more fields using similar structures */}
-
-        <div className="flex justify-between">
-          {!localStorage.getItem("role") && (
-            <div className="text-blue-500 mt-3">
-              <Link to="/">Already have an account?</Link>
-            </div>
+          {formik.touched.landmark && formik.errors.landmark && (
+            <p className="text-red-500">{formik.errors.landmark}</p>
           )}
-          {/* <button
-            onClick={prevStep}
-            className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
-          >
-            Previous
-          </button> */}
+        </label>
+
+          <label className="block mb-4">
+            Country:
+            <input
+              type="text"
+              id="country"
+              name="country"
+              value={formik.values.country} // Use Formik's value
+              readOnly // Prevent changing the input
+              className={`border ${formik.touched.country && formik.errors.country ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.country && formik.errors.country && (
+              <p className="text-red-500">{formik.errors.country}</p>
+            )}
+          </label>
+
           <div className="flex justify-end">
-            <button
-              onClick={saveDataAndProceed}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 mt-10 rounded"
-            >
+            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 mt-10 rounded">
               Next
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

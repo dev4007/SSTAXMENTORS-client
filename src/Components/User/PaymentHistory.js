@@ -120,47 +120,53 @@ const UserPaymentHistory = () => {
     <div>
       <NavigationBar />
       <div className="container mx-auto px-4 py-8">
-        <h2 className="text-2xl font-bold mb-4 text-blue-500">
+        <h2 className="text-2xl font-bold mb-4 text-blue-500 text-center">
           YOUR PAYMENT HISTORY
         </h2>
         <div className="overflow-x-auto">
-          <table className="min-w-full">
-            <thead>
-              <tr className="bg-gray-200">
-                <th className="px-4 py-2">SNo</th>
-                <th className="px-4 py-2">Invoice Number</th>
-                {/* <th className="px-4 py-2">Description</th> */}
-                <th className="px-4 py-2">Amount</th>
-                <th className="px-4 py-2">Status</th>
-                <th className="px-4 py-2">Payment Made On</th>
-                <th className="px-4 py-2">Payment Recorded On</th>
-                <th className="px-4 py-2">Approved By</th>
-              </tr>
-            </thead>
-            <tbody>
-              {slicedHistoryC.map((payment, index) => (
-                <tr
-                  key={payment._id}
-                  className={index % 2 === 0 ? "bg-gray-100" : ""}
-                >
-                  <td className="px-4 py-2">
-                    {paymentHistory.length - startIndexC - index}
-                  </td>
-                  <td className="px-4 py-2">{payment.invoiceNumber}</td>
-                  {/* <td className="px-4 py-2">{payment.description}</td> */}
-                  <td className="px-4 py-2">{payment.amount}</td>
-                  <td className="px-4 py-2">{payment.status}</td>
-                  <td className="px-4 py-2">
-                    {formatDate(payment.paymentMadeOnDate)}
-                  </td>
-                  <td className="px-4 py-2">
-                    {formatDate(payment.paymentRecordedDate)}
-                  </td>
-                  <td className="px-4 py-2">{payment.approvedBy}</td>
+          <div className="flex justify-center">
+            <table className="min-w-full text-center">
+              {" "}
+              {/* Center the table content */}
+              <thead>
+                <tr className="bg-gray-200">
+                  <th className="px-4 py-2">SNo</th>
+                  <th className="px-4 py-2">Invoice Number</th>
+                  {/* <th className="px-4 py-2">Description</th> */}
+                  <th className="px-4 py-2">Amount</th>
+                  <th className="px-4 py-2">Status</th>
+                  <th className="px-4 py-2">Payment Made On</th>
+                  <th className="px-4 py-2">Payment Recorded On</th>
+                  <th className="px-4 py-2">Approved By</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {slicedHistoryC.map((payment, index) => (
+                  <tr
+                    key={payment._id}
+                    className={index % 2 === 0 ? "bg-gray-100" : ""}
+                  >
+                    <td className="px-4 py-2">
+                      {paymentHistory.length - startIndexC - index}
+                    </td>
+                    <td className="px-4 py-2">{payment.invoiceNumber}</td>
+                    {/* <td className="px-4 py-2">{payment.description}</td> */}
+                    <td className="px-4 py-2">{payment.amount}</td>
+                    <td className="px-4 py-2">{payment.status}</td>
+                    <td className="px-4 py-2">
+                      {formatDate(payment.paymentMadeOnDate)}
+                    </td>
+                    <td className="px-4 py-2">
+                      {formatDate(payment.paymentRecordedDate)}
+                    </td>
+                    <td className="px-4 py-2">
+                      {payment.approvedBy ? payment.approvedBy : "In Progress"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           <ul className="pagination flex justify-center items-center my-4">
             <li className={`page-item ${currentPageC === 1 ? "disabled" : ""}`}>
               <button

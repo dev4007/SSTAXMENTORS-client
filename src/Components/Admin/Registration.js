@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
+import * as Yup from "yup";
 import axios from "axios";
 import { message } from "antd";
 import { useNavigate } from "react-router-dom";
+import { EyeInvisibleOutlined, EyeOutlined } from "@ant-design/icons";
 
-function Registration() {
+const Registration = () => {
   let navigate = useNavigate();
 
   const initialState = {
-    // EmployeeId: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -16,77 +17,95 @@ function Registration() {
     confirmPassword: "",
   };
 
-
   const [formData, setFormData] = useState(initialState);
-  const [error, setError] = useState("");
+  const [formErrors, setFormErrors] = useState({});
   const [EmployeeId, setEmployeeId] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+
+  const validationSchema = Yup.object().shape({
+    firstName: Yup.string().required("First name is required"),
+    lastName: Yup.string().required("Last name is required"),
+    email: Yup.string().email("Invalid email").required("Email is required"),
+    phone: Yup.string()
+      .matches(/^[0-9]{10}$/, "Phone number must be 10 digits")
+      .required("Phone number is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref("password"), null], "Passwords must match")
+      .required("Confirm Password is required"),
+  });
 
   useEffect(() => {
-    // let isMounted = true;
-
     fetchNewEmployeeId();
-    // return () => {
-    //   isMounted = false;
-    // };
   }, []);
-  // Fetch ticket ID from the backend on component mount
+
   const fetchNewEmployeeId = async () => {
     try {
       const token = localStorage.getItem("token");
-
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/admin/employee/getEmployeeId`,
+        `${process.env.REACT_APP_API_URL}/admin/employee/getEmployeeId`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log(response.data);
-      console.log(!response);
-      if (!response) {
-        throw new Error("Failed to fetch profile data");
-      }
+
       setEmployeeId(response.data.EmployeeId);
     } catch (error) {
       console.error("Error fetching Employee ID:", error);
-      console.log("error", error.response);
-      // console.log("ismounted", isMounted);
       if (error.response && error.response.status === 401) {
-        // If the response status is 401, display an alert and redirect to login page
         alert("Session expired. Please login again.");
-        // window.location.href = '/'; // Change the URL accordingly
-        navigate("/");
+      
       }
     }
   };
 
-  // const handleChange = (e) => {
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  // };
   const handleChange = (event) => {
     const { name, value } = event.target;
     setFormData({
       ...formData,
       [name]: value,
     });
+
+    if (formErrors[name]) {
+      setFormErrors({
+        ...formErrors,
+        [name]: undefined,
+      });
+    }
   };
 
   const handleReset = () => {
-    // Clear all form data by resetting to the initial state
     setFormData(initialState);
   };
 
-  const saveDataAndSubmit = async () => {
+  const validateForm = async () => {
     try {
-      const dataToSend = { ...formData };
-      // formData.append('EmployeeId', EmployeeId); // Add this line to send ticketId
+      await validationSchema.validate(formData, { abortEarly: false });
+      setFormErrors({});
+      return true;
+    } catch (err) {
+      const validationErrors = {};
+      err.inner.forEach((error) => {
+        validationErrors[error.path] = error.message;
+      });
+      setFormErrors(validationErrors);
+      return false;
+    }
+  };
 
-      dataToSend.EmployeeId = EmployeeId;
+  const saveDataAndSubmit = async () => {
+    const isValid = await validateForm();
+    if (!isValid) return;
 
-      console.log(dataToSend);
+    try {
+      const dataToSend = { ...formData, EmployeeId };
       const token = localStorage.getItem("token");
-      const response = await axios.post(
+      await axios.post(
         `${process.env.REACT_APP_API_URL}/admin/employee/addEmployee`,
         dataToSend,
         {
@@ -96,23 +115,21 @@ function Registration() {
         }
       );
 
-      // Handle the response from the backend as needed
-
-     
-      handleReset()
+      handleReset();
       message.success("Successfully registered employee!");
       fetchNewEmployeeId();
-      // setTimeout(() => {
-      //   window.location.reload();
-      // }, 3000);
-
-      // console.log(response.data);
-
-      // Reset the form data
-      // setFormData("");
+      navigate("/admin/admindashboard/view-employee");
     } catch (error) {
-      message.error("Error registering employee");
-      setError("Error registering user");
+      // Check if the error response indicates that the email already exists
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message === "Email already exists"
+      ) {
+        message.error("This email is already registered.");
+      } else {
+        message.error("Error registering employee");
+      }
     }
   };
 
@@ -134,8 +151,6 @@ function Registration() {
           />
         </div>
         <div className="mx-auto w-full lg:w-11/12 mb-8">
-          {" "}
-          {/* Set the width of the form and add margin */}
           <label className="block mb-4">
             First Name:
             <input
@@ -144,11 +159,15 @@ function Registration() {
               name="firstName"
               value={formData.firstName}
               onChange={handleChange}
-              className="border focus:border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 mt-1 w-full"
+              className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
+                formErrors.firstName ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {formErrors.firstName && (
+              <p className="text-red-500">{formErrors.firstName}</p>
+            )}
           </label>
-          {/* Other form fields */}
-          {/* Example: */}
+
           <label className="block mb-4">
             Last Name:
             <input
@@ -157,9 +176,15 @@ function Registration() {
               name="lastName"
               value={formData.lastName}
               onChange={handleChange}
-              className="border focus:border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 mt-1 w-full"
+              className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
+                formErrors.lastName ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {formErrors.lastName && (
+              <p className="text-red-500">{formErrors.lastName}</p>
+            )}
           </label>
+
           <label className="block mb-4">
             Email:
             <input
@@ -168,11 +193,15 @@ function Registration() {
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="border border-gray-300 rounded px-3 py-2 mt-1 w-full"
+              className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
+                formErrors.email ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {formErrors.email && (
+              <p className="text-red-500">{formErrors.email}</p>
+            )}
           </label>
-          {/* Other form fields */}
-          {/* Example: */}
+
           <label className="block mb-4">
             Phone Number (Whatsapp number recommended):
             <input
@@ -181,41 +210,75 @@ function Registration() {
               name="phone"
               value={formData.phone}
               onChange={handleChange}
-              className="border border-gray-300 rounded px-3 py-2 mt-1 w-full"
+              className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
+                formErrors.phone ? "border-red-500" : "border-gray-300"
+              }`}
             />
+            {formErrors.phone && (
+              <p className="text-red-500">{formErrors.phone}</p>
+            )}
           </label>
+
           <label className="block mb-4">
             Password:
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 w-full"
-              placeholder="Password"
-              onChange={handleChange}
-            />
+            <div className="relative">
+              <input
+                type={passwordVisible ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
+                  formErrors.password ? "border-red-500" : "border-gray-300"
+                }`}
+                placeholder="Password"
+              />
+              <span
+                onClick={() => setPasswordVisible(!passwordVisible)}
+                className="absolute right-3 top-2 cursor-pointer"
+              >
+                {passwordVisible ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+              </span>
+            </div>
+            {formErrors.password && (
+              <p className="text-red-500">{formErrors.password}</p>
+            )}
           </label>
+
           <label className="block mb-4">
             Confirm Password:
-            <br />
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
-                formData.confirmPassword !== formData.password
-                  ? "border-red-500"
-                  : "border-gray-300"
-              }`}
-              placeholder="Confirm Password"
-              onChange={handleChange}
-            />
+            <div className="relative">
+              <input
+                type={confirmPasswordVisible ? "text" : "password"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                className={`border rounded px-3 py-2 w-full focus:outline-none focus:ring focus:ring-blue-200 ${
+                  formErrors.confirmPassword
+                    ? "border-red-500"
+                    : "border-gray-300"
+                }`}
+                placeholder="Confirm Password"
+              />
+              <span
+                onClick={() =>
+                  setConfirmPasswordVisible(!confirmPasswordVisible)
+                }
+                className="absolute right-3 top-2 cursor-pointer"
+              >
+                {confirmPasswordVisible ? (
+                  <EyeOutlined />
+                ) : (
+                  <EyeInvisibleOutlined />
+                )}
+              </span>
+            </div>
+            {formErrors.confirmPassword && (
+              <p className="text-red-500">{formErrors.confirmPassword}</p>
+            )}
           </label>
-          {formData.confirmPassword !== formData.password && (
-            <p className="text-red-500">Passwords do not match</p>
-          )}
+
           <button
             onClick={saveDataAndSubmit}
             className="bg-blue-500 hover:bg-blue-600 w-full text-white font-bold py-2 px-4 rounded mb-4"
@@ -228,11 +291,10 @@ function Registration() {
           >
             Reset
           </button>
-          {error && <p className="text-red-500 mt-4">{error}</p>}
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Registration;

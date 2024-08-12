@@ -62,6 +62,7 @@ const CreateSupportTicket = () => {
         fetchTicketId();
         resetForm(); // Reset the form after successful submission
         message.success("support ticket submitted successfully!");
+        navigate('/user/userdashboard/view-ticket')
         setLoader(false)
 
       } catch (error) {

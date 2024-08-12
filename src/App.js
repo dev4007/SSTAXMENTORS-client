@@ -5,6 +5,7 @@ import Registrationform from "./Pages/User/Registration/Registrationform";
 import {BrowserRouter as Router ,Routes,Route} from 'react-router-dom'
 // import Thankyou from "./Pages/Thankyou";
 import Homepage from './Pages/Homepage'
+import ThankYouPage from "./Pages/ThankYouPage";
 
 const Login = lazy(()=> import("./Pages/Login"));
 const AdminLogin = lazy(()=> import("./Pages/AdminLogin"));
@@ -46,6 +47,7 @@ function App() {
         <Route path="/register" element={<Registrationform/>}></Route>
         {/* <Route path="/" element={<Login/>}></Route> */}
         <Route path="/" element={<Homepage/>}></Route>
+        <Route path="/thank-you" element={<ThankYouPage/>}></Route>
         <Route path="/login" element={<Login/>}></Route>
         <Route path="/admin" element={<AdminLogin/>}></Route>
 
