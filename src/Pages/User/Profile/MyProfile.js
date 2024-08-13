@@ -4,6 +4,37 @@ import { useNavigate } from "react-router-dom";
 import NavigationBar from "../NavigationBar/NavigationBar";
 import { message } from "antd";
 
+const statesInIndia = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+].sort();
+
 function MyProfile() {
   let navigate = useNavigate();
 
@@ -17,11 +48,14 @@ function MyProfile() {
     const fetchProfileData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/user/profile/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/user/profile/profile`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         if (!response) {
           throw new Error("Failed to fetch profile data");
@@ -64,10 +98,10 @@ function MyProfile() {
   const handleCancel = () => {
     setIsEditing(false);
     setEditedData(userData.user); // Reset edited data to original user data
-  }
+  };
 
   const formatDate = (dateString) => {
-    if (!dateString) return ''; // Return empty string if dateString is falsy
+    if (!dateString) return ""; // Return empty string if dateString is falsy
 
     const date = new Date(dateString);
     const day = date.getDate();
@@ -168,25 +202,21 @@ function MyProfile() {
               <div className="grid grid-cols-2 gap-4 mt-4">
                 <div>
                   <label
-                    htmlFor="email"
+                    htmlFor="DOB"
                     className="block text-sm font-semibold mb-1 text-gray-600"
                   >
-                    Email:
+                    Date of Birth:
                   </label>
                   <input
                     type="text"
-                    id="email"
-                    name="email"
-                    value={editedData.email}
+                    id="DOB"
+                    name="DOB"
+                    value={formattedDOB}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-2 border ${
-                      emailError
-                        ? "border-red-500"
-                        : isEditing
-                        ? "border-blue-500"
-                        : "border-gray-300"
+                      isEditing ? "border-blue-500" : "border-gray-300"
                     } rounded`}
-                    readOnly
+                    readOnly={!isEditing}
                   />
                 </div>
                 <div>
@@ -211,21 +241,25 @@ function MyProfile() {
               </div>
               <div className="mt-4">
                 <label
-                  htmlFor="DOB"
+                  htmlFor="email"
                   className="block text-sm font-semibold mb-1 text-gray-600"
                 >
-                  Date of Birth:
+                  Email:
                 </label>
                 <input
                   type="text"
-                  id="DOB"
-                  name="DOB"
-                  value={formattedDOB}
+                  id="email"
+                  name="email"
+                  value={editedData.email}
                   onChange={handleInputChange}
                   className={`w-full px-4 py-2 border ${
-                    isEditing ? "border-blue-500" : "border-gray-300"
+                    emailError
+                      ? "border-red-500"
+                      : isEditing
+                      ? "border-blue-500"
+                      : "border-gray-300"
                   } rounded`}
-                  readOnly={!isEditing}
+                  readOnly
                 />
               </div>
             </div>
@@ -271,53 +305,18 @@ function MyProfile() {
                 Address
               </h3>
               <div className="grid grid-cols-2 gap-4">
-           <div>
-                <label htmlFor="address" className="block text-sm font-semibold mb-1 text-gray-600">
-                  House Number:
-                </label>
-                <input
-                  type="text"
-                  id="address"
-                  name="address"
-                  value={editedData.address}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${isEditing ? 'border-blue-500' : 'border-gray-300'} rounded`}
-                  readOnly={!isEditing}
-                />
-              </div> 
                 <div>
                   <label
-                    htmlFor="streetname"
+                    htmlFor="address"
                     className="block text-sm font-semibold mb-1 text-gray-600"
                   >
-                    Street Name:
+                    Address:
                   </label>
                   <input
                     type="text"
-                    id="streetname"
-                    name="streetname"
-                    value={editedData.streetname}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border ${
-                      isEditing ? "border-blue-500" : "border-gray-300"
-                    } rounded`}
-                    readOnly={!isEditing}
-                  />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4 mt-4">
-                <div>
-                  <label
-                    htmlFor="city"
-                    className="block text-sm font-semibold mb-1 text-gray-600"
-                  >
-                    City:
-                  </label>
-                  <input
-                    type="text"
-                    id="city"
-                    name="city"
-                    value={editedData.city}
+                    id="address"
+                    name="address"
+                    value={editedData.address}
                     onChange={handleInputChange}
                     className={`w-full px-4 py-2 border ${
                       isEditing ? "border-blue-500" : "border-gray-300"
@@ -345,46 +344,59 @@ function MyProfile() {
                   />
                 </div>
               </div>
+
               <div className="grid grid-cols-2 gap-4 mt-4">
-                <div>
-                  <label
-                    htmlFor="state"
-                    className="block text-sm font-semibold mb-1 text-gray-600"
-                  >
-                    State:
-                  </label>
-                  <input
-                    type="text"
-                    id="state"
-                    name="state"
-                    value={editedData.state}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border ${
-                      isEditing ? "border-blue-500" : "border-gray-300"
-                    } rounded`}
-                    readOnly={!isEditing}
-                  />
-                </div>
-                <div>
-                  <label
-                    htmlFor="country"
-                    className="block text-sm font-semibold mb-1 text-gray-600"
-                  >
-                    Country:
-                  </label>
-                  <input
-                    type="text"
-                    id="country"
-                    name="country"
-                    value={editedData.country}
-                    onChange={handleInputChange}
-                    className={`w-full px-4 py-2 border ${
-                      isEditing ? "border-blue-500" : "border-gray-300"
-                    } rounded`}
-                    readOnly={!isEditing}
-                  />
-                </div>
+              <div>
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-semibold mb-1 text-gray-600"
+                >
+                  State:
+                </label>
+                <select
+                  id="state"
+                  name="state"
+                  value={editedData.state}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${
+                    isEditing ? "border-blue-500" : "border-gray-300"
+                  } rounded`}
+                  disabled={!isEditing} // Disable select if not editing
+                >
+                  {isEditing ? (
+                    statesInIndia.map((state) => (
+                      <option key={state} value={state}>
+                        {state}
+                      </option>
+                    ))
+                  ) : (
+                    <option value={editedData.state} disabled>
+                      {editedData.state}
+                    </option>
+                  )}
+                </select>
               </div>
+              <div>
+                <label
+                  htmlFor="country"
+                  className="block text-sm font-semibold mb-1 text-gray-600"
+                >
+                  Country:
+                </label>
+                <input
+                  type="text"
+                  id="country"
+                  name="country"
+                  value={editedData.country}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${
+                    isEditing ? "border-blue-500" : "border-gray-300"
+                  } rounded`}
+                  readOnly
+                />
+              </div>
+            </div>
+            
             </div>
 
             {isEditing ? (

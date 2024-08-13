@@ -155,7 +155,14 @@ const SupportTickets = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
@@ -410,7 +417,7 @@ const SupportTickets = () => {
                       >
                         <span>{file.filename}</span>
                         {file.filename &&
-                          file.filename.slice(-3).toLowerCase() === "pdf" && (
+                          file.filename.slice(-3).toLowerCase()  && (
                             <button
                               className="text-blue-500"
                               onClick={() =>

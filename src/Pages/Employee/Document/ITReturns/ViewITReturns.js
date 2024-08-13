@@ -688,10 +688,13 @@ const ViewITReturns = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slicedHistory.map((itReturn, index) => (
+                    {slicedHistory
+                      .filter((itReturn) => itReturn.role === "employee")
+                      .map((itReturn, index) => (
                         <tr key={itReturn._id}>
                           <td className="py-2 px-4 border-b">
-                            {filteredITReturnsData.length - startIndex - index}
+                            {index + 1}{" "}
+                            {/* Use index + 1 for sequential numbering */}
                           </td>
                           <td className="py-2 px-4 border-b">
                             {itReturn.selectedClientGroup}

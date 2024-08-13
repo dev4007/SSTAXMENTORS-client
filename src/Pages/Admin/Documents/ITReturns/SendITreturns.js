@@ -4,7 +4,9 @@ import { message } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import NavigationBar from "../../NavigationBar/NavigationBar";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 const SendITreturns = () => {
   const [clients, setClients] = useState([]);
   const [filteredClientData, setFilteredClientData] = useState([]);
@@ -27,6 +29,7 @@ const SendITreturns = () => {
   const [itemsPerPageClient] = useState(15);
   const [currentPageC, setCurrentPageC] = useState(1);
   const [itemsPerPageC, setItemsPerPageC] = useState(50);
+  const navigate =  useNavigate()
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -186,18 +189,20 @@ const SendITreturns = () => {
     setShowForm(false); // Set showForm state to false to hide the form
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (values) => {
     setIsLoading(true);
     const formData = new FormData();
-    formData.append("description", description);
-    formData.append("remarks", remarks);
-    formData.append("selectedCompany", selectedCompany);
-    formData.append("selectedReturnType", selectedReturnType);
+    formData.append("description", values.description);
+  formData.append("remarks", values.remarks);
+  formData.append("selectedCompany", values.company);
+  formData.append("selectedReturnType", values.returnType);
 
-    for (let i = 0; i < files.length; i++) {
-      formData.append("file", files[i]);
+    // Check if there are files and append them to formData
+    if (values.file) {
+      formData.append("file", values.file);
     }
-
+  
+    // Assuming selectedClient is managed outside of Formik
     formData.append("selectedClient", JSON.stringify(selectedClient.email));
 
     const token = localStorage.getItem("token");
@@ -216,21 +221,34 @@ const SendITreturns = () => {
 
       console.log("Response from server:", response.data);
       setIsLoading(false);
-      setTitle("");
-      setDescription("");
-      setFiles([]);
-      setRemarks("");
-      setSelectedCompany("");
-      setSelectedReturnType("");
-      setSelectedClient(null);
-      setShowForm(false);
+      // Resetting form fields
+      formik.resetForm(); // Reset the form values
       message.success("IT Returns submitted successfully.");
+      navigate("/admin/admindashboard/viewitreturnsa")
     } catch (error) {
       console.error("Error sending reminder:", error);
       setIsLoading(false);
       message.error("Failed to submit IT Returns. Please try again later.");
     }
   };
+
+  const formik = useFormik({
+    initialValues: {
+      company: "",
+      returnType: "",
+      description: "",
+      remarks: "",
+      file: null,
+    },
+    validationSchema: Yup.object({
+      company: Yup.string().required("Company is required"),
+      returnType: Yup.string().required("Type of IT Returns is required"),
+      description: Yup.string().required("Description is required"),
+      remarks: Yup.string().required("Remarks are required"),
+      file: Yup.mixed().required("File upload is required"),
+    }),
+    onSubmit: handleSubmit, // Use the updated handleSubmit here
+  });
 
   // const filteredClients = clients
   //   .filter((client) => {
@@ -285,121 +303,129 @@ const SendITreturns = () => {
           <div>
             <NavigationBar />
             <div className="min-h-screen flex justify-center items-center bg-gray-100">
-              <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
-                <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
-                  IT RETURNS FORM{" "}
-                </p>
-                <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="company"
-                  >
-                    Select Company:
-                  </label>
-                  <select
-                    id="company"
-                    name="company"
-                    value={selectedCompany}
-                    onChange={handleCompanyChange}
-                    className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-                  >
-                    <option value="">Select Company</option>
-                    {companies.map((company) => (
-                      <option key={company} value={company}>
-                        {company}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-500 text-lg mb-2">
-                    Type of IT Returns:
-                  </label>
-                  {itReturnsTypes
-                    .filter((returnType) => returnType.status === "active")
-                    .map((returnType) => (
-                      <div key={returnType._id}>
-                        <input
-                          type="radio"
-                          id={`returnType_${returnType.name}`}
-                          name="returnType"
-                          value={returnType.name}
-                          checked={selectedReturnType === returnType.name}
-                          onChange={handleReturnTypeChange}
-                        />
-                        <label
-                          htmlFor={`returnType_${returnType.name}`}
-                          className="ml-2 mr-4"
-                        >
-                          {returnType.name}
-                        </label>
-                      </div>
-                    ))}
-                </div>
-                <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="description"
-                  >
-                    Description
-                  </label>
-                  <textarea
-                    className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
-                    rows="3"
-                    value={description}
-                    onChange={handleDescriptionChange}
-                  ></textarea>
-                </div>
-                <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="remarks"
-                  >
-                    Remarks:
-                  </label>
-                  <textarea
-                    className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
-                    rows="3"
-                    value={remarks}
-                    onChange={(e) => setRemarks(e.target.value)}
-                  ></textarea>
-                </div>
-                <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="file"
-                  >
-                    Upload File:
-                  </label>
-                  <input
-                    type="file"
-                    id="file"
-                    name="file"
-                    onChange={handleFileChange}
-                    className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-                  />
-                </div>
-                <div className="flex justify-center items-center mt-12 space-x-4">
-                  {/* Back button */}
-                  <button
-                    className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    type="button"
-                    onClick={handleBackButtonClick} // Call handleBackButtonClick function on click
-                  >
-                    Back
-                  </button>
-                  {/* Submit button */}
-                  <button
-                    className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    type="button"
-                    onClick={handleSubmit}
-                  >
-                  {isLoading ? "Loading..." : "Submit"}
-
-                  </button>
-                </div>
+      <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
+        <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
+          IT RETURNS FORM
+        </p>
+        
+        <form onSubmit={formik.handleSubmit}>
+          <div className="mb-6">
+            <label className="block text-gray-500 text-lg mb-2" htmlFor="company">
+              Select Company:
+            </label>
+            <select
+              id="company"
+              name="company"
+              value={formik.values.company}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+            >
+              <option value="">Select Company</option>
+              {companies.map((company) => (
+                <option key={company} value={company}>
+                  {company}
+                </option>
+              ))}
+            </select>
+            {formik.touched.company && formik.errors.company ? (
+              <div className="text-red-500 text-sm mt-2">{formik.errors.company}</div>
+            ) : null}
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-gray-500 text-lg mb-2">Type of IT Returns:</label>
+            {itReturnsTypes.filter((returnType) => returnType.status === "active").map((returnType) => (
+              <div key={returnType._id}>
+                <input
+                  type="radio"
+                  id={`returnType_${returnType.name}`}
+                  name="returnType"
+                  value={returnType.name}
+                  checked={formik.values.returnType === returnType.name}
+                  onChange={formik.handleChange}
+                />
+                <label htmlFor={`returnType_${returnType.name}`} className="ml-2 mr-4">
+                  {returnType.name}
+                </label>
               </div>
-            </div>
+            ))}
+            {formik.touched.returnType && formik.errors.returnType ? (
+              <div className="text-red-500 text-sm mt-2">{formik.errors.returnType}</div>
+            ) : null}
+          </div>
+          
+          <div className="mb-6">
+            <label className="block text-gray-500 text-lg mb-2" htmlFor="description">
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
+            />
+            {formik.touched.description && formik.errors.description ? (
+              <div className="text-red-500 text-sm mt-2">{formik.errors.description}</div>
+            ) : null}
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-500 text-lg mb-2" htmlFor="remarks">
+              Remarks:
+            </label>
+            <textarea
+              id="remarks"
+              name="remarks"
+              value={formik.values.remarks}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
+            />
+            {formik.touched.remarks && formik.errors.remarks ? (
+              <div className="text-red-500 text-sm mt-2">{formik.errors.remarks}</div>
+            ) : null}
+          </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-500 text-lg mb-2" htmlFor="file">
+              Upload File:
+            </label>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              onChange={(event) => formik.setFieldValue("file", event.currentTarget.files[0])}
+              onBlur={formik.handleBlur}
+              className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+            />
+            {formik.touched.file && formik.errors.file ? (
+              <div className="text-red-500 text-sm mt-2">{formik.errors.file}</div>
+            ) : null}
+          </div>
+
+          <div className="flex justify-center items-center mt-12 space-x-4">
+            <button
+              className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
+              type="button"
+              onClick={handleBackButtonClick}
+            >
+              Back
+            </button>
+            <button
+              className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
+              type="submit"
+              disabled={isLoading || !formik.isValid}
+            >
+              {isLoading ? "Loading..." : "Submit"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
           </div>
         ) : (
           <div>

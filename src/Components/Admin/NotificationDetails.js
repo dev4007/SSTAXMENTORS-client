@@ -31,7 +31,14 @@ const NotificationDetailsInNewTab = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
@@ -67,10 +74,7 @@ const NotificationDetailsInNewTab = () => {
 
   return (
     <div>
-      <div>
-        <Navbar />
-      </div>
-
+      <Navbar />
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-semibold mb-8">Notification Details</h1>
         {notificationData ? (
@@ -82,39 +86,32 @@ const NotificationDetailsInNewTab = () => {
               <p className="text-sm text-gray-700 mb-2 overflow-auto break-words">
                 {notificationData.description}
               </p>
-              {notificationData.files && notificationData.files.length > 0 && (
-                <p className="text-2xl font-medium mb-2 text-black-100">
-                  {notificationData.files[0].filename}
-                </p>
-              )}
-              
-            </div>
-            <div className="flex items-center mt-8">
               {notificationData.files && notificationData.files.length > 0 ? (
-                <>
-                  {notificationData.files[0].filename
-                    .slice(-3)
-                    .toLowerCase() === "pdf" && (
-                    <button
-                      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded mr-4"
-                      onClick={() =>
-                        handlePreview(notificationData.files[0].filename)
-                      }
-                    >
-                      Preview
-                    </button>
-                  )}
-                  <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded"
-                    onClick={() =>
-                      handleDownload(notificationData.files[0].filename)
-                    }
-                  >
-                    Download
-                  </button>
-                </>
+                notificationData.files.map((file, index) => (
+                  <div key={index} className="mb-4">
+                    <p className="text-lg font-medium mb-2 text-black-600 overflow-auto break-words">
+                      {file.filename}
+                    </p>
+                    <div className="flex items-center">
+                      {["pdf", "png", "jpg", "jpeg"].includes(file.filename.slice(-3).toLowerCase()) && (
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded mr-4"
+                          onClick={() => handlePreview(file.filename)}
+                        >
+                          Preview
+                        </button>
+                      )}
+                      <button
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                        onClick={() => handleDownload(file.filename)}
+                      >
+                        Download
+                      </button>
+                    </div>
+                  </div>
+                ))
               ) : (
-                <p className="font-semibold">No file available.</p>
+                <p className="font-semibold">No files available.</p>
               )}
             </div>
           </div>

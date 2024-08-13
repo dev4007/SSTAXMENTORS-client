@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../../NavigationBar/NavigationBar";
-
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 const SendGSTNotice = () => {
   const [clients, setClients] = useState([]);
@@ -177,46 +178,58 @@ const SendGSTNotice = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = async () => {
-    setIsLoading(true);
-    const dataForBackend = new FormData();
-    dataForBackend.append("selectedClient", selectedClient);
-    dataForBackend.append("selectedCompany", selectedCompany);
-    dataForBackend.append("selectedNoticeType", selectedNoticeType);
-    dataForBackend.append("description", description);
-    dataForBackend.append("remarks", remarks);
-    dataForBackend.append("file", file);
+  const formik = useFormik({
+    initialValues: {
+      selectedClient: '',
+      selectedCompany: '',
+      selectedNoticeType: '',
+      description: '',
+      remarks: '',
+      file: null,
+    },
+    validationSchema: Yup.object({
+      selectedCompany: Yup.string().required('Company is required'),
+      selectedNoticeType: Yup.string().required('Notice type is required'),
+      description: Yup.string().required('Description is required'),
+      remarks: Yup.string().required('Remarks is required'),
+      file: Yup.mixed().required('A file is required'),
+    }),
+    onSubmit: async (values, { setSubmitting }) => {
+      const dataForBackend = new FormData();
+      dataForBackend.append("selectedClient", selectedClient);
+      dataForBackend.append("selectedCompany", values.selectedCompany);
+      dataForBackend.append("selectedNoticeType", values.selectedNoticeType);
+      dataForBackend.append("description", values.description);
+      dataForBackend.append("remarks", values.remarks);
+      dataForBackend.append("file", values.file);
 
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/admin/document/gstnotice/sendGSTnotice`,
-        dataForBackend,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      );
-      message.success("Data submitted successfully");
-      console.log("Backend Response:", response.data);
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/admin/document/gstnotice/sendGSTnotice`,
+          dataForBackend,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+        message.success("Data submitted successfully");
+        console.log("Backend Response:", response.data);
 
-      // Clear form data after submission
-      setSelectedCompany("");
-      setSelectedNoticeType("");
-      setDescription("");
-      setRemarks("");
-      setFile(null);
-      setIsLoading(false);
-      setShowForm(false); // Hide the form after submission
-    } catch (error) {
-      message.error("Error submitting data");
-      console.error("Error sending data to the backend:", error);
-      setIsLoading(false);
-    }
-  };
-
+        // Clear form data after submission
+        formik.resetForm();
+        setShowForm(false); // Hide the form after submission
+        navigate('/employee/employeedashboard/viewgstnoticee')
+      } catch (error) {
+        message.error("Error submitting data");
+        console.error("Error sending data to the backend:", error);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
   const handleBackButtonClick = () => {
     setShowForm(false); // Set showForm state to false to hide the form
   };
@@ -305,23 +318,25 @@ const SendGSTNotice = () => {
       <div className="">
         {showForm ? (
           <div className="min-h-screen flex justify-center items-center bg-gray-100">
-            <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
-              <h2 className="text-3xl font-semibold text-gray-500 mb-4 text-center">
-                GST Notice
-              </h2>
-
+          <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
+            <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
+              GST NOTICE FORM{" "}
+            </p>
+            
+            <form onSubmit={formik.handleSubmit}>
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="company"
-                >
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="selectedCompany">
                   Select Company:
                 </label>
                 <select
-                  id="company"
-                  value={selectedCompany}
-                  onChange={handleCompanyChange}
-                  className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                  id="selectedCompany"
+                  name="selectedCompany"
+                  value={formik.values.selectedCompany}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`border ${
+                    formik.touched.selectedCompany && formik.errors.selectedCompany ? 'border-red-500' : 'border-gray-200'
+                  } rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full`}
                 >
                   <option value="">Select Company</option>
                   {companies.map((company) => (
@@ -330,11 +345,13 @@ const SendGSTNotice = () => {
                     </option>
                   ))}
                 </select>
+                {formik.touched.selectedCompany && formik.errors.selectedCompany && (
+                  <div className="text-red-500 text-sm">{formik.errors.selectedCompany}</div>
+                )}
               </div>
+              
               <div className="mb-6">
-                <label className="block text-gray-500 text-lg mb-2">
-                  Type of GST Notice:
-                </label>
+                <label className="block text-gray-500 text-lg mb-2">Type of GST Notice:</label>
                 {gstNoticeTypes
                   .filter((returnType) => returnType.status === "active")
                   .map((noticeType) => (
@@ -342,86 +359,96 @@ const SendGSTNotice = () => {
                       <input
                         type="radio"
                         id={`noticeType_${noticeType.name}`}
-                        name="noticeType"
+                        name="selectedNoticeType"
                         value={noticeType.name}
-                        checked={selectedNoticeType === noticeType.name}
-                        onChange={handleNoticeTypeChange}
+                        checked={formik.values.selectedNoticeType === noticeType.name}
+                        onChange={formik.handleChange}
                       />
-                      <label
-                        htmlFor={`noticeType_${noticeType.name}`}
-                        className="ml-2 mr-4"
-                      >
+                      <label htmlFor={`noticeType_${noticeType.name}`} className="ml-2 mr-4">
                         {noticeType.name}
                       </label>
                     </div>
                   ))}
+                {formik.touched.selectedNoticeType && formik.errors.selectedNoticeType && (
+                  <div className="text-red-500 text-sm">{formik.errors.selectedNoticeType}</div>
+                )}
               </div>
+              
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="description"
-                >
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="description">
                   Description:
                 </label>
                 <textarea
                   id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  name="description"
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   placeholder="Enter description"
-                  className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
-                  style={{ width: "100%" }}
+                  className={`border ${
+                    formik.touched.description && formik.errors.description ? 'border-red-500' : 'border-gray-200'
+                  } rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36`}
                 />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="text-red-500 text-sm">{formik.errors.description}</div>
+                )}
               </div>
+    
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="remarks"
-                >
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="remarks">
                   Remarks
                 </label>
                 <textarea
                   id="remarks"
-                  value={remarks}
-                  onChange={(e) => setRemarks(e.target.value)}
+                  name="remarks"
+                  value={formik.values.remarks}
+                  onChange={formik.handleChange}
                   placeholder="Enter Remarks"
                   className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
-                  style={{ width: "100%" }}
                 />
+                {formik.touched.remarks && formik.errors.remarks && (
+                  <div className="text-red-500 text-sm">{formik.errors.remarks}</div>
+                )}
               </div>
+              
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="file"
-                >
-                  Upload File:
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  onChange={handleFileChange}
-                  className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-                />
-              </div>
+              <label className="block text-gray-500 text-lg mb-2" htmlFor="file">
+                Upload File:
+              </label>
+              <input
+                type="file"
+                id="file"
+                name="file"
+                onChange={(event) => formik.setFieldValue("file", event.currentTarget.files[0])}
+                onBlur={formik.handleBlur}
+                className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+              />
+              {formik.touched.file && formik.errors.file ? (
+                <div className="text-red-500 text-sm mt-2">{formik.errors.file}</div>
+              ) : null}
+            </div>
+    
               <div className="flex justify-center items-center mt-12 space-x-4">
                 {/* Back button */}
                 <button
-                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
                   type="button"
-                  onClick={handleBackButtonClick} // Call handleBackButtonClick function on click
+                  onClick={handleBackButtonClick}
                 >
                   Back
                 </button>
                 {/* Submit button */}
                 <button
-                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  type="button"
-                  onClick={handleSubmit}
+                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
+                  type="submit"
+                  disabled={formik.isSubmitting} // Disable button when submitting
                 >
-                {isLoading ? "Loading..." : "Submit"}
+                  {formik.isSubmitting ? "Loading..." : "Submit"}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
+        </div>
         ) : (
           <div className="container mx-auto p-10">
             <p className="font-bold text-3xl text-blue-500 mb-10">GST NOTICE</p>

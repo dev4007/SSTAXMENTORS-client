@@ -116,7 +116,7 @@ const ViewGSTReturns = () => {
       console.error("Error fetching clientData:", error);
       if (!isMounted && error.response && error.response.status === 500) {
         // If the response status is 401, display an alert and redirect to login page
-        isMounted = true
+        isMounted = true;
         alert("Session expired. Please login again.");
         // window.location.href = '/'; // Change the URL accordingly
         navigate("/");
@@ -386,7 +386,7 @@ const ViewGSTReturns = () => {
       const uploadTime = new Date(timestamp);
       const timeDifferenceInHours =
         (currentTime - uploadTime) / (1000 * 60 * 60); // Convert milliseconds to hours
-  
+
       if (timeDifferenceInHours > 24) {
         message.info(
           "Cannot delete. More than 24 hours has passed since upload."
@@ -416,7 +416,6 @@ const ViewGSTReturns = () => {
       setShowModal(false); // Close the modal after successful deletion
       setModalContent({}); // Clear modal content
       message.success("successfully deleted the file!");
-   
     } catch (error) {
       setShowModal(false); // Close the modal on error
       if (error.response && error.response.status === 500) {
@@ -424,7 +423,6 @@ const ViewGSTReturns = () => {
       } else {
         message.error("Failed to delete IT return. Please try again.");
       }
-     
     }
   };
 
@@ -460,7 +458,7 @@ const ViewGSTReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/gstreturns/previewGSTReturns/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/document/gstreturns/previewGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -484,7 +482,7 @@ const ViewGSTReturns = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/document/gstreturns/downloadGSTReturns/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/document/gstreturns/downloadGSTReturns/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -689,58 +687,61 @@ const ViewGSTReturns = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slicedHistory.map((gstReturn, index) => (
-                        <tr key={gstReturn._id}>
-                          <td className="py-2 px-4 border-b">
-                            {filteredGSTReturnsData.length - startIndex - index}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.selectedClientGroup}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.selectedReturnType}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.description.substring(0, 50)}...
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.remarks.substring(0, 50)}...
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.files[0].filename
-                              .split("_")
-                              .slice(1)
-                              .join("_")}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.role}
-                          </td>
-                          <td className="py-2 px-4 border-b">
-                            {gstReturn.email}
-                          </td>
-                          <td>
-                            <button
-                              onClick={() => handleView(index)}
-                              className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                            >
-                              View
-                            </button>
-                          </td>
-                          <td>
-                            <button
-                              onClick={() =>
-                                handleDelete(
-                                  gstReturn.files[0].filename,
-                                  gstReturn.timestamp
-                                )
-                              }
-                              className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
-                            >
-                              Delete
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                      {slicedHistory
+                        .filter((gstReturn) => gstReturn.role === "employee")
+                        .map((gstReturn, index) => (
+                          <tr key={gstReturn._id}>
+                            <td className="py-2 px-4 border-b">
+                              {index + 1}{" "}
+                              {/* Use index + 1 for sequential numbering */}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.selectedClientGroup}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.selectedReturnType}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.description.substring(0, 50)}...
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.remarks.substring(0, 50)}...
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.files[0].filename
+                                .split("_")
+                                .slice(1)
+                                .join("_")}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.role}
+                            </td>
+                            <td className="py-2 px-4 border-b">
+                              {gstReturn.email}
+                            </td>
+                            <td>
+                              <button
+                                onClick={() => handleView(index)}
+                                className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                              >
+                                View
+                              </button>
+                            </td>
+                            <td>
+                              <button
+                                onClick={() =>
+                                  handleDelete(
+                                    gstReturn.files[0].filename,
+                                    gstReturn.timestamp
+                                  )
+                                }
+                                className="bg-transparent hover:bg-red-500 text-red-700 font-semibold hover:text-white py-2 px-4 border border-red-500 hover:border-transparent rounded"
+                              >
+                                Delete
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                   <ul className="pagination flex justify-center items-center my-4">
@@ -786,161 +787,167 @@ const ViewGSTReturns = () => {
   } else {
     return (
       <div>
-        <NavigationBar/>
+        <NavigationBar />
         <hr></hr>
-      <div className="container mx-auto p-10">
-        <p className="font-bold text-3xl text-blue-500 mb-10">
-          GST RETURNS LIST 
-        </p>
-        <div className="flex flex-wrap mt-4">
-          <div className="mb-4 w-full">
-            <div className="flex justify-between border border-t-3 border-b-3 border-gray-200 p-5">
-              <div className="flex justify-between ">
-                <div
-                  className={`cursor-pointer ${
-                    filterOption === "all"
-                      ? "text-blue-500 font-bold"
-                      : "text-gray-500 hover:text-blue-500"
-                  } flex items-center`}
-                  onClick={() => handleFilter("all")}
-                >
-                  <span
-                    className={`mr-2 ${
-                      filterOption === "all" ? "border-b-2 border-blue-500" : ""
-                    }`}
+        <div className="container mx-auto p-10">
+          <p className="font-bold text-3xl text-blue-500 mb-10">
+            GST RETURNS LIST
+          </p>
+          <div className="flex flex-wrap mt-4">
+            <div className="mb-4 w-full">
+              <div className="flex justify-between border border-t-3 border-b-3 border-gray-200 p-5">
+                <div className="flex justify-between ">
+                  <div
+                    className={`cursor-pointer ${
+                      filterOption === "all"
+                        ? "text-blue-500 font-bold"
+                        : "text-gray-500 hover:text-blue-500"
+                    } flex items-center`}
+                    onClick={() => handleFilter("all")}
                   >
-                    All
-                  </span>
-                </div>
-                <div className="mx-10"></div>
-                <div
-                  className={`cursor-pointer ${
-                    filterOption === "inactive"
-                      ? "text-red-500 font-bold"
-                      : "text-gray-500 hover:text-red-500"
-                  } flex items-center`}
-                  onClick={() => handleFilter("inactive")}
-                >
-                  <span
-                    className={`mr-2 ${
-                      filterOption === "inactive"
-                        ? "border-b-2 border-red-500"
-                        : ""
-                    }`}
-                  >
-                    Inactive
-                  </span>
-                </div>
-                <div className="mx-10"></div>
-                <div
-                  className={`cursor-pointer ${
-                    filterOption === "active"
-                      ? "text-green-500 font-bold"
-                      : "text-gray-500 hover:text-green-500"
-                  } flex items-center`}
-                  onClick={() => handleFilter("active")}
-                >
-                  <span
-                    className={`mr-2 ${
-                      filterOption === "active"
-                        ? "border-b-2 border-green-500"
-                        : ""
-                    }`}
-                  >
-                    Active
-                  </span>
-                </div>
-              </div>
-              <input
-                type="text"
-                placeholder="Search by name or email"
-                value={searchQueryC}
-                onChange={(e) => setSearchQueryC(e.target.value)}
-                className="border border-gray-300 rounded px-4 py-2 mr-2"
-              />
-            </div>
-          </div>
-          <table className="min-w-full border border-gray-300">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">S No</th>
-                <th className="py-2 px-4 border-b">First Name</th>
-                <th className="py-2 px-4 border-b">Last Name</th>
-                <th className="py-2 px-4 border-b">Email</th>
-                <th className="py-2 px-4 border-b">Phone Number</th>
-                <th className="py-2 px-4 border-b">Status</th>
-                <th className="py-2 px-4 border-b">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {slicedHistoryC.map((client, index) => (
-                <tr
-                  key={index}
-                  className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}
-                >
-                  <td className="py-2 px-4 border-b">
-                    {filteredClientData.length - startIndexC - index}
-                  </td>
-                  <td className="py-2 px-4 border-b">{client.firstname}</td>
-                  <td className="py-2 px-4 border-b">{client.lastname}</td>
-                  <td className="py-2 px-4 border-b">{client.email}</td>
-                  <td className="py-2 px-4 border-b">{client.Phone_number}</td>
-                  <td className="py-2 px-4 border-b">
                     <span
-                      className={
-                        client.status === "active"
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }
+                      className={`mr-2 ${
+                        filterOption === "all"
+                          ? "border-b-2 border-blue-500"
+                          : ""
+                      }`}
                     >
-                      {client.status}
+                      All
                     </span>
-                  </td>
-                  <td className="py-2 px-4 border-b">
-                    {client.status === "active" && (
-                      <button
-                        onClick={() => fetchGSTReturnsData(client)}
-                        className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
-                      >
-                        Select
-                      </button>
-                    )}
-                  </td>
+                  </div>
+                  <div className="mx-10"></div>
+                  <div
+                    className={`cursor-pointer ${
+                      filterOption === "inactive"
+                        ? "text-red-500 font-bold"
+                        : "text-gray-500 hover:text-red-500"
+                    } flex items-center`}
+                    onClick={() => handleFilter("inactive")}
+                  >
+                    <span
+                      className={`mr-2 ${
+                        filterOption === "inactive"
+                          ? "border-b-2 border-red-500"
+                          : ""
+                      }`}
+                    >
+                      Inactive
+                    </span>
+                  </div>
+                  <div className="mx-10"></div>
+                  <div
+                    className={`cursor-pointer ${
+                      filterOption === "active"
+                        ? "text-green-500 font-bold"
+                        : "text-gray-500 hover:text-green-500"
+                    } flex items-center`}
+                    onClick={() => handleFilter("active")}
+                  >
+                    <span
+                      className={`mr-2 ${
+                        filterOption === "active"
+                          ? "border-b-2 border-green-500"
+                          : ""
+                      }`}
+                    >
+                      Active
+                    </span>
+                  </div>
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search by name or email"
+                  value={searchQueryC}
+                  onChange={(e) => setSearchQueryC(e.target.value)}
+                  className="border border-gray-300 rounded px-4 py-2 mr-2"
+                />
+              </div>
+            </div>
+            <table className="min-w-full border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">S No</th>
+                  <th className="py-2 px-4 border-b">First Name</th>
+                  <th className="py-2 px-4 border-b">Last Name</th>
+                  <th className="py-2 px-4 border-b">Email</th>
+                  <th className="py-2 px-4 border-b">Phone Number</th>
+                  <th className="py-2 px-4 border-b">Status</th>
+                  <th className="py-2 px-4 border-b">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-          <ul className="pagination flex justify-center items-center my-4">
-            <li className={`page-item ${currentPageC === 1 ? "disabled" : ""}`}>
-              <button
-                onClick={() => paginateC(currentPageC - 1)}
-                className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+              </thead>
+              <tbody>
+                {slicedHistoryC.map((client, index) => (
+                  <tr
+                    key={index}
+                    className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}
+                  >
+                    <td className="py-2 px-4 border-b">
+                      {filteredClientData.length - startIndexC - index}
+                    </td>
+                    <td className="py-2 px-4 border-b">{client.firstname}</td>
+                    <td className="py-2 px-4 border-b">{client.lastname}</td>
+                    <td className="py-2 px-4 border-b">{client.email}</td>
+                    <td className="py-2 px-4 border-b">
+                      {client.Phone_number}
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      <span
+                        className={
+                          client.status === "active"
+                            ? "text-green-500"
+                            : "text-red-500"
+                        }
+                      >
+                        {client.status}
+                      </span>
+                    </td>
+                    <td className="py-2 px-4 border-b">
+                      {client.status === "active" && (
+                        <button
+                          onClick={() => fetchGSTReturnsData(client)}
+                          className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                        >
+                          Select
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <ul className="pagination flex justify-center items-center my-4">
+              <li
+                className={`page-item ${currentPageC === 1 ? "disabled" : ""}`}
               >
-                <FontAwesomeIcon icon={faAngleLeft} />
-              </button>
-            </li>
-            {renderPaginationButtonsC()}
-            <li
-              className={`page-item ${
-                currentPageC === totalPagesC ? "disabled" : ""
-              }`}
-            >
-              <button
-                onClick={() => paginateC(currentPageC + 1)}
-                className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                <button
+                  onClick={() => paginateC(currentPageC - 1)}
+                  className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                >
+                  <FontAwesomeIcon icon={faAngleLeft} />
+                </button>
+              </li>
+              {renderPaginationButtonsC()}
+              <li
+                className={`page-item ${
+                  currentPageC === totalPagesC ? "disabled" : ""
+                }`}
               >
-                <FontAwesomeIcon icon={faAngleRight} />
-              </button>
-            </li>
-          </ul>
+                <button
+                  onClick={() => paginateC(currentPageC + 1)}
+                  className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                >
+                  <FontAwesomeIcon icon={faAngleRight} />
+                </button>
+              </li>
+            </ul>
+          </div>
+          <Modal
+            showModal={showModal}
+            closeModal={() => setShowModal(false)}
+            handleConfirmDelete={handleConfirmDelete}
+            modalContent={modalContent}
+          />
         </div>
-        <Modal
-          showModal={showModal}
-          closeModal={() => setShowModal(false)}
-          handleConfirmDelete={handleConfirmDelete}
-          modalContent={modalContent}
-        />
-      </div>
       </div>
     );
   }

@@ -5,6 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../../NavigationBar/NavigationBar";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const SendGSTreturns = () => {
   const [clients, setClients] = useState([]);
@@ -104,16 +106,16 @@ const SendGSTreturns = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (values, { resetForm }) => {
     setIsLoading(true);
     const dataForBackend = new FormData();
-    dataForBackend.append("selectedClient", selectedClient);
-    dataForBackend.append("selectedCompany", selectedCompany);
-    dataForBackend.append("selectedReturnType", selectedReturnType);
-    dataForBackend.append("description", description);
-    dataForBackend.append("remarks", remarks);
-    dataForBackend.append("file", file);
-
+    dataForBackend.append("selectedClient", selectedClient);  // Adjusted key name
+    dataForBackend.append("selectedCompany", values.company); // Adjusted key name
+    dataForBackend.append("selectedReturnType", values.returnType);
+    dataForBackend.append("description", values.description);
+    dataForBackend.append("remarks", values.remarks);
+    dataForBackend.append("file", values.file);
+  
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
@@ -127,13 +129,8 @@ const SendGSTreturns = () => {
         }
       );
       console.log("Backend Response:", response.data);
-
-      setSelectedClient("");
-      setSelectedCompany("");
-      setSelectedReturnType("");
-      setDescription("");
-      setRemarks("");
-      setFile(null);
+  
+      resetForm(); // Reset the form fields
       setIsLoading(false);
       setShowForm(false); // Hide the form after submission
       message.success("GST Returns submitted successfully!");
@@ -144,6 +141,24 @@ const SendGSTreturns = () => {
     }
   };
 
+  const formik = useFormik({
+    initialValues: {
+      company: "",
+      returnType: "",
+      description: "",
+      remarks: "",
+      file: null,
+    },
+    validationSchema: Yup.object({
+      company: Yup.string().required("Company is required"),
+      returnType: Yup.string().required("Type of GST Returns is required"),
+      description: Yup.string().required("Description is required"),
+      remarks: Yup.string().required("Remarks are required"),
+      file: Yup.mixed().required("File upload is required"),
+    }),
+    onSubmit: handleSubmit, // Pass handleSubmit here
+  });
+  
   const totalPagesC = Math.ceil(clients.length / itemsPerPageC);
 
   const paginateC = (pageNumber) => {
@@ -226,9 +241,11 @@ const SendGSTreturns = () => {
     setFilteredClientData(filteredClients);
   };
 
-
   const startIndexC = (currentPageC - 1) * itemsPerPageC;
-  const endIndexC = Math.min(startIndexC + itemsPerPageC, filteredClientData.length);
+  const endIndexC = Math.min(
+    startIndexC + itemsPerPageC,
+    filteredClientData.length
+  );
   const slicedHistoryC = filteredClientData.slice(startIndexC, endIndexC);
 
   const handleBackButtonClick = () => {
@@ -287,294 +304,332 @@ const SendGSTreturns = () => {
 
   return (
     <div className="">
-      
       <div className="">
-      
         {showForm ? (
           <div className="min-h-screen flex justify-center items-center bg-gray-100">
-            
-            <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
-              <h2 className="text-3xl font-semibold text-gray-700 mb-4 text-center">
-                GST Returns
-              </h2>
+      <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
+        <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
+          GST RETURNS FORM
+        </p>
 
-              <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="company"
-                >
-                  Select Company:
-                </label>
-                <select
-                  id="company"
-                  value={selectedCompany}
-                  onChange={handleCompanyChange}
-                  className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-                >
-                  <option value="">Select Company</option>
-                  {companies.map((company) => (
-                    <option key={company} value={company}>
-                      {company}
-                    </option>
-                  ))}
-                </select>
+        <form onSubmit={formik.handleSubmit}>
+          <div className="mb-6">
+            <label
+              className="block text-gray-500 text-lg mb-2"
+              htmlFor="company"
+            >
+              Select Company:
+            </label>
+            <select
+              id="company"
+              name="company"
+              value={formik.values.company}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+            >
+              <option value="">Select Company</option>
+              {companies.map((company) => (
+                <option key={company} value={company}>
+                  {company}
+                </option>
+              ))}
+            </select>
+            {formik.touched.company && formik.errors.company ? (
+              <div className="text-red-500 text-sm mt-2">
+                {formik.errors.company}
               </div>
-              <div className="mb-6">
-                <label className="block text-gray-500 text-lg mb-2">
-                  Type of GST Returns:
-                </label>
-                {gstReturnsFields
-                  .filter((returnType) => returnType.status === "active")
-                  .map((field) => (
-                    <div key={field._id}>
-                      <input
-                        type="radio"
-                        id={`returnType_${field.name}`}
-                        name="returnType"
-                        value={field.name}
-                        checked={selectedReturnType === field.name}
-                        onChange={handleReturnTypeChange}
-                      />
-                      <label
-                        htmlFor={`returnType_${field.name}`}
-                        className="ml-2 mr-4"
-                      >
-                        {field.name}
-                      </label>
-                    </div>
-                  ))}
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="description"
-                >
-                  Description:
-                </label>
-                <textarea
-                  id="description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Enter description"
-                  className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="remarks"
-                >
-                  Remarks:
-                </label>
-                <textarea
-                  id="remarks"
-                  value={remarks}
-                  onChange={(e) => setRemarks(e.target.value)}
-                  placeholder="Enter remarks"
-                  className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
-                  style={{ width: "100%" }}
-                />
-              </div>
-              <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="file"
-                >
-                  Upload File:
-                </label>
-                <input
-                  type="file"
-                  id="file"
-                  onChange={handleFileChange}
-                  className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-                />
-              </div>
-              <div className="flex justify-center items-center mt-12 space-x-4">
-                {/* Back button */}
-                <button
-                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  type="button"
-                  onClick={handleBackButtonClick} // Call handleBackButtonClick function on click
-                >
-                  Back
-                </button>
-                {/* Submit button */}
-                <button
-                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  type="button"
-                  onClick={handleSubmit}
-                >
-                {isLoading ? "Loading..." : "Submit"}
-                </button>
-              </div>
-            </div>
+            ) : null}
           </div>
+
+          <div className="mb-6">
+            <label className="block text-gray-500 text-lg mb-2">
+              Type of GST Returns:
+            </label>
+            {gstReturnsFields
+              .filter((returnType) => returnType.status === "active")
+              .map((field) => (
+                <div key={field._id}>
+                  <input
+                    type="radio"
+                    id={`returnType_${field.name}`}
+                    name="returnType"
+                    value={field.name}
+                    checked={formik.values.returnType === field.name}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  />
+                  <label
+                    htmlFor={`returnType_${field.name}`}
+                    className="ml-2 mr-4"
+                  >
+                    {field.name}
+                  </label>
+                </div>
+              ))}
+            {formik.touched.returnType && formik.errors.returnType ? (
+              <div className="text-red-500 text-sm mt-2">
+                {formik.errors.returnType}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mb-6">
+            <label
+              className="block text-gray-500 text-lg mb-2"
+              htmlFor="description"
+            >
+              Description:
+            </label>
+            <textarea
+              id="description"
+              name="description"
+              value={formik.values.description}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Enter description"
+              className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
+              style={{ width: "100%" }}
+            />
+            {formik.touched.description && formik.errors.description ? (
+              <div className="text-red-500 text-sm mt-2">
+                {formik.errors.description}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mb-6">
+            <label
+              className="block text-gray-500 text-lg mb-2"
+              htmlFor="remarks"
+            >
+              Remarks:
+            </label>
+            <textarea
+              id="remarks"
+              name="remarks"
+              value={formik.values.remarks}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="Enter remarks"
+              className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
+              style={{ width: "100%" }}
+            />
+            {formik.touched.remarks && formik.errors.remarks ? (
+              <div className="text-red-500 text-sm mt-2">
+                {formik.errors.remarks}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="mb-6">
+            <label
+              className="block text-gray-500 text-lg mb-2"
+              htmlFor="file"
+            >
+              Upload File:
+            </label>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              onChange={(event) =>
+                formik.setFieldValue("file", event.currentTarget.files[0])
+              }
+              onBlur={formik.handleBlur}
+              className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+            />
+            {formik.touched.file && formik.errors.file ? (
+              <div className="text-red-500 text-sm mt-2">
+                {formik.errors.file}
+              </div>
+            ) : null}
+          </div>
+
+          <div className="flex justify-center items-center mt-12 space-x-4">
+            <button
+              className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              type="submit"
+              disabled={formik.isSubmitting || !formik.isValid}
+            >
+            {formik.isSubmitting ? (
+              <span>Loading...</span> // You can also use a spinner icon here
+            ) : (
+              "Submit"
+            )}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
         ) : (
           <div>
-            <NavigationBar/>
+            <NavigationBar />
             <hr></hr>
-          <div className="container mx-auto p-10">
-            <p className="font-bold text-3xl text-blue-500 mb-10">
-              GST RETURNS
-            </p>
+            <div className="container mx-auto p-10">
+              <p className="font-bold text-3xl text-blue-500 mb-10">
+                GST RETURNS
+              </p>
 
-            <div className="flex flex-wrap mt-4">
-              <div className="mb-4 w-full">
-                <div className="flex justify-between border border-t-3 border-b-3 border-gray-200 p-5">
-                  <div className="flex justify-between">
-                    <div
-                      className={`cursor-pointer ${
-                        filterOption === "all"
-                          ? "text-blue-500 font-bold"
-                          : "text-gray-500 hover:text-blue-500"
-                      } flex items-center`}
-                      onClick={() => setFilterOption("all")}
-                    >
-                      <span
-                        className={`mr-2 ${
+              <div className="flex flex-wrap mt-4">
+                <div className="mb-4 w-full">
+                  <div className="flex justify-between border border-t-3 border-b-3 border-gray-200 p-5">
+                    <div className="flex justify-between">
+                      <div
+                        className={`cursor-pointer ${
                           filterOption === "all"
-                            ? "border-b-2 border-blue-500"
-                            : ""
-                        }`}
+                            ? "text-blue-500 font-bold"
+                            : "text-gray-500 hover:text-blue-500"
+                        } flex items-center`}
+                        onClick={() => setFilterOption("all")}
                       >
-                        All
-                      </span>
-                    </div>
-                    <div className="mx-10"></div>
-                    <div
-                      className={`cursor-pointer ${
-                        filterOption === "inactive"
-                          ? "text-red-500 font-bold"
-                          : "text-gray-500 hover:text-red-500"
-                      } flex items-center`}
-                      onClick={() => setFilterOption("inactive")}
-                    >
-                      <span
-                        className={`mr-2 ${
+                        <span
+                          className={`mr-2 ${
+                            filterOption === "all"
+                              ? "border-b-2 border-blue-500"
+                              : ""
+                          }`}
+                        >
+                          All
+                        </span>
+                      </div>
+                      <div className="mx-10"></div>
+                      <div
+                        className={`cursor-pointer ${
                           filterOption === "inactive"
-                            ? "border-b-2 border-red-500"
-                            : ""
-                        }`}
+                            ? "text-red-500 font-bold"
+                            : "text-gray-500 hover:text-red-500"
+                        } flex items-center`}
+                        onClick={() => setFilterOption("inactive")}
                       >
-                        Inactive
-                      </span>
-                    </div>
-                    <div className="mx-10"></div>
-                    <div
-                      className={`cursor-pointer ${
-                        filterOption === "active"
-                          ? "text-green-500 font-bold"
-                          : "text-gray-500 hover:text-green-500"
-                      } flex items-center`}
-                      onClick={() => setFilterOption("active")}
-                    >
-                      <span
-                        className={`mr-2 ${
+                        <span
+                          className={`mr-2 ${
+                            filterOption === "inactive"
+                              ? "border-b-2 border-red-500"
+                              : ""
+                          }`}
+                        >
+                          Inactive
+                        </span>
+                      </div>
+                      <div className="mx-10"></div>
+                      <div
+                        className={`cursor-pointer ${
                           filterOption === "active"
-                            ? "border-b-2 border-green-500"
-                            : ""
-                        }`}
+                            ? "text-green-500 font-bold"
+                            : "text-gray-500 hover:text-green-500"
+                        } flex items-center`}
+                        onClick={() => setFilterOption("active")}
                       >
-                        Active
-                      </span>
+                        <span
+                          className={`mr-2 ${
+                            filterOption === "active"
+                              ? "border-b-2 border-green-500"
+                              : ""
+                          }`}
+                        >
+                          Active
+                        </span>
+                      </div>
                     </div>
+                    <input
+                      type="text"
+                      placeholder="Search by name or email"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="border border-gray-300 rounded px-4 py-2 mr-2"
+                    />
                   </div>
-                  <input
-                    type="text"
-                    placeholder="Search by name or email"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="border border-gray-300 rounded px-4 py-2 mr-2"
-                  />
+                </div>
+                <table className="min-w-full border border-gray-300">
+                  <thead>
+                    <tr>
+                      <th className="py-2 px-4 border-b">S No</th>
+                      <th className="py-2 px-4 border-b">First Name</th>
+                      <th className="py-2 px-4 border-b">Last Name</th>
+                      <th className="py-2 px-4 border-b">Email</th>
+                      <th className="py-2 px-4 border-b">Phone Number</th>
+                      <th className="py-2 px-4 border-b">Status</th>
+                      <th className="py-2 px-4 border-b">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {slicedHistoryC.map((client, index) => (
+                      <tr
+                        key={index}
+                        className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}
+                      >
+                        <td className="py-2 px-4 border-b">
+                          {filteredClientData.length - startIndexC - index}
+                        </td>
+                        <td className="py-2 px-4 border-b">
+                          {client.firstname}
+                        </td>
+                        <td className="py-2 px-4 border-b">
+                          {client.lastname}
+                        </td>
+                        <td className="py-2 px-4 border-b">{client.email}</td>
+                        <td className="py-2 px-4 border-b">
+                          {client.Phone_number}
+                        </td>
+                        <td className="py-2 px-4 border-b">
+                          <span
+                            className={
+                              client.status === "active"
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }
+                          >
+                            {client.status}
+                          </span>
+                        </td>
+                        <td className="py-2 px-4 border-b">
+                          <button
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
+                            onClick={() => handleViewClient(client)}
+                          >
+                            Select
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <div className="flex justify-center items-center my-4">
+                  <ul className="pagination flex justify-center items-center my-4">
+                    <li
+                      className={`page-item ${
+                        currentPageC === 1 ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        onClick={() => paginateC(currentPageC - 1)}
+                        className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                      >
+                        <FontAwesomeIcon icon={faAngleLeft} />
+                      </button>
+                    </li>
+                    {renderPaginationButtonsC()}
+                    <li
+                      className={`page-item ${
+                        currentPageC === totalPagesC ? "disabled" : ""
+                      }`}
+                    >
+                      <button
+                        onClick={() => paginateC(currentPageC + 1)}
+                        className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+                      >
+                        <FontAwesomeIcon icon={faAngleRight} />
+                      </button>
+                    </li>
+                  </ul>
                 </div>
               </div>
-              <table className="min-w-full border border-gray-300">
-                <thead>
-                  <tr>
-                    <th className="py-2 px-4 border-b">S No</th>
-                    <th className="py-2 px-4 border-b">First Name</th>
-                    <th className="py-2 px-4 border-b">Last Name</th>
-                    <th className="py-2 px-4 border-b">Email</th>
-                    <th className="py-2 px-4 border-b">Phone Number</th>
-                    <th className="py-2 px-4 border-b">Status</th>
-                    <th className="py-2 px-4 border-b">Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {slicedHistoryC.map((client, index) => (
-                    <tr
-                      key={index}
-                      className={(index + 1) % 2 === 0 ? "bg-gray-100" : ""}
-                    >
-                      <td className="py-2 px-4 border-b">
-                        {filteredClientData.length - startIndexC - index}
-                      </td>
-                      <td className="py-2 px-4 border-b">{client.firstname}</td>
-                      <td className="py-2 px-4 border-b">{client.lastname}</td>
-                      <td className="py-2 px-4 border-b">{client.email}</td>
-                      <td className="py-2 px-4 border-b">
-                        {client.Phone_number}
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        <span
-                          className={
-                            client.status === "active"
-                              ? "text-green-500"
-                              : "text-red-500"
-                          }
-                        >
-                          {client.status}
-                        </span>
-                      </td>
-                      <td className="py-2 px-4 border-b">
-                        <button
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline"
-                          onClick={() => handleViewClient(client)}
-                        >
-                          Select
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="flex justify-center items-center my-4">
-                <ul className="pagination flex justify-center items-center my-4">
-                  <li
-                    className={`page-item ${
-                      currentPageC === 1 ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      onClick={() => paginateC(currentPageC - 1)}
-                      className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-                    >
-                      <FontAwesomeIcon icon={faAngleLeft} />
-                    </button>
-                  </li>
-                  {renderPaginationButtonsC()}
-                  <li
-                    className={`page-item ${
-                      currentPageC === totalPagesC ? "disabled" : ""
-                    }`}
-                  >
-                    <button
-                      onClick={() => paginateC(currentPageC + 1)}
-                      className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-                    >
-                      <FontAwesomeIcon icon={faAngleRight} />
-                    </button>
-                  </li>
-                </ul>
-              </div>
             </div>
-          </div>
           </div>
         )}
       </div>
     </div>
-    
   );
 };
 

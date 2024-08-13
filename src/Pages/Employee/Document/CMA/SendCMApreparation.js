@@ -5,7 +5,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import NavigationBar from "../../NavigationBar/NavigationBar";
-
+import { useFormik } from "formik";
+import * as Yup from "yup"
 const SendCMApreparation = () => {
   const [clients, setClients] = useState([]);
 
@@ -210,15 +211,35 @@ const SendCMApreparation = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = async () => {
+  const formik = useFormik({
+    initialValues: {
+      company: '',
+      cmaPreparationType: '',
+      description: '',
+      remarks: '',
+      file: null,
+    },
+    validationSchema: Yup.object({
+      company: Yup.string().required('Company is required'),
+      cmaPreparationType: Yup.string().required('CMA Preparation Type is required'),
+      description: Yup.string().max(500, 'Description must be 500 characters or less').required('Description is required'),
+      remarks: Yup.string().max(200, 'Remarks must be 200 characters or less').required('Remarks is required'),
+      file: Yup.mixed().required('File is required'),
+    }),
+    onSubmit: async (values) => {
+      await handleSubmit(values);
+    },
+  });
+
+  const handleSubmit = async (values) => {
     setIsLoading(true);
     const dataForBackend = new FormData();
     dataForBackend.append("clientEmail", selectedClient);
-    dataForBackend.append("company", selectedCompany);
-    dataForBackend.append("cmaPreparationTypeName", selectedCmaPreparationType);
-    dataForBackend.append("description", description);
-    dataForBackend.append("remarks", remarks);
-    dataForBackend.append("file", file);
+    dataForBackend.append("company", values.company);
+    dataForBackend.append("cmaPreparationTypeName", values.cmaPreparationType);
+    dataForBackend.append("description", values.description);
+    dataForBackend.append("remarks", values.remarks);
+    dataForBackend.append("file", values.file);
 
     try {
       const token = localStorage.getItem("token");
@@ -234,15 +255,14 @@ const SendCMApreparation = () => {
       );
       console.log("Backend Response:", response.data);
 
-      setSelectedClient("");
-      setSelectedCompany("");
-      setSelectedCmaPreparationType("");
-      setDescription("");
-      setRemarks("");
+      // Reset form values and states
+      formik.resetForm();
       setFile(null);
       setIsLoading(false);
-      setShowForm(false);
+      setShowForm(false); // Assuming setShowForm is defined elsewhere
       message.success("CMA Preparation successfully submitted.");
+      navigate('/employee/employeedashboard/viewcmae')
+
     } catch (error) {
       console.error("Error sending data to the backend:", error);
       setIsLoading(false);
@@ -259,24 +279,23 @@ const SendCMApreparation = () => {
       <div className="">
         {showForm ? (
           <div className="min-h-screen flex justify-center items-center bg-gray-100">
-            <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
-              <h2 className="text-3xl font-semibold text-gray-500 mb-4 text-center">
-                Add New CMA Preparation
-              </h2>
-
+          <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
+            <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
+              CMA FORM
+            </p>
+    
+            <form onSubmit={formik.handleSubmit}>
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="company"
-                >
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="company">
                   Select Company:
                 </label>
                 <select
                   id="company"
                   name="company"
-                  value={selectedCompany}
-                  onChange={handleCompanyChange}
-                  className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                  value={formik.values.company}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`border ${formik.touched.company && formik.errors.company ? 'border-red-500' : 'border-gray-200'} rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full`}
                 >
                   <option value="">Select Company</option>
                   {companies.map((company) => (
@@ -285,110 +304,106 @@ const SendCMApreparation = () => {
                     </option>
                   ))}
                 </select>
+                {formik.touched.company && formik.errors.company ? (
+                  <div className="text-red-500 text-sm">{formik.errors.company}</div>
+                ) : null}
               </div>
-
+    
               <div className="mb-6">
-                <label className="block text-gray-500 text-lg mb-2">
-                  CMA Preparation Type:
-                </label>
+                <label className="block text-gray-500 text-lg mb-2">CMA Preparation Type:</label>
                 {cmaPreparationTypes && cmaPreparationTypes.length > 0 ? (
                   cmaPreparationTypes
                     .filter((returnType) => returnType.status === "active")
                     .map((cmaPreparationType) => (
-                      <div
-                        key={cmaPreparationType}
-                        className="flex items-center mb-2"
-                      >
+                      <div key={cmaPreparationType.name} className="flex items-center mb-2">
                         <input
                           type="radio"
                           id={cmaPreparationType.name}
                           name="cmaPreparationType"
                           value={cmaPreparationType.name}
-                          checked={
-                            selectedCmaPreparationType ===
-                            cmaPreparationType.name
-                          }
-                          onChange={handleCmaPreparationTypeChange}
+                          checked={formik.values.cmaPreparationType === cmaPreparationType.name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           className="mr-2"
                         />
-                        <label htmlFor={cmaPreparationType.name}>
-                          {cmaPreparationType.name}
-                        </label>
+                        <label htmlFor={cmaPreparationType.name}>{cmaPreparationType.name}</label>
                       </div>
                     ))
                 ) : (
                   <p>No CMA preparation types available</p>
                 )}
+                {formik.touched.cmaPreparationType && formik.errors.cmaPreparationType ? (
+                  <div className="text-red-500 text-sm">{formik.errors.cmaPreparationType}</div>
+                ) : null}
               </div>
-
+    
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="description"
-                >
-                  Description:
-                </label>
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="description">Description:</label>
                 <textarea
                   id="description"
                   name="description"
-                  value={description}
-                  onChange={handleDescriptionChange}
-                  className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
+                  value={formik.values.description}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  className={`border ${formik.touched.description && formik.errors.description ? 'border-red-500' : 'border-gray-200'} rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36`}
                 ></textarea>
+                {formik.touched.description && formik.errors.description ? (
+                  <div className="text-red-500 text-sm">{formik.errors.description}</div>
+                ) : null}
               </div>
-
+    
               <div className="mb-6">
-                <label
-                  htmlFor="remarks"
-                  className="block text-gray-500 text-lg mb-2"
-                >
-                  Remarks:
-                </label>
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="remarks">Remarks:</label>
                 <textarea
                   id="remarks"
                   name="remarks"
-                  value={remarks}
-                  onChange={handleRemarksChange}
+                  value={formik.values.remarks}
+                  onChange={formik.handleChange}
                   className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
                 ></textarea>
+                {formik.touched.remarks && formik.errors.remarks ? (
+                  <div className="text-red-500 text-sm">{formik.errors.remarks}</div>
+                ) : null}
               </div>
-
+    
               <div className="mb-6">
-                <label
-                  className="block text-gray-500 text-lg mb-2"
-                  htmlFor="file"
-                >
-                  Upload File:
-                </label>
+                <label className="block text-gray-500 text-lg mb-2" htmlFor="file">Upload File:</label>
                 <input
                   type="file"
                   id="file"
                   name="file"
-                  onChange={handleFileChange}
-                  className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                  onChange={(event) => {
+                    formik.setFieldValue('file', event.currentTarget.files[0]);
+                  }}
+                  onBlur={formik.handleBlur}
+                  className={`border ${formik.touched.file && formik.errors.file ? 'border-red-500' : 'border-gray-200'} rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full`}
                 />
+                {formik.touched.file && formik.errors.file ? (
+                  <div className="text-red-500 text-sm">{formik.errors.file}</div>
+                ) : null}
               </div>
-
+    
               <div className="flex justify-center items-center mt-12 space-x-4">
                 {/* Back button */}
                 <button
-                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
                   type="button"
-                  onClick={handleBackButtonClick} // Call handleBackButtonClick function on click
+                  onClick={handleBackButtonClick}
                 >
                   Back
                 </button>
                 {/* Submit button */}
                 <button
-                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  type="button"
-                  onClick={handleSubmit}
+                  className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
+                  type="submit"
+                  disabled={isLoading}
                 >
-                {isLoading ? "Loading..." : "Submit"}
+                  {isLoading ? "Loading..." : "Submit"}
                 </button>
               </div>
-            </div>
+            </form>
           </div>
+        </div>
         ) : (
           <div>
             <NavigationBar/>

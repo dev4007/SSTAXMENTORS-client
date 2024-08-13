@@ -4,6 +4,9 @@ import { message } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faAngleLeft, faAngleRight } from "@fortawesome/free-solid-svg-icons";
 import NavigationBar from "../../NavigationBar/NavigationBar";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 const SendLicense = () => {
   const [clients, setClients] = useState([]);
@@ -25,6 +28,7 @@ const SendLicense = () => {
   const [itemsPerPageClient] = useState(15);
   const [currentPageC, setCurrentPageC] = useState(1);
   const [itemsPerPageC, setItemsPerPageC] = useState(50);
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchData = async () => {
@@ -163,15 +167,35 @@ const SendLicense = () => {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = async () => {
+  const formik = useFormik({
+    initialValues: {
+      company: '',
+      licenseType: '',
+      description: '',
+      remarks: '',
+      file: null,
+    },
+    validationSchema: Yup.object({
+      company: Yup.string().required('Company is required'),
+      licenseType: Yup.string().required('License type is required'),
+      description: Yup.string().required('Description is required'),
+      remarks: Yup.string().required('Remarks is required'),
+      file: Yup.mixed().required('File is required'),
+    }),
+    onSubmit: async (values) => {
+      handleSubmit(values);
+    },
+  });
+
+  const handleSubmit = async (values) => {
     setIsLoading(true);
     const dataForBackend = new FormData();
-    dataForBackend.append("clientEmail", selectedClient);
-    dataForBackend.append("company", selectedCompany);
-    dataForBackend.append("licenseTypeName", selectedLicenseType);
-    dataForBackend.append("description", description);
-    dataForBackend.append("remarks", remarks);
-    dataForBackend.append("file", file);
+    dataForBackend.append("clientEmail", selectedClient); // Make sure to define selectedClient
+    dataForBackend.append("company", values.company);
+    dataForBackend.append("licenseTypeName", values.licenseType);
+    dataForBackend.append("description", values.description);
+    dataForBackend.append("remarks", values.remarks);
+    dataForBackend.append("file", values.file);
 
     try {
       const token = localStorage.getItem("token");
@@ -188,20 +212,18 @@ const SendLicense = () => {
       console.log("Backend Response:", response.data);
       message.success("License added successfully");
 
-      setSelectedClient("");
-      setSelectedCompany("");
-      setSelectedLicenseType("");
-      setDescription("");
-      setRemarks("");
-      setFile(null);
+      // Reset form values
+      formik.resetForm();
       setIsLoading(false);
       setShowForm(false); // Hide the form after submission
+      navigate('/admin/admindashboard/viewlicensea')
     } catch (error) {
       console.error("Error sending data to the backend:", error);
       setIsLoading(false);
       message.error("Failed to add license");
     }
   };
+
 
   // Pagination
   // const indexOfLastClient = currentPageClient * itemsPerPageClient;
@@ -266,22 +288,22 @@ const SendLicense = () => {
           <div>
             <NavigationBar />
             <div className="min-h-screen flex justify-center items-center bg-gray-100">
-              <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
-                <p className="font-bold text-3xl  flex justify-center text-blue-500 mb-10">
-                  LICENSE FORM
-                </p>
+            <div className="max-w-2xl w-full bg-white p-8 rounded-md shadow-md mt-8 mb-8">
+            <p className="font-bold text-3xl flex justify-center text-blue-500 mb-10">
+              LICENSE FORM
+            </p>
+            {showForm && (
+              <form onSubmit={formik.handleSubmit}>
                 <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="company"
-                  >
+                  <label className="block text-gray-500 text-lg mb-2" htmlFor="company">
                     Select Company:
                   </label>
                   <select
                     id="company"
                     name="company"
-                    value={selectedCompany}
-                    onChange={handleCompanyChange}
+                    value={formik.values.company}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
                   >
                     <option value="">Select Company</option>
@@ -291,6 +313,9 @@ const SendLicense = () => {
                       </option>
                     ))}
                   </select>
+                  {formik.touched.company && formik.errors.company ? (
+                    <div className="text-red-500 text-sm">{formik.errors.company}</div>
+                  ) : null}
                 </div>
                 <div className="mb-6">
                   <label className="block text-gray-500 text-lg mb-2">
@@ -298,19 +323,16 @@ const SendLicense = () => {
                   </label>
                   {licenseTypes && licenseTypes.length > 0 ? (
                     licenseTypes
-                      .filter((returnType) => returnType.status === "active")
+                      .filter((licenseType) => licenseType.status === "active")
                       .map((licenseType) => (
-                        <div
-                          key={licenseType.name}
-                          className="flex items-center mb-2"
-                        >
+                        <div key={licenseType.name} className="flex items-center mb-2">
                           <input
                             type="radio"
                             id={licenseType.name}
                             name="licenseType"
                             value={licenseType.name}
-                            checked={selectedLicenseType === licenseType.name}
-                            onChange={handleLicenseTypeChange}
+                            checked={formik.values.licenseType === licenseType.name}
+                            onChange={formik.handleChange}
                             className="mr-2"
                           />
                           <label htmlFor={licenseType.name}>
@@ -321,55 +343,62 @@ const SendLicense = () => {
                   ) : (
                     <p>No license types available</p>
                   )}
+                  {formik.touched.licenseType && formik.errors.licenseType ? (
+                    <div className="text-red-500 text-sm">{formik.errors.licenseType}</div>
+                  ) : null}
                 </div>
                 <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="description"
-                  >
+                  <label className="block text-gray-500 text-lg mb-2" htmlFor="description">
                     Description:
                   </label>
                   <textarea
                     id="description"
                     name="description"
-                    value={description}
-                    onChange={handleDescriptionChange}
+                    value={formik.values.description}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
                     className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
                   ></textarea>
+                  {formik.touched.description && formik.errors.description ? (
+                    <div className="text-red-500 text-sm">{formik.errors.description}</div>
+                  ) : null}
                 </div>
                 <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="remarks"
-                  >
+                  <label className="block text-gray-500 text-lg mb-2" htmlFor="remarks">
                     Remarks:
                   </label>
                   <textarea
                     id="remarks"
                     name="remarks"
-                    value={remarks}
-                    onChange={handleRemarksChange}
+                    value={formik.values.remarks}
+                    onChange={formik.handleChange}
                     className="border border-gray-200 rounded px-4 py-2 resize-y focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full h-36"
                   ></textarea>
+                  {formik.touched.remarks && formik.errors.remarks ? (
+                    <div className="text-red-500 text-sm">{formik.errors.remarks}</div>
+                  ) : null}
                 </div>
-                Upload File:
                 <div className="mb-6">
-                  <label
-                    className="block text-gray-500 text-lg mb-2"
-                    htmlFor="file"
-                  ></label>
+                  <label className="block text-gray-500 text-lg mb-2" htmlFor="file">
+                    Upload File:
+                  </label>
                   <input
                     type="file"
                     id="file"
                     name="file"
-                    onChange={handleFileChange}
+                    onChange={(event) => {
+                      formik.setFieldValue('file', event.currentTarget.files[0]);
+                    }}
                     className="border border-gray-200 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
                   />
+                  {formik.touched.file && formik.errors.file ? (
+                    <div className="text-red-500 text-sm">{formik.errors.file}</div>
+                  ) : null}
                 </div>
                 <div className="flex justify-center items-center mt-12 space-x-4">
                   {/* Back button */}
                   <button
-                    className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                    className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
                     type="button"
                     onClick={handleBackButtonClick} // Call handleBackButtonClick function on click
                   >
@@ -377,16 +406,18 @@ const SendLicense = () => {
                   </button>
                   {/* Submit button */}
                   <button
-                    className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:from-blue-600 focus:to-blue-800 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:from-blue-700 active:to-blue-900 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    type="button"
-                    onClick={handleSubmit}
+                    className="inline-block w-56 rounded px-6 pb-2 pt-2.5 leading-normal text-white bg-gradient-to-r from-blue-500 to-blue-700 shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:from-blue-600 hover:to-blue-800"
+                    type="submit"
+                    disabled={isLoading}
                   >
-                  {isLoading ? "Loading..." : "Submit"}
-
+                    {isLoading ? "Loading..." : "Submit"}
                   </button>
                 </div>
-              </div>
-            </div>
+              </form>
+            )}
+          </div>
+          
+    </div>
           </div>
         ) : (
           <div>

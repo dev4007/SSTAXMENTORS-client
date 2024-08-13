@@ -7,7 +7,7 @@ import { message } from "antd";
 const SupportTicketDetailsInNewTab = () => {
   const [supportTicketData, setSupportTicketData] = useState(null);
   const [loading, setLoading] = useState(false); // Loader state
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   useEffect(() => {
     // Retrieve data from local storage
@@ -24,7 +24,7 @@ const SupportTicketDetailsInNewTab = () => {
       const authToken = localStorage.getItem("token");
       console.log(fileId);
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/previewSupportTicket/${fileId}`,
+        `${process.env.REACT_APP_API_URL}/user/previewSupportTicket/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -33,7 +33,14 @@ const SupportTicketDetailsInNewTab = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
@@ -45,7 +52,7 @@ const SupportTicketDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/downloadSupportTicket/${fileId}`,
+        `${process.env.REACT_APP_API_URL}/user/downloadSupportTicket/${fileId}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -70,12 +77,12 @@ const SupportTicketDetailsInNewTab = () => {
   const handleResolve = async (ticketId) => {
     try {
       const token = localStorage.getItem("token");
-      const userRole  = localStorage.getItem("role");
+      const userRole = localStorage.getItem("role");
 
-      setLoading(true)
+      setLoading(true);
       // Update ticket status to resolved
       const response = await axios.patch(
-       `${process.env.REACT_APP_API_URL}/admin/resolveSupportTicket/${ticketId}`,
+        `${process.env.REACT_APP_API_URL}/admin/resolveSupportTicket/${ticketId}`,
         null,
         {
           headers: {
@@ -90,12 +97,11 @@ const SupportTicketDetailsInNewTab = () => {
           // navigate("/admin/admindashboard/support-ticketa");
           window.close(); // Close current tab
           window.opener.location.href = "/admin/admindashboard/support-ticketa"; // Navigate previous tab to new route
-    
         } else if (userRole === "employee") {
           // navigate("/employee/employeedashboard/support-tickete");
           window.close(); // Close current tab
-          window.opener.location.href = "/employee/employeedashboard/support-tickete"; // Navigate previous tab to new route
-    
+          window.opener.location.href =
+            "/employee/employeedashboard/support-tickete"; // Navigate previous tab to new route
         } else {
           message.error("Unknown user role");
         }
@@ -148,42 +154,63 @@ const SupportTicketDetailsInNewTab = () => {
             <p>
               <strong className="text-gray-600">Status:</strong>{" "}
               {supportTicketData[0].status}
-            </p>
-            <div className="flex items-center mt-4">
-              {supportTicketData[0].files[0].filename
-                .slice(-3)
-                .toLowerCase() === "pdf" && (
-                <button
-                  onClick={() =>
-                    handlePreview(
-                      supportTicketData[0].files[0].fileId,
-                      supportTicketData[0].files[0].filename
-                    )
-                  }
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-                >
-                  Preview
-                </button>
-              )}
-              <button
-                onClick={() =>
-                  handleDownload(
-                    supportTicketData[0].files[0].fileId,
-                    supportTicketData[0].files[0].filename
-                  )
-                }
-                className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
-              >
-                Download
-              </button>
+              <p className="mt-5">
               {supportTicketData[0].status !== "resolved" && (
                 <button
-                  onClick={() => handleResolve(supportTicketData[0].ticketId)}
+                  onClick={() =>
+                    handleResolve(supportTicketData[0].ticketId)
+                  }
                   className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
                 >
-                 {loading ? "Please wait.."  : "Resolve" }
+                  {loading ? "Please wait.." : "Resolve"}
                 </button>
               )}
+              </p>
+            </p>
+           
+            <div className="flex items-center mt-4">
+              <div className="flex flex-col mt-4">
+                {supportTicketData[0].files.map((file, index) => {
+                  const fileExtension = file.filename.slice(-3).toLowerCase();
+                  const isImage = ["jpg", "jpeg", "png"].includes(
+                    fileExtension
+                  );
+                  const isPdf = fileExtension === "pdf";
+
+                  return (
+                    <div key={index} className="flex items-center mb-4">
+                        {/* Display image or PDF name below the buttons */}
+                        <div className="flex flex-col items-center mt-2">
+                        <strong className="mt-1 mr-2">File {file.filename}</strong>
+                      </div>
+                      {/* Display preview, download, and resolve buttons */}
+                      <div className="flex items-center space-x-2">
+                        {(isImage || isPdf) && (
+                          <button
+                            onClick={() =>
+                              handlePreview(file.fileId, file.filename)
+                            }
+                            className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
+                          >
+                            Preview {isPdf ? "PDF" : "Image"}
+                          </button>
+                        )}
+                        <button
+                          onClick={() =>
+                            handleDownload(file.fileId, file.filename)
+                          }
+                          className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600"
+                        >
+                          Download
+                        </button>
+                       
+                      </div>
+
+                  
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         ) : (

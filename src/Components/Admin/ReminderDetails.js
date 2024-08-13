@@ -19,16 +19,26 @@ const ReminderDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/admin/previewreminder/${filename}`,
+        `${process.env.REACT_APP_API_URL}/admin/previewreminder/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
+          },
+          params: {
+            filename: filename,
           },
           responseType: "arraybuffer",
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
@@ -40,7 +50,7 @@ const ReminderDetailsInNewTab = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/admin/downloadreminder/${filename}`,
+        `${process.env.REACT_APP_API_URL}/admin/downloadreminder/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -77,34 +87,37 @@ const ReminderDetailsInNewTab = () => {
               <p className="text-sm text-gray-700 mb-2">
                 {reminderData.description}
               </p>
+
               {reminderData.files && reminderData.files.length > 0 ? (
-                <p className="text-2xl font-medium mb-2 text-black-100">
-                  {reminderData.files[0].filename}
-                </p>
+                reminderData.files.map((file, index) => (
+                  <div key={index} className="mb-4">
+                    <p className="text-lg font-medium mb-2 text-black-600 overflow-auto break-words">
+                      {file.filename}
+                    </p>
+                    <div className="flex items-center">
+                      {["pdf", "png", "jpg", "jpeg"].includes(
+                        file.filename.slice(-3).toLowerCase()
+                      ) && (
+                        <button
+                          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded mr-4"
+                          onClick={() => handlePreview(file.filename)}
+                        >
+                          Preview
+                        </button>
+                      )}
+                      <button
+                        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded"
+                        onClick={() => handleDownload(file.filename)}
+                      >
+                        Download
+                      </button>
+                    </div>
+                  </div>
+                ))
               ) : (
-                <p className="font-semibold">No file available.</p>
-              
+                <p className="font-semibold">No files available.</p>
               )}
             </div>
-            {reminderData.files && reminderData.files.length > 0 && (
-              <div className="flex items-center mt-8">
-                {reminderData.files[0].filename.slice(-3).toLowerCase() ===
-                  "pdf" && (
-                  <button
-                    className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded mr-4"
-                    onClick={() => handlePreview(reminderData.files[0].filename)}
-                  >
-                    Preview
-                  </button>
-                )}
-                <button
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded"
-                  onClick={() => handleDownload(reminderData.files[0].filename)}
-                >
-                  Download
-                </button>
-              </div>
-            )}
           </div>
         ) : (
           <p className="text-lg">No Notification data found.</p>

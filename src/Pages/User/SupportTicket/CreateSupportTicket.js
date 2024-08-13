@@ -7,16 +7,17 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const CreateSupportTicket = () => {
+  
   let navigate = useNavigate();
   const [ticketId, setTicketId] = useState("");
   const [questionType, setQuestionType] = useState("general");
   const [issueMessage, setIssueMessage] = useState("");
   const [files, setFiles] = useState([]);
   const [token, setToken] = useState(localStorage.getItem("token"));
-  const formRef = useRef(null); // Create a ref for the form
-  const [loader , setLoader] = useState(false); // Create a ref for the form
 
+  const [loader, setLoader] = useState(false); // Create a ref for the form
 
+  const fileInputRef = useRef(null);
   const formik = useFormik({
     initialValues: {
       issueMessage: issueMessage ? issueMessage : "",
@@ -30,16 +31,11 @@ const CreateSupportTicket = () => {
           "fileSize",
           "Each file should be less than 10MB",
           (files) => files.every((file) => file.size <= 10 * 1024 * 1024) // 10MB per file
-        )
-        .test("fileType", "Unsupported file format", (files) =>
-          files.every((file) => ["application/pdf"].includes(file.type))
         ),
     }),
-    onSubmit: async (values, { resetForm, setFieldValue }) => {
-      // console.log("🚀 ~ onSubmit:async ~ values:", values)
-      // Handle form submission he
+    onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        setLoader(true)
+        setLoader(true);
         setIssueMessage(values.issueMessage);
         const formData = new FormData();
         formData.append("ticketId", ticketId); // Add this line to send ticketId
@@ -62,16 +58,21 @@ const CreateSupportTicket = () => {
         fetchTicketId();
         resetForm(); // Reset the form after successful submission
         message.success("support ticket submitted successfully!");
-        navigate('/user/userdashboard/view-ticket')
-        setLoader(false)
-
+        navigate("/user/userdashboard/view-ticket");
+        setLoader(false);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = "";
+        }
       } catch (error) {
         message.error("support ticket not sent. please try again later");
         console.error("Error creating support ticket:", error);
       }
+      finally {
+        setSubmitting(false);
+      }
     },
   });
-
+  
   useEffect(() => {
     // let isMounted = true;
     // Fetch ticket ID from the backend on component mount
@@ -113,12 +114,13 @@ const CreateSupportTicket = () => {
     }
   };
 
-  const handleFileChange = (event) => {
-    // Set selected files based on file input change
-    const fileList = event.target.files;
-    setFiles(Array.from(fileList)); // Convert the FileList to an array
-  };
 
+  const handleFileChange = (event) => {
+    const selectedFiles = Array.from(event.currentTarget.files);
+    const updatedFiles = [...formik.values.files, ...selectedFiles];
+    setFiles(updatedFiles);
+    formik.setFieldValue('files', updatedFiles); // Set files in Formik state
+  };
   return (
     <div>
       <NavigationBar />
@@ -225,24 +227,35 @@ const CreateSupportTicket = () => {
 
               <div className="mb-4">
                 <label className="block font-regular text-lg text-gray-500">
-                  Upload Files(only Pdf Supported):
+                  Upload Files
                 </label>
                 <input
-                  type="file"
-                  name="files"
-                   id="files"
-                  onChange={(event) => {
-                    const selectedFiles = Array.from(event.currentTarget.files);
-                    setFiles(selectedFiles);
-                    formik.setFieldValue("files", selectedFiles);
-                  }}
-                  // onChange={handleFileChange}
-                  accept="application/pdf"
-                  className="border border-gray-300 px-3 py-2 rounded w-full"
-                />
+                type="file"
+                multiple
+                onChange={(event) => {
+               
+                  handleFileChange(event); // Call your custom file change handler if needed
+                }}
+                className="border border-gray-300 px-3 py-2 rounded w-full"
+                ref={fileInputRef} // Attach the ref to the file input
+              />
+              
                 {formik.touched.files && formik.errors.files ? (
                   <div style={{ color: "red" }}>{formik.errors.files}</div>
                 ) : null}
+                {/* Display selected files */}
+                {formik.values.files.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-gray-700">Selected Files:</p>
+                    <ul className="list-disc pl-5">
+                      {formik.values.files.map((file, index) => (
+                        <li key={index} className="text-gray-600">
+                          {file.name}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </div>
 
               <div className="flex space-x-4">
@@ -252,7 +265,6 @@ const CreateSupportTicket = () => {
                 >
                   {loader ? "Loading..." : "Submit"}
                 </button>
-               
               </div>
             </div>
           </form>
