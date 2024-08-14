@@ -665,14 +665,11 @@ const ViewLicense = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slicedHistory
-                        .filter((License) => License.role === "employee")
-                        .map((License, index) => (
-                          <tr key={License._id}>
-                            <td className="py-2 px-4 border-b">
-                              {index + 1}{" "}
-                              {/* Use index + 1 for sequential numbering */}
-                            </td>
+                    {slicedHistory.map((License, index) => (
+                      <tr key={License._id}>
+                        <td className="py-2 px-4 border-b">
+                          {filteredLicenseData.length - startIndex - index}
+                        </td>
                             <td className="py-2 px-4 border-b">
                               {License.company}
                             </td>

@@ -131,12 +131,17 @@ const UserGSTReturns = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
 
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
-
-      // Open the PDF in a new tab
       window.open(url, "_blank");
+
     } catch (error) {
       console.error("Error previewing file:", error);
     } finally {
@@ -342,10 +347,7 @@ const UserGSTReturns = () => {
                   {selectedGSTReturns.role}
                 </p>
                 <div className="flex items-center mt-4 flex-wrap">
-                  {selectedGSTReturns.files[0].filename
-                    .slice(-3)
-                    .toLowerCase() === "pdf" && (
-                    <button
+                     <button
                       onClick={() =>
                         handlePreview(selectedGSTReturns.files[0].filename)
                       }
@@ -359,7 +361,7 @@ const UserGSTReturns = () => {
                         ? "Loading Preview..."
                         : "Preview"}
                     </button>
-                  )}
+          
                   <button
                     onClick={() =>
                       handleDownload(selectedGSTReturns.files[0].filename)
@@ -446,10 +448,7 @@ const UserGSTReturns = () => {
                           {truncateText(GSTReturns.name, 20)}
                         </td>
                         <td className="border px-4 py-2  text-center">
-                          {GSTReturns.files[0].filename
-                            .slice(-3)
-                            .toLowerCase() === "pdf" && (
-                            <button
+                             <button
                               onClick={() =>
                                 handlePreview(GSTReturns.files[0].filename)
                               }
@@ -462,7 +461,7 @@ const UserGSTReturns = () => {
                                 ? "Loading Preview..."
                                 : "Preview"}
                             </button>
-                          )}
+                        
                         </td>
                         <td className="border px-4 py-2  text-center">
                           <button

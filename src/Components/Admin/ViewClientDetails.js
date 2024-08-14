@@ -93,6 +93,107 @@ const ClientDetailsInNewTab = () => {
       : "Not specified";
   };
 
+  const downloadFile = async (file) => {
+    console.log("🚀 ~ downloadFile ~ file:", file);
+    const fileUrl = `${process.env.REACT_APP_API_URL}/${file.filePath}`;
+    try {
+      // Fetch the file from the URL
+      const response = await fetch(fileUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/octet-stream", // Generic content type for binary data
+        },
+      });
+
+      // Check if the response is ok
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a Blob URL
+      const url = window.URL.createObjectURL(blob);
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file.fileName); // Set the file name for download
+      document.body.appendChild(link);
+      link.click(); // Trigger the download
+      document.body.removeChild(link); // Remove the link from the document
+      // Clean up the Blob URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
+  const renderFilePreview = (file) => {
+    const isImage = file.fileType.startsWith("image/");
+    const isPDF = file.fileType === "application/pdf";
+
+    const filePath = `${process.env.REACT_APP_API_URL}/${file.filePath}`;
+    //   // Open the file in a new tab or window
+
+    if (isImage) {
+      window.open(filePath, "_blank");
+    } else if (isPDF) {
+      window.open(filePath, "_blank");
+    }
+
+    return <p>Preview not available for this file type.</p>;
+  };
+
+  const companyDownloadFile = async (file) => {
+    const fileUrl = `${process.env.REACT_APP_API_URL}/${file.name}`;
+    try {
+      // Fetch the file from the URL
+      const response = await fetch(fileUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/octet-stream", // Generic content type for binary data
+        },
+      });
+
+      // Check if the response is ok
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a Blob URL
+      const url = window.URL.createObjectURL(blob);
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file.filename); // Set the file name for download
+      document.body.appendChild(link);
+      link.click(); // Trigger the download
+      document.body.removeChild(link); // Remove the link from the document
+      // Clean up the Blob URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
+  const companyRenderFilePreview = (file) => {
+    const isImage = file.type.startsWith("image/");
+    const isPDF = file.type === "application/pdf";
+
+    const filePath = `${process.env.REACT_APP_API_URL}/${file.name}`;
+    //   // Open the file in a new tab or window
+
+    if (isImage) {
+      window.open(filePath, "_blank");
+    } else if (isPDF) {
+      window.open(filePath, "_blank");
+    }
+
+    return <p>Preview not available for this file type.</p>;
+  };
+
   return (
     <div>
       <div>
@@ -172,9 +273,8 @@ const ClientDetailsInNewTab = () => {
                 <p class="mb-2 text-lg">{`Company Type: ${getCompanyType(
                   company.companyType
                 )}`}</p>
-                <p class="mb-2 text-lg">{`Address: ${getAddress(
-                  company.address
-                )}`}</p>
+                <p class="mb-2 text-lg">Address: {
+                  company.address}</p>
                 <p class="mb-2 text-lg">{`Office Number: ${
                   company.officeNumber || "Not specified"
                 }`}</p>
@@ -182,96 +282,63 @@ const ClientDetailsInNewTab = () => {
                 {/* Display subInputs */}
                 {showMoreMap[idx] ? (
                   <>
-                    {company.subInputValues &&
-                      Object.entries(company.subInputValues).map(
-                        ([subInputName, subInputData]) => (
-                          <div key={subInputName} className="mt-4">
-                            <p className="font-semibold text-lg">{`SubInputName: ${subInputName}`}</p>
-                            {Object.entries(subInputData).map(
-                              ([key, value]) =>
-                                typeof value === "object" &&
-                                "value" in value && (
-                                  <p
-                                    key={key}
-                                    className="ml-4 text-lg"
-                                  >{`${value.value}`}</p>
-                                )
-                            )}
-                          </div>
-                        )
-                      )}
-
-                    <div className="mt-6">
-                      <div className="border-t border-gray-300 py-4">
-                        <h4 className="text-xl font-semibold text-gray-800">
-                          Document Files:
-                        </h4>
-                        {company.documentFiles.map((file, index) => (
-                          <div
-                            key={index}
-                            className="mt-2 flex items-center justify-between"
-                          >
-                            <div>
-                              <span className="text-gray-500 font-semibold text-md mr-2 text-lg">
-                                Filename:{" "}
-                              </span>
-                              <span>{file.filename}</span>
-                            </div>
-                            <div>
-                              {file.type === "application/pdf" && (
-                                <button
-                                  onClick={() => handlePreview(file.filename)}
-                                  className="mr-3 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded transition-all duration-300"
-                                >
-                                  Preview
-                                </button>
-                              )}
-                              <button
-                                onClick={() => handleDownload(file.filename)}
-                                className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded transition-all duration-300"
-                              >
-                                Download
-                              </button>
-                            </div>
-                          </div>
-                        ))}
+                  {Object.keys(company.subInputValues).map((key) => {
+                    const fileData = company.subInputValues[key].file_data;
+                    return (
+                      <div key={key} className="flex items-center space-x-2">
+                        <span className="text-gray-500 font-semibold text-md">
+                          {key} Number: {company.subInputValues[key][`${key} Number`]?.value}
+                        </span>
+                        {fileData ? (
+                          <>
+                            <button
+                              onClick={() => downloadFile(fileData)}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Download
+                            </button>
+                            <button
+                              className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                              onClick={() => renderFilePreview(fileData)}
+                            >
+                              Preview
+                            </button>
+                          </>
+                        ) : null}
                       </div>
-                    </div>
-
+                    );
+                  })}
+            
                     <div className="mt-6">
                       <div className="border-t border-gray-300 py-4">
                         <h4 className="text-xl font-semibold text-gray-800">
                           Company Type Files:
                         </h4>
                         {company.companyTypeFiles.map((file, index) => (
-                          <div
-                            key={index}
-                            className="mt-2 flex items-center justify-between"
-                          >
-                            <div>
-                              <span className="text-gray-500 font-semibold text-md mr-2 text-lg">
-                                Filename:{" "}
+                          <div key={index} className="mt-2">
+                            <div className="mb-2">
+                              <span className="text-gray-500 font-semibold text-md mr-2">
+                                Filename:
                               </span>
                               <span>{file.filename}</span>
                             </div>
-                            <div>
-                              {file.type === "application/pdf" && (
-                                <button
-                                  onClick={() => handlePreview(file.filename)}
-                                  className="mr-3 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded transition-all duration-300"
-                                >
-                                  Preview
-                                </button>
-                              )}
+                            <div className="mb-4 space-x-2">
                               <button
-                                onClick={() => handleDownload(file.filename)}
-                                className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded transition-all duration-300"
+                                onClick={() => companyDownloadFile(file)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
                               >
                                 Download
+                              </button>
+                              <button
+                                className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                                onClick={() => companyRenderFilePreview(file)}
+                              >
+                                Preview
                               </button>
                             </div>
                           </div>
                         ))}
+        
                       </div>
                     </div>
 

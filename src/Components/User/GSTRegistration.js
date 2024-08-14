@@ -34,6 +34,7 @@ const GSTRegistration = () => {
             },
           }
         );
+        console.log("🚀 ~ fetchCompanyNames ~ response:", response)
         if (!response) {
           throw new Error("Failed to fetch profile data");
         }

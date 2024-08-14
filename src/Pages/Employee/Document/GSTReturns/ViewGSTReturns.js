@@ -687,15 +687,12 @@ const ViewGSTReturns = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slicedHistory
-                        .filter((gstReturn) => gstReturn.role === "employee")
-                        .map((gstReturn, index) => (
-                          <tr key={gstReturn._id}>
-                            <td className="py-2 px-4 border-b">
-                              {index + 1}{" "}
-                              {/* Use index + 1 for sequential numbering */}
-                            </td>
-                            <td className="py-2 px-4 border-b">
+                    {slicedHistory.map((gstReturn, index) => (
+                      <tr key={gstReturn._id}>
+                        <td className="py-2 px-4 border-b">
+                          {filteredGSTReturnsData.length - startIndex - index}
+                        </td>
+                           <td className="py-2 px-4 border-b">
                               {gstReturn.selectedClientGroup}
                             </td>
                             <td className="py-2 px-4 border-b">

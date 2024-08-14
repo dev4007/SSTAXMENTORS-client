@@ -28,11 +28,15 @@ const GSTNoticeDetailsInNewTab = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
 
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
-
-      // Open the PDF in a new tab
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error previewing file:", error);
@@ -99,15 +103,13 @@ const GSTNoticeDetailsInNewTab = () => {
               <strong>Role:</strong> {gstNoticeData.role}
             </p>
             <div className="flex items-center mt-8">
-              {gstNoticeData.files[0].filename.slice(-3).toLowerCase() ===
-                "pdf" && (
-                <button
+                 <button
                   className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded mr-4"
                   onClick={() => handlePreview(gstNoticeData.files[0].filename)}
                 >
                   Preview
                 </button>
-              )}
+       
               <button
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded"
                 onClick={() => handleDownload(gstNoticeData.files[0].filename)}

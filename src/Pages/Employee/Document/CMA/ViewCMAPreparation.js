@@ -666,14 +666,11 @@ const ViewCMA = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slicedHistory
-                        .filter((cma) => cma.role === "employee")
-                        .map((cma, index) => (
-                          <tr key={cma._id}>
-                            <td className="py-2 px-4 border-b">
-                              {index + 1}{" "}
-                              {/* Use index + 1 for sequential numbering */}
-                            </td>
+                    {slicedHistory.map((cma, index) => (
+                      <tr key={cma._id}>
+                        <td className="py-2 px-4 border-b">
+                          {filteredCMAData.length - startIndex - index}
+                        </td>
 
                             <td className="py-2 px-4 border-b">
                               {cma.company}

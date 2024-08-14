@@ -158,11 +158,15 @@ const UserROCFilings = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
 
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
-
-      // Open the PDF in a new tab
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error previewing file:", error);
@@ -364,9 +368,6 @@ const UserROCFilings = () => {
                   {selectedROCFilings.role}
                 </p>
                 <div className="flex items-center mt-4 flex-wrap">
-                  {selectedROCFilings.files[0].filename
-                    .slice(-3)
-                    .toLowerCase() === "pdf" && (
                     <button
                       onClick={() =>
                         handlePreview(selectedROCFilings.files[0].filename)
@@ -381,7 +382,7 @@ const UserROCFilings = () => {
                         ? "Loading Preview..."
                         : "Preview"}
                     </button>
-                  )}
+              
                   <button
                     onClick={() =>
                       handleDownload(selectedROCFilings.files[0].filename)
@@ -464,9 +465,6 @@ const UserROCFilings = () => {
                           {truncateText(ROCFilings.name, 20)}
                         </td>
                         <td className="border px-4 py-2 text-center">
-                          {ROCFilings.files[0].filename
-                            .slice(-3)
-                            .toLowerCase() === "pdf" && (
                             <button
                               onClick={() =>
                                 handlePreview(ROCFilings.files[0].filename)
@@ -480,7 +478,7 @@ const UserROCFilings = () => {
                                 ? "Loading Preview..."
                                 : "Preview"}
                             </button>
-                          )}
+                    
                         </td>
                         <td className="border px-4 py-2 text-center">
                           <button

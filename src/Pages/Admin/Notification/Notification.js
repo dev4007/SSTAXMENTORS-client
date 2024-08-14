@@ -153,7 +153,7 @@ const Notification = () => {
                 <div className="text-red-500 text-sm">{formik.errors.files}</div>
               ) : null}
               {/* Display selected files */}
-              {formik.values.files.length > 0 && (
+              {formik?.values?.files?.length > 0 && (
                 <div className="mt-4">
                   <p className="text-gray-700">Selected Files:</p>
                   <ul className="list-disc pl-5">

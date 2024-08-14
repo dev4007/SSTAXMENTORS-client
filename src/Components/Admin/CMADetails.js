@@ -28,7 +28,14 @@ const CMADetailsInNewTab = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
@@ -97,14 +104,13 @@ const CMADetailsInNewTab = () => {
               <strong>Role:</strong> {cmaData.role}
             </p>
             <div className="flex items-center mt-8">
-              {cmaData.files[0].filename.slice(-3).toLowerCase() === "pdf" && (
-                <button
+                 <button
                   className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded mr-4"
                   onClick={() => handlePreview(cmaData.files[0].filename)}
                 >
                   Preview
                 </button>
-              )}
+            
               <button
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded"
                 onClick={() => handleDownload(cmaData.files[0].filename)}

@@ -142,9 +142,16 @@ const UserITReturns = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
 
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
 
       // Open the PDF in a new tab
       window.open(url, "_blank");
@@ -350,9 +357,6 @@ const UserITReturns = () => {
                   {selectedITReturn.role}
                 </p>
                 <div className="flex items-center mt-4 flex-wrap">
-                  {selectedITReturn.files[0].filename
-                    .slice(-3)
-                    .toLowerCase() === "pdf" && (
                     <button
                       onClick={() =>
                         handlePreview(selectedITReturn.files[0].filename)
@@ -367,7 +371,7 @@ const UserITReturns = () => {
                         ? "Loading Preview..."
                         : "Preview"}
                     </button>
-                  )}
+                
                   <button
                     onClick={() =>
                       handleDownload(selectedITReturn.files[0].filename)
@@ -445,9 +449,6 @@ const UserITReturns = () => {
                           {truncateText(itReturn.name, 20)}
                         </td>
                         <td className="border px-4 py-2 text-center">
-                          {itReturn.files[0].filename
-                            .slice(-3)
-                            .toLowerCase() === "pdf" && (
                             <button
                               onClick={() =>
                                 handlePreview(itReturn.files[0].filename)
@@ -461,7 +462,7 @@ const UserITReturns = () => {
                                 ? "Loading Preview..."
                                 : "Preview"}
                             </button>
-                          )}
+                      
                         </td>
                         <td className="border px-4 py-2 text-center">
                           <button

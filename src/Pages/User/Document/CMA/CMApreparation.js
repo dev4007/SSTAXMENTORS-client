@@ -146,11 +146,15 @@ const UserCMA = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
 
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
-
-      // Open the PDF in a new tab
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error previewing file:", error);
@@ -352,8 +356,6 @@ const UserCMA = () => {
                   {selectedCMA.role}
                 </p>
                 <div className="flex items-center mt-4 flex-wrap">
-                  {selectedCMA.files[0].filename.slice(-3).toLowerCase() ===
-                    "pdf" && (
                     <button
                       onClick={() =>
                         handlePreview(selectedCMA.files[0].filename)
@@ -368,7 +370,7 @@ const UserCMA = () => {
                         ? "Loading Preview..."
                         : "Preview"}
                     </button>
-                  )}
+               
                   <button
                     onClick={() =>
                       handleDownload(selectedCMA.files[0].filename)
@@ -446,9 +448,7 @@ const UserCMA = () => {
                           {truncateText(CMA.name, 20)}
                         </td>
                         <td className="border px-4 py-2 text-center">
-                          {CMA.files[0].filename.slice(-3).toLowerCase() ===
-                            "pdf" && (
-                            <button
+                             <button
                               onClick={() =>
                                 handlePreview(CMA.files[0].filename)
                               }
@@ -459,7 +459,7 @@ const UserCMA = () => {
                                 ? "Loading Preview..."
                                 : "Preview"}
                             </button>
-                          )}
+                  
                         </td>
                         <td className="border px-4 py-2 text-center">
                           <button

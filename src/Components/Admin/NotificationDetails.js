@@ -60,6 +60,7 @@ const NotificationDetailsInNewTab = () => {
       });
 
       const url = window.URL.createObjectURL(new Blob([response.data]));
+      console.log("🚀 ~ handleDownload ~ url:", response.data)
 
       const link = document.createElement("a");
       link.href = url;

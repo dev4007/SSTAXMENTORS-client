@@ -687,14 +687,11 @@ const RocFilings = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {slicedHistory
-                        .filter((rocFiling) => rocFiling.role === "employee")
-                        .map((rocFiling, index) => (
-                          <tr key={rocFiling._id}>
-                            <td className="py-2 px-4 border-b">
-                              {index + 1}{" "}
-                              {/* Use index + 1 for sequential numbering */}
-                            </td>
+                    {slicedHistory.map((rocFiling, index) => (
+                      <tr key={rocFiling._id}>
+                        <td className="py-2 px-4 border-b">
+                          {filteredROCFilingsData.length - startIndex - index}
+                        </td>
                             <td className="py-2 px-4 border-b">
                               {rocFiling.company}
                             </td>

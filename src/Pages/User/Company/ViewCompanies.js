@@ -107,7 +107,7 @@ const ViewCompanies = () => {
       setCompanyDetails(response.data);
     } catch (error) {
       console.error("Error fetching company details:", error);
-    
+
       if (isMounted && error.response && error.response.status === 500) {
         alert("Session expired. Please login again.");
         navigate("/");
@@ -122,11 +122,12 @@ const ViewCompanies = () => {
     }));
   };
 
-  const handlePreview = async (filename) => {
+  const handlePreview = async (filePath) => {
+    // Accept the full path as an argument
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/company/previewCompanyFile/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/company/previewCompanyFile/${filePath}`, // Use filePath directly
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -134,20 +135,27 @@ const ViewCompanies = () => {
           responseType: "arraybuffer",
         }
       );
+      console.log("🚀 ~ handlePreview ~ response:", response);
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
-      const url = window.URL.createObjectURL(blob);
-      window.open(url, "_blank");
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      window.open(url); // Open in a new tab for preview
     } catch (error) {
       console.error("Error previewing file:", error);
     }
   };
 
+  // const handlePreview = (fileName) => {
+  //   const filePath = `${fileName}`; // Adjust the path accordingly
+
+  //   // Open the file in a new tab or window
+  //   window.open(filePath, '_blank');
+  // };
+
   const handleDownload = async (filename) => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/company/downloadCompanyFile/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/company/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -161,11 +169,9 @@ const ViewCompanies = () => {
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", filename);
-      document.body.appendChild(link)
-;
+      document.body.appendChild(link);
       link.click();
-      document.body.removeChild(link)
-;
+      document.body.removeChild(link);
     } catch (error) {
       console.error("Error downloading file:", error);
     }
@@ -179,9 +185,9 @@ const ViewCompanies = () => {
   const handleConfirmDelete = async () => {
     try {
       const authToken = localStorage.getItem("token");
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/user/deleteCompany`,
-        { clientId: modalContent.companyId },
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/user/company/deletecompany/${modalContent.companyId}`,
+
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -230,8 +236,9 @@ const ViewCompanies = () => {
         >
           <button
             onClick={() => paginateC(i)}
-            className={`page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded ${currentPageC === i ? "current-page" : ""
-              }`}
+            className={`page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded ${
+              currentPageC === i ? "current-page" : ""
+            }`}
           >
             {i}
           </button>
@@ -268,7 +275,108 @@ const ViewCompanies = () => {
     companyDetails.length
   );
   const slicedHistoryC = companyDetails.slice(startIndexC, endIndexC);
+  console.log("🚀 ~ ViewCompanies ~ slicedHistoryC:", slicedHistoryC);
 
+  const downloadFile = async (file) => {
+    console.log("🚀 ~ downloadFile ~ file:", file);
+    const fileUrl = `${process.env.REACT_APP_API_URL}/${file.filePath}`;
+    try {
+      // Fetch the file from the URL
+      const response = await fetch(fileUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/octet-stream", // Generic content type for binary data
+        },
+      });
+
+      // Check if the response is ok
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a Blob URL
+      const url = window.URL.createObjectURL(blob);
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file.fileName); // Set the file name for download
+      document.body.appendChild(link);
+      link.click(); // Trigger the download
+      document.body.removeChild(link); // Remove the link from the document
+      // Clean up the Blob URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
+  const renderFilePreview = (file) => {
+    const isImage = file.fileType.startsWith("image/");
+    const isPDF = file.fileType === "application/pdf";
+
+    const filePath = `${process.env.REACT_APP_API_URL}/${file.filePath}`;
+    //   // Open the file in a new tab or window
+
+    if (isImage) {
+      window.open(filePath, "_blank");
+    } else if (isPDF) {
+      window.open(filePath, "_blank");
+    }
+
+    return <p>Preview not available for this file type.</p>;
+  };
+
+  const companyDownloadFile = async (file) => {
+    const fileUrl = `${process.env.REACT_APP_API_URL}/${file.name}`;
+    try {
+      // Fetch the file from the URL
+      const response = await fetch(fileUrl, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/octet-stream", // Generic content type for binary data
+        },
+      });
+
+      // Check if the response is ok
+      if (!response.ok) {
+        throw new Error("Network response was not ok.");
+      }
+
+      // Convert the response to a Blob
+      const blob = await response.blob();
+      // Create a Blob URL
+      const url = window.URL.createObjectURL(blob);
+      // Create a download link
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", file.filename); // Set the file name for download
+      document.body.appendChild(link);
+      link.click(); // Trigger the download
+      document.body.removeChild(link); // Remove the link from the document
+      // Clean up the Blob URL
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
+  const companyRenderFilePreview = (file) => {
+    const isImage = file.type.startsWith("image/");
+    const isPDF = file.type === "application/pdf";
+
+    const filePath = `${process.env.REACT_APP_API_URL}/${file.name}`;
+    //   // Open the file in a new tab or window
+
+    if (isImage) {
+      window.open(filePath, "_blank");
+    } else if (isPDF) {
+      window.open(filePath, "_blank");
+    }
+
+    return <p>Preview not available for this file type.</p>;
+  };
 
   return (
     <div className="bg-gray-100">
@@ -303,7 +411,28 @@ const ViewCompanies = () => {
               <span className="text-gray-500 font-semibold text-md mr-2">
                 Address:
               </span>
-              <span>{getAddress(company.address)}</span>
+              <span>{company.address}</span>
+            </div>
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">
+                State:
+              </span>
+              <span>{company.state}</span>
+            </div>
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">
+                Country:
+              </span>
+              <span>{company.country}</span>
+            </div>
+            <div className="flex mb-2">
+              <span className="text-gray-500 font-semibold text-md mr-2">
+                Landmark:
+              </span>
+
+              <span>
+                {company.landmark ? company.landmark : "Not Available"}
+              </span>
             </div>
             <div className="flex mb-2">
               <span className="text-gray-500 font-semibold text-md mr-2">
@@ -311,106 +440,38 @@ const ViewCompanies = () => {
               </span>
               <span>{company.officeNumber || "Not Specified"}</span>
             </div>
-            <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">GST Number:</span>
-              <span>{company?.subInputValues.GST["GST Number"].value}</span>
-
-              {company?.subInputValues?.GST?.file_data ?
-                <div key={company?.subInputValues.GST.file_data} className="mt-4">
-
-                  <div className="mb-2">
-                    <span className="text-gray-500 font-semibold text-md mr-2">
-                      Filename:{
-" "}
-                    </span>
-                    <span>{getFileName(company?.subInputValues.GST.file_data.fileName)}</span>
-                  </div>
-                  <div className="mb-4">
-              
+            <div>
+            {Object.keys(company.subInputValues).map((key) => {
+              const fileData = company.subInputValues[key].file_data;
+              return (
+                <div key={key} className="flex items-center space-x-2">
+                  <span className="text-gray-500 font-semibold text-md">
+                    {key} Number: {company.subInputValues[key][`${key} Number`]?.value}
+                  </span>
+                  {fileData ? (
+                    <>
                       <button
-                        onClick={() => handlePreview(company?.subInputValues.GST.file_data.fileName)}
-                        className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
+                        onClick={() => downloadFile(fileData)}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                      >
+                        Download
+                      </button>
+                      <button
+                        className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        onClick={() => renderFilePreview(fileData)}
                       >
                         Preview
                       </button>
-                  
-                    <button
-                      onClick={() => handleDownload(company?.subInputValues.GST.file_data.fileName)}
-                      className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
-                    >
-                      Download
-                    </button>
-                  </div>
+                    </>
+                  ) : null}
                 </div>
-                : null}
-            </div>
-
-            <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">PAN Number:</span>
-              <span>{company?.subInputValues.PAN["PAN Number"].value}</span>
-
-              {company?.subInputValues?.PAN?.file_data ?
-                <div key={company?.subInputValues.PAN.file_data} className="mt-4">
-
-                  <div className="mb-2">
-                    <span className="text-gray-500 font-semibold text-md mr-2">
-                      Filename:{
-" "}
-                    </span>
-                    <span>{getFileName(company?.subInputValues.PAN.file_data.fileName)}</span>
-                  </div>
-                  <div className="mb-4">
-                      <button
-                        onClick={() => handlePreview(company?.subInputValues.PAN.file_data.fileName)}
-                        className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                      >
-                        Preview
-                      </button>
-                    <button
-                      onClick={() => handleDownload(company?.subInputValues.PAN.file_data.fileName)}
-                      className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
-                    >
-                      Download
-                    </button>
-                  </div>
-                </div>
-                : null}
-
-            </div>
-            <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">VAN Number:</span>
-              <span>{company?.subInputValues.VAN["VAN Number"].value}</span>
-              {company?.subInputValues?.VAN?.file_data ?
-                <div key={company?.subInputValues.VAN.file_data} className="mt-4">
-
-                  <div className="mb-2">
-                    <span className="text-gray-500 font-semibold text-md mr-2">
-                      Filename:{
-" "}
-                    </span>
-                    <span>{getFileName(company?.subInputValues.VAN.file_data.fileName)}</span>
-                  </div>
-                  <div className="mb-4">
-                      <button
-                        onClick={() => handlePreview(company?.subInputValues.VAN.file_data.fileName)}
-                        className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                      >
-                        Preview
-                      </button>
-                    <button
-                      onClick={() => handleDownload(company?.subInputValues.VAN.file_data.fileName)}
-                      className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
-                    >
-                      Download
-                    </button>
-                  </div>
-                </div>
-                : null}
+              );
+            })}
+            
             </div>
 
             {showMoreMap[company._id] && (
               <div className="mt-4 ">
-
                 <h4 className="text-lg font-semibold text-gray-800 mt-4">
                   Company Type Files:
                 </h4>
@@ -418,25 +479,22 @@ const ViewCompanies = () => {
                   <div key={index} className="mt-2">
                     <div className="mb-2">
                       <span className="text-gray-500 font-semibold text-md mr-2">
-                        Filename:{
-" "}
+                        Filename:
                       </span>
-                      <span>{getFileName(file.filename)}</span>
+                      <span>{file.filename}</span>
                     </div>
-                    <div className="mb-4">
-                      {file.type === "application/pdf" && (
-                        <button
-                          onClick={() => handlePreview(file.filename)}
-                          className=" mr-5 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-                        >
-                          Preview
-                        </button>
-                      )}
+                    <div className="mb-4 space-x-2">
                       <button
-                        onClick={() => handleDownload(file.filename)}
-                        className="bg-transparent hover:bg-green-500 text-green-700 font-semibold hover:text-white py-2 px-4 border border-green-500 hover:border-transparent rounded"
+                        onClick={() => companyDownloadFile(file)}
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
                       >
                         Download
+                      </button>
+                      <button
+                        className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        onClick={() => companyRenderFilePreview(file)}
+                      >
+                        Preview
                       </button>
                     </div>
                   </div>
@@ -452,7 +510,9 @@ const ViewCompanies = () => {
           </div>
         ))}
         <ul className="pagination flex justify-center items-center my-4">
-          <li className={`page-item p-2 ${currentPageC === 1 ? "disabled" : ""}`}>
+          <li
+            className={`page-item p-2 ${currentPageC === 1 ? "disabled" : ""}`}
+          >
             <button
               onClick={() => paginateC(currentPageC - 1)}
               className="page-link bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
@@ -462,8 +522,9 @@ const ViewCompanies = () => {
           </li>
           {renderPaginationButtonsC()}
           <li
-            className={`page-item p-2 ${currentPageC === totalPagesC ? "disabled" : ""
-              }`}
+            className={`page-item p-2 ${
+              currentPageC === totalPagesC ? "disabled" : ""
+            }`}
           >
             <button
               onClick={() => paginateC(currentPageC + 1)}
@@ -494,24 +555,12 @@ const ViewCompanies = () => {
   );
 };
 
-const getAddress = (address) => {
-  if (!address) return "Not Specified";
-  const { streetName, city, state, country, postalCode, landmark } = address;
-  return `${streetName}, ${city}, ${state}, ${country} - ${postalCode}, Landmark: ${landmark || "Not Specified"
-    }`;
-};
-
 const getCompanyType = (companyType) => {
   if (!companyType) return "Not Specified";
   const selectedTypes = Object.keys(companyType).filter(
-    (key) => companyType[key] && key !== '_id' // Exclude the _id key
+    (key) => companyType[key] && key !== "_id" // Exclude the _id key
   );
   return selectedTypes.length > 0 ? selectedTypes.join(", ") : "Not Specified";
-};
-
-const getFileName = (filename) => {
-  const startIndex = filename.indexOf("_") + 1;
-  return filename.substring(startIndex);
 };
 
 export default ViewCompanies;

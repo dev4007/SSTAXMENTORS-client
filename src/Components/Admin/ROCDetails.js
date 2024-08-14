@@ -30,7 +30,14 @@ const ROCDetailsInNewTab = () => {
         }
       );
 
-      const blob = new Blob([response.data], { type: "application/pdf" });
+      const fileType = filename.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
       window.open(url, "_blank");
     } catch (error) {
@@ -101,8 +108,6 @@ const ROCDetailsInNewTab = () => {
               <strong>Role:</strong> {rocFilingsData.role}
             </p>
             <div className="flex items-center mt-8">
-              {rocFilingsData.files[0].filename.slice(-3).toLowerCase() ===
-                "pdf" && (
                 <button
                   className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded mr-4"
                   onClick={() =>
@@ -111,7 +116,7 @@ const ROCDetailsInNewTab = () => {
                 >
                   Preview
                 </button>
-              )}
+         
               <button
                 className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded"
                 onClick={() => handleDownload(rocFilingsData.files[0].filename)}
