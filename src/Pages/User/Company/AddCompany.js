@@ -187,7 +187,7 @@ function AddCompany() {
               companyName: "",
               address: "",
               state: "",
-              country: "",
+              country: "India",
               landmark: "",
               officeNumber: "",
             }}
@@ -260,7 +260,7 @@ function AddCompany() {
                     htmlFor="address"
                     className="block mb-3 font-regular text-lg text-gray-500"
                   >
-                    Address:
+                   City/Town/Village/District:
                   </label>
                   <Field
                     type="text"
@@ -306,6 +306,7 @@ function AddCompany() {
                     id="country"
                     name="country"
                     placeholder="Enter country"
+                    readOnly // Makes the field read-only
                     className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
                   />
                   <ErrorMessage

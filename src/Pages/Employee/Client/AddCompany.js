@@ -382,7 +382,7 @@ const AddCompany = () => {
             companyName: "",
             address: "",
             state: "",
-            country: "",
+            country: "India",
             landmark: "",
             officeNumber: "",
           }}
@@ -456,7 +456,7 @@ const AddCompany = () => {
                     htmlFor="address"
                     className="block mb-3 font-regular text-lg text-gray-500"
                   >
-                    Address:
+                  City/Town/Village/District:
                   </label>
                   <Field
                     type="text"
@@ -503,7 +503,8 @@ const AddCompany = () => {
                     name="country"
                     placeholder="Enter country"
                     className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-                  />
+                    readOnly // Makes the field read-only
+                    />
                   <ErrorMessage
                     name="country"
                     component="div"
