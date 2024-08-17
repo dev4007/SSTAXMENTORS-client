@@ -27,9 +27,7 @@ const RegistrationForm = () => {
       await axios.post(`${process.env.REACT_APP_API_URL}/user/registration/register`, combinedData);
       message.info("Check your mail inbox, Verify your email");
       const role = localStorage.getItem("role");
-      if (role === "user") {
-        navigate("/thank-you");
-      }
+      navigate("/thank-you")
       // console.log('Form data sent successfully!');
     } catch (error) {
       message.error("A Client already exists with the email");

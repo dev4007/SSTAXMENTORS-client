@@ -22,7 +22,7 @@ function AddCompany() {
   const navigate = useNavigate();
   const [companyDetails, setCompanyDetails] = useState([]);
   const [companyType, setCompanyType] = useState({
-    soleProprietorship: false,
+    soleProprietorship: true,
     partnershipFirm: false,
     limitedLiabilityPartnerships: false,
     privateLimitedCompany: false,
@@ -306,7 +306,7 @@ function AddCompany() {
                     id="country"
                     name="country"
                     placeholder="Enter country"
-                    readOnly // Makes the field read-only
+                      readOnly // Makes the field read-only
                     className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
                   />
                   <ErrorMessage

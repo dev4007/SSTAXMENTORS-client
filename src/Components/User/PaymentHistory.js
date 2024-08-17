@@ -24,8 +24,14 @@ const UserPaymentHistory = () => {
     const day = date.getDate();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
-    return `${day}-${month}-${year}`;
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+  
+    // Format the date and time as DD-MM-YYYY HH:MM:SS
+    return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
   };
+  
 
   const fetchUserPaymentHistory = async () => {
     try {
@@ -154,10 +160,11 @@ const UserPaymentHistory = () => {
                     <td className="px-4 py-2">{payment.amount}</td>
                     <td className="px-4 py-2">{payment.status}</td>
                     <td className="px-4 py-2">
-                      {formatDate(payment.paymentMadeOnDate)}
+                      {new Date(payment.paymentMadeOnDate).toLocaleString()}
                     </td>
                     <td className="px-4 py-2">
-                      {formatDate(payment.paymentRecordedDate)}
+                   
+                      {new Date(payment.paymentRecordedDate).toLocaleString()}
                     </td>
                     <td className="px-4 py-2">
                       {payment.approvedBy ? payment.approvedBy : "In Progress"}
