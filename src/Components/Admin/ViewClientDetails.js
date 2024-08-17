@@ -22,11 +22,12 @@ const ClientDetailsInNewTab = () => {
     }
   }, []);
 
-  const handlePreview = async (filename) => {
+  const handlePreview = async (filePath) => {
+    // Accept the full path as an argument
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/previewCompanyFile/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/company/previewCompany/${filePath}`, // Use filePath directly
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -35,27 +36,33 @@ const ClientDetailsInNewTab = () => {
         }
       );
 
-      // Convert the response data from base64 to a Uint8Array
-      const bytes = new Uint8Array(response.data);
+      const fileType = filePath.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
 
-      // Create a Blob object from the Uint8Array
-      const blob = new Blob([bytes], { type: "application/pdf" });
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
 
-      // Create a URL for the Blob object
+      const blob = new Blob([response.data], { type: mimeType });
       const url = window.URL.createObjectURL(blob);
-
-      // Open the PDF in a new tab
       window.open(url, "_blank");
     } catch (error) {
       console.error("Error previewing file:", error);
     }
   };
 
+  // const handlePreview = (fileName) => {
+  //   const filePath = `${fileName}`; // Adjust the path accordingly
+
+  //   // Open the file in a new tab or window
+  //   window.open(filePath, '_blank');
+  // };
+
   const handleDownload = async (filename) => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-       `${process.env.REACT_APP_API_URL}/user/downloadCompanyFile/${filename}`,
+        `${process.env.REACT_APP_API_URL}/user/company/downloadCompanyFile/${filename}`,
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -63,16 +70,20 @@ const ClientDetailsInNewTab = () => {
           responseType: "blob",
         }
       );
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
+
       const link = document.createElement("a");
       link.href = url;
       link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.error("Error downloading file:", error);
     }
   };
+
 
   const getAddress = (address) => {
     if (!address) return "Not specified";
@@ -282,32 +293,94 @@ const ClientDetailsInNewTab = () => {
                 {/* Display subInputs */}
                 {showMoreMap[idx] ? (
                   <>
-                  {Object.keys(company.subInputValues).map((key) => {
-                    const fileData = company.subInputValues[key].file_data;
-                    return (
-                      <div key={key} className="flex items-center space-x-2">
-                        <span className="text-gray-500 font-semibold text-md">
-                          {key} Number: {company.subInputValues[key][`${key} Number`]?.value}
+                  <div className="mt-4">
+                  {/* GST Files Section */}
+                  <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                    GST Files:
+                  </h4>
+                  {company.gstFile.map((file, index) => (
+                    <div key={index} className="mt-2">
+                      <div className="mb-2">
+                        <span className="text-gray-500 font-semibold text-md mr-2">
+                          Filename:
                         </span>
-                        {fileData ? (
-                          <>
-                            <button
-                              onClick={() => downloadFile(fileData)}
-                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                            >
-                              Download
-                            </button>
-                            <button
-                              className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                              onClick={() => renderFilePreview(fileData)}
-                            >
-                              Preview
-                            </button>
-                          </>
-                        ) : null}
+                        <span>{file.name}</span>
                       </div>
-                    );
-                  })}
+                      <div className="mb-4 space-x-2">
+                        <button
+                          onClick={() => handleDownload(file.filename)}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        >
+                          Download
+                        </button>
+                        <button
+                          onClick={() => handlePreview(file.filename)}
+                          className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        >
+                          Preview
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+    
+                  {/* PAN Files Section */}
+                  <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                    PAN Files:
+                  </h4>
+                  {company.panFile.map((file, index) => (
+                    <div key={index} className="mt-2">
+                      <div className="mb-2">
+                        <span className="text-gray-500 font-semibold text-md mr-2">
+                          Filename:
+                        </span>
+                        <span>{file.name}</span>
+                      </div>
+                      <div className="mb-4 space-x-2">
+                        <button
+                          onClick={() => handleDownload(file.filename)}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        >
+                          Download
+                        </button>
+                        <button
+                          onClick={() => handlePreview(file.filename)}
+                          className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        >
+                          Preview
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+    
+                  {/* TAN Files Section */}
+                  <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                    TAN Files:
+                  </h4>
+                  {company.tanFile.map((file, index) => (
+                    <div key={index} className="mt-2">
+                      <div className="mb-2">
+                        <span className="text-gray-500 font-semibold text-md mr-2">
+                          Filename:
+                        </span>
+                        <span>{file.name}</span>
+                      </div>
+                      <div className="mb-4 space-x-2">
+                        <button
+                          onClick={() => handleDownload(file.filename)}
+                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        >
+                          Download
+                        </button>
+                        <button
+                          onClick={() => handlePreview(file.filename)}
+                          className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                        >
+                          Preview
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
             
                     <div className="mt-6">
                       <div className="border-t border-gray-300 py-4">
@@ -323,18 +396,18 @@ const ClientDetailsInNewTab = () => {
                               <span>{file.filename}</span>
                             </div>
                             <div className="mb-4 space-x-2">
-                              <button
-                                onClick={() => companyDownloadFile(file)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                              >
-                                Download
-                              </button>
-                              <button
-                                className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                                onClick={() => companyRenderFilePreview(file)}
-                              >
-                                Preview
-                              </button>
+                            <button
+                            onClick={() => handleDownload(file.filename)}
+                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                          >
+                            Download
+                          </button>
+                          <button
+                            onClick={() => handlePreview(file.filename)}
+                            className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                          >
+                            Preview
+                          </button>
                             </div>
                           </div>
                         ))}

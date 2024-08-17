@@ -7,15 +7,19 @@ import NavigationBar from "../../Pages/User/NavigationBar/NavigationBar";
 const GSTRegistration = () => {
   let navigate = useNavigate();
   const [selectedCompany, setSelectedCompany] = useState("");
+  console.log("🚀 ~ GSTRegistration ~ selectedCompany:", selectedCompany)
   const [file, setFile] = useState(null);
   const [isFormSubmitted, setIsFormSubmitted] = useState(false);
   const [companyNames, setCompanyNames] = useState([]);
   const [previousFile, setPreviousFile] = useState(null);
   const [fileExists, setFileExists] = useState(false);
+
   const [isModalVisible, setIsModalVisible] = useState(false); // State for modal visibility
   const [selectedCompanyImage, setSelectedCompanyImage] = useState("");
+  console.log("🚀 ~ GSTRegistration ~ selectedCompanyImage:", selectedCompanyImage)
   const [selectedFileData, setSelectedFileData] = useState("");
   const [CompanyId, setCompanyId] = useState("");
+  const [selectedFileName, setSelectedFileName] = useState("");
 
   const [loader, setLoader] = useState(false);
 
@@ -76,11 +80,16 @@ const GSTRegistration = () => {
     });
 
     if (company) {
-      const companyImage = company.companyType?.GST?.file_data?.fileName;
-      const companyImageData = company.companyType?.GST?.file_data;
+      const companyImage = company.companyType?.[0]?.name;
+      const fileName = company.companyType?.[0]?.filename;
+   
+
+      const companyImageData = company.companyType?.[0];
       const companyIDs = company.companyID;
       setCompanyId(companyIDs);
       setSelectedFileData(companyImageData);
+      setSelectedFileName(fileName);
+
       // Set the selected company image URL if available
       if (companyImage) {
         setSelectedCompanyImage(companyImage);
@@ -89,6 +98,68 @@ const GSTRegistration = () => {
         setFileExists(false);
         setSelectedCompanyImage(""); // Clear the image if no file_data is available
       }
+    }
+  };
+
+  const handlePreview = async (filePath) => {
+    // Accept the full path as an argument
+    try {
+      const authToken = localStorage.getItem("token");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/user/company/previewCompany/${filePath}`, // Use filePath directly
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          responseType: "arraybuffer",
+        }
+      );
+
+      const fileType = filePath.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    } catch (error) {
+      console.error("Error previewing file:", error);
+    }
+  };
+
+  // const handlePreview = (fileName) => {
+  //   const filePath = `${fileName}`; // Adjust the path accordingly
+
+  //   // Open the file in a new tab or window
+  //   window.open(filePath, '_blank');
+  // };
+
+  const handleDownload = async (filename) => {
+    try {
+      const authToken = localStorage.getItem("token");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/user/company/downloadCompanyFile/${filename}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+          responseType: "blob",
+        }
+      );
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading file:", error);
     }
   };
 
@@ -144,7 +215,6 @@ const GSTRegistration = () => {
   const handleDeleteData = async (companyId) => {
     try {
       const authToken = localStorage.getItem("token");
-      const url = `${process.env.REACT_APP_API_URL}/deleteFile/${companyId}`;
 
       const response = await axios.delete(
         `${process.env.REACT_APP_API_URL}/user/company/deleteFile/${companyId}`,
@@ -172,19 +242,17 @@ const GSTRegistration = () => {
   };
 
   const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+    setFile(e.target.files);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!file) {
-      console.log("GST file is required");
-      return;
-    }
+  const handleSubmit = async (event) => {
+    event.preventDefault();
 
     const formData = new FormData();
-    formData.append("GST", file);
+    for (const files of file) {
+      formData.append("gstFile", files);
+    }
+
     const authToken = localStorage.getItem("token");
 
     try {
@@ -194,22 +262,24 @@ const GSTRegistration = () => {
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
+
             "Content-Type": "multipart/form-data",
           },
         }
       );
+      console.log("🚀 ~ handleSubmit ~ response:", response.data.gstFiles?.[0]?.name)
       if (response) {
-        setSelectedCompanyImage(response.data?.data?.filePath);
-
-        setSelectedFileData(response.data?.data);
-
+        setSelectedCompanyImage(response.data.gstFiles?.[0]?.name);
+        setSelectedFileData(response.data.gstFiles?.[0]);
+        setSelectedFileName(response.data.gstFiles?.[0]?.filename)
         setFileExists(true);
-
         setIsFormSubmitted(true);
-      fetchCompany()
+        fetchCompany();
       }
+
+      // Handle successful response
     } catch (err) {
-      console.error("Error updating GST file:", err);
+      console.error("Error updating GST files:", err);
     }
   };
 
@@ -219,7 +289,7 @@ const GSTRegistration = () => {
       <hr></hr>
       <div className="p-4  mx-5">
         <p className="font-bold text-3xl text-blue-500 mb-10">
-          GST REGISTRATION{" "}
+          GST REGISTRATION
         </p>
         <div className="mb-6">
           <label
@@ -251,14 +321,16 @@ const GSTRegistration = () => {
             {fileExists && (
               <>
                 <button
-                  onClick={() => companyRenderFilePreview(selectedFileData)}
+                  // onClick={() => companyRenderFilePreview(selectedFileData)}
+                  onClick={() => handlePreview(selectedFileName)}
                   className="bg-green-500 text-white px-4 py-2 rounded-md mr-2"
                 >
                   Preview
                 </button>
 
                 <button
-                  onClick={() => downloadFile(selectedFileData)}
+                  // onClick={() => downloadFile(selectedFileData)}
+                  onClick={() => handleDownload(selectedFileName)}
                   className="bg-blue-500 text-white px-4 py-2 rounded-md mr-2"
                 >
                   Download
@@ -283,8 +355,8 @@ const GSTRegistration = () => {
             </label>
             <input
               type="file"
-              id="file"
-              name="file"
+              name="gstFile"
+              multiple
               onChange={handleFileChange}
               className="mt-1 p-2 border border-gray-300 rounded-md w-full"
             />

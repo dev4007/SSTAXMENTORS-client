@@ -127,7 +127,7 @@ const ViewCompanies = () => {
     try {
       const authToken = localStorage.getItem("token");
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/user/company/previewCompanyFile/${filePath}`, // Use filePath directly
+        `${process.env.REACT_APP_API_URL}/user/company/previewCompany/${filePath}`, // Use filePath directly
         {
           headers: {
             Authorization: `Bearer ${authToken}`,
@@ -135,10 +135,17 @@ const ViewCompanies = () => {
           responseType: "arraybuffer",
         }
       );
-      console.log("🚀 ~ handlePreview ~ response:", response);
 
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      window.open(url); // Open in a new tab for preview
+      const fileType = filePath.slice(-3).toLowerCase();
+      let mimeType = "application/pdf"; // Default MIME type
+
+      if (fileType === "png" || fileType === "jpg" || fileType === "jpeg") {
+        mimeType = `image/${fileType === "jpg" ? "jpeg" : fileType}`;
+      }
+
+      const blob = new Blob([response.data], { type: mimeType });
+      const url = window.URL.createObjectURL(blob);
+      window.open(url, "_blank");
     } catch (error) {
       console.error("Error previewing file:", error);
     }
@@ -275,7 +282,6 @@ const ViewCompanies = () => {
     companyDetails.length
   );
   const slicedHistoryC = companyDetails.slice(startIndexC, endIndexC);
-  console.log("🚀 ~ ViewCompanies ~ slicedHistoryC:", slicedHistoryC);
 
   const downloadFile = async (file) => {
     console.log("🚀 ~ downloadFile ~ file:", file);
@@ -440,34 +446,95 @@ const ViewCompanies = () => {
               </span>
               <span>{company.officeNumber || "Not Specified"}</span>
             </div>
-            <div>
-            {Object.keys(company.subInputValues).map((key) => {
-              const fileData = company.subInputValues[key].file_data;
-              return (
-                <div key={key} className="flex items-center space-x-2">
-                  <span className="text-gray-500 font-semibold text-md">
-                    {key} Number: {company.subInputValues[key][`${key} Number`]?.value}
-                  </span>
-                  {fileData ? (
-                    <>
-                      <button
-                        onClick={() => downloadFile(fileData)}
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                      >
-                        Download
-                      </button>
-                      <button
-                        className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        onClick={() => renderFilePreview(fileData)}
-                      >
-                        Preview
-                      </button>
-                    </>
-                  ) : null}
+            <div></div>
+
+            <div className="mt-4">
+              {/* GST Files Section */}
+              <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                GST Files:
+              </h4>
+              {company.gstFile.map((file, index) => (
+                <div key={index} className="mt-2">
+                  <div className="mb-2">
+                    <span className="text-gray-500 font-semibold text-md mr-2">
+                      Filename:
+                    </span>
+                    <span>{file.name}</span>
+                  </div>
+                  <div className="mb-4 space-x-2">
+                    <button
+                      onClick={() => handleDownload(file.filename)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                    >
+                      Download
+                    </button>
+                    <button
+                      onClick={() => handlePreview(file.filename)}
+                      className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                    >
+                      Preview
+                    </button>
+                  </div>
                 </div>
-              );
-            })}
-            
+              ))}
+
+              {/* PAN Files Section */}
+              <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                PAN Files:
+              </h4>
+              {company.panFile.map((file, index) => (
+                <div key={index} className="mt-2">
+                  <div className="mb-2">
+                    <span className="text-gray-500 font-semibold text-md mr-2">
+                      Filename:
+                    </span>
+                    <span>{file.name}</span>
+                  </div>
+                  <div className="mb-4 space-x-2">
+                    <button
+                      onClick={() => handleDownload(file.filename)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                    >
+                      Download
+                    </button>
+                    <button
+                      onClick={() => handlePreview(file.filename)}
+                      className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                    >
+                      Preview
+                    </button>
+                  </div>
+                </div>
+              ))}
+
+              {/* TAN Files Section */}
+              <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                TAN Files:
+              </h4>
+              {company.tanFile.map((file, index) => (
+                <div key={index} className="mt-2">
+                  <div className="mb-2">
+                    <span className="text-gray-500 font-semibold text-md mr-2">
+                      Filename:
+                    </span>
+                    <span>{file.name}</span>
+                  </div>
+                  <div className="mb-4 space-x-2">
+                    <button
+                      onClick={() => handleDownload(file.filename)}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                    >
+                      Download
+                    </button>
+                    <button
+                      onClick={() => handlePreview(file.filename)}
+                      className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                    >
+                      Preview
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
 
             {showMoreMap[company._id] && (
@@ -485,14 +552,14 @@ const ViewCompanies = () => {
                     </div>
                     <div className="mb-4 space-x-2">
                       <button
-                        onClick={() => companyDownloadFile(file)}
+                        onClick={() => handleDownload(file.filename)}
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
                       >
                         Download
                       </button>
                       <button
+                        onClick={() => handlePreview(file.filename)}
                         className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        onClick={() => companyRenderFilePreview(file)}
                       >
                         Preview
                       </button>
