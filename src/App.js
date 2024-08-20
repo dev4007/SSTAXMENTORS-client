@@ -115,6 +115,8 @@ function App() {
                 element={<ForgotPassword />}
               ></Route>
               <Route path="/login/reset-password" element={<ResetPassword />} />
+              <Route path="/admin/verify" element={<Verify />} />
+              <Route path="/user/verify" element={<Verify />} />
               <Route path="*" element={<Navigate to={defaultRedirectPath} />} />
             </>
           ) : (
@@ -163,8 +165,7 @@ function App() {
                 element={<SupportTicketDetailsInNewTab />}
               />
               <Route path="/viewclient" element={<ClientDetailsInNewTab />} />
-              <Route path="/admin/verify" element={<Verify />} />
-              <Route path="/user/verify" element={<Verify />} />
+        
 
               <Route path="*" element={<Navigate to={defaultRedirectPath} />} />
             </>
