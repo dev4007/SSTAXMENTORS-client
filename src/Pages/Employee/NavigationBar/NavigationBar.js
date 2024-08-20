@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import axios from "axios";
 import { FiUser, FiChevronDown } from "react-icons/fi";
 import { Link, useNavigate } from "react-router-dom";
+import { AuthContext } from "../../../services/authContext";
 
 function NavigationBar({ sidebarExpanded }) {
   const [userData, setUserData] = useState({});
@@ -10,10 +11,14 @@ function NavigationBar({ sidebarExpanded }) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const dropdownRef = useRef(null);
 
+  const { logoutData } = useContext(AuthContext); // Access login function from context
+
+
   useEffect(() => {
     async function fetchUserData() {
       try {
         const token = localStorage.getItem("token");
+        console.log("🚀 ~ fetchUserData ~ token:", token)
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/employee/emailname`,
           {
@@ -54,6 +59,8 @@ function NavigationBar({ sidebarExpanded }) {
     try {
       setIsLoggingOut(true);
       const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+
       if (!token) {
         console.error("Token not found in localStorage");
         setIsLoggingOut(false);
@@ -90,13 +97,14 @@ function NavigationBar({ sidebarExpanded }) {
       );
 
       if (response.status === 200) {
+        logoutData(token,role)
         localStorage.clear();
-        navigate("/");
+        navigate("/page");
       } else {
         console.error(response.data.message);
       }
     } catch (error) {
-      navigate("/");
+      navigate("/page");
       console.error("Error:", error);
     } finally {
       setIsLoggingOut(false);

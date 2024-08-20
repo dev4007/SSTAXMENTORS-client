@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
@@ -7,6 +7,7 @@ import ImageCarousel from "../Components/LoginPageCarousel";
 import logo from "../Images/Logo.png";
 import backgroundImage from "../Images/background.png";
 import { saveLoginToken } from "../services/index.js";
+import { AuthContext } from "../services/authContext.js";
 
 function Login() {
   const [email, setEmail] = useState(Cookies.get("email") || ""); // Initialize with cookie value if exists
@@ -16,14 +17,18 @@ function Login() {
   const [loginSuccess, setLoginSuccess] = useState(false);
   const [loginError, setLoginError] = useState(false);
   const [loginImages, setLoginImages] = useState([]);
-  const [rememberMe, setRememberMe] = useState(Cookies.get("rememberMe") === "true"); // Initialize with cookie value if exists
-
+  const [rememberMe, setRememberMe] = useState(
+    Cookies.get("rememberMe") === "true"
+  ); // Initialize with cookie value if exists
+  const { loginData, userRole } = useContext(AuthContext); // Access login function from context
   let navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_API_URL}/admin/loginImages`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/admin/loginImages`
+        );
         setLoginImages(response.data.loginImages);
       } catch (error) {
         message.error("Error loading images");
@@ -55,23 +60,30 @@ function Login() {
       if (userType === "employee") {
         const userLocation = await getLocation();
         const { latitude, longitude } = userLocation;
-        response = await axios.post(`${process.env.REACT_APP_API_URL}/login/login`, {
-          email: email,
-          password: password,
-          userType: userType,
-          latitude: latitude,
-          longitude: longitude,
-        });
+        response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/login/login`,
+          {
+            email: email,
+            password: password,
+            userType: userType,
+            latitude: latitude,
+            longitude: longitude,
+          }
+        );
       } else {
-        response = await axios.post(`${process.env.REACT_APP_API_URL}/login/login`, {
-          email: email,
-          password: password,
-          userType: userType,
-        });
+        response = await axios.post(
+          `${process.env.REACT_APP_API_URL}/login/login`,
+          {
+            email: email,
+            password: password,
+            userType: userType,
+          }
+        );
       }
       if (response.data.success === true) {
         const { token, role } = response.data;
-        saveLoginToken(token, role);
+
+        loginData(token, role);
         message.success("Login Successful!");
 
         if (rememberMe) {
@@ -84,10 +96,14 @@ function Login() {
           Cookies.remove("rememberMe");
         }
 
-        if (role === "user") {
+        if (role == "employee") {
+          navigate("/employee/employeedashboard");
+        } else if (role === "user") {
           navigate("/user/userdashboard");
-         } else {
+        } else if (role == "admin") {
           navigate("/admin/admindashboard");
+        } else {
+          alert("not found any role");
         }
 
         setLoginSuccess(true);
@@ -121,7 +137,8 @@ function Login() {
         backgroundImage: `url(${backgroundImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-      }}>
+      }}
+    >
       <div className="max-w-screen-xl w-full md:w-4/5 lg:w-3/5 flex flex-col md:flex-row">
         <div className="w-full md:w-1/2 md:order-2 bg-white p-8 md:p-10 flex justify-center items-center rounded-lg drop-shadow-2xl">
           <div className="w-full max-w-sm">
@@ -182,11 +199,13 @@ function Login() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   login();
-                }}>
+                }}
+              >
                 <button
                   type="submit"
                   className="w-full rounded bg-blue-500 text-white px-4 py-2 hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-                  disabled={loading}>
+                  disabled={loading}
+                >
                   {loading ? "Loading..." : "Login"}
                 </button>
               </form>
@@ -199,7 +218,6 @@ function Login() {
             {loginError && (
               <div className="mt-4 text-red-500">
                 Invalid Credentials. Please try again.
-
               </div>
             )}
             {loginError && (

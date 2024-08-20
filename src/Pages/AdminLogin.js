@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { message } from "antd";
@@ -6,6 +6,7 @@ import Cookies from "js-cookie"; // Import js-cookie
 import ImageCarousel from "../Components/LoginPageCarousel";
 import logo from "../Images/Logo.png";
 import backgroundImage from "../Images/background.png";
+import { AuthContext } from "../services/authContext";
 
 function AdminLogin() {
   const [email, setEmail] = useState(Cookies.get("email") || ""); // Initialize with cookie value if exists
@@ -16,7 +17,7 @@ function AdminLogin() {
   const [loginError, setLoginError] = useState(false);
   const [loginImages, setLoginImages] = useState([]);
   const [rememberMe, setRememberMe] = useState(Cookies.get("rememberMe") === "true"); // Initialize with cookie value if exists
-
+  const { loginData, userRole } = useContext(AuthContext); // Access login function from context
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -70,8 +71,7 @@ function AdminLogin() {
       }
       if (response.data.success === true) {
         const { token, role } = response.data;
-        localStorage.setItem("token", token);
-        localStorage.setItem("role", role);
+        loginData(token, role);
         message.success("Login Successful!");
 
         if (rememberMe) {
