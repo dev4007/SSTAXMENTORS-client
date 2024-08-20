@@ -141,7 +141,7 @@ const Dashboard = () => {
                 { text: "IT Returns Settings", to: "itreturns-settings" },
                 { text: "GST Returns Settings", to: "gstreturns-settings" },
                 { text: "GST Notice Settings", to: "gstnotice-settings" },
-                { text: "Company Settings", to: "company-settings" },
+                // { text: "Company Settings", to: "company-settings" },
                 { text: "CMA Preparation Settings", to: "cma-settings" },
                 { text: "ROC Filings", to: "roc-settings" },
                 { text: "License Settings", to: "license-settings" },

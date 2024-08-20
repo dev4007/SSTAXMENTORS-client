@@ -39,7 +39,7 @@ const SendCMApreparation = lazy(() => import("../Documents/CMA/SendCMApreparatio
 const SendNewROCfilings = lazy(() => import("../Documents/ROCFiling/SendROCfilings"));
 const SendNewLicense = lazy(() => import("../Documents/License/SendLicense"));
 const LicenseSettings = lazy(() => import("../Settings/License/LicenseSettings"));
-const CompanySettings = lazy(() => import("../Settings/Company/CompanySettings"));
+// const CompanySettings = lazy(() => import("../Settings/Company/CompanySettings"));
 const ROCfilingssettings = lazy(() => import("../Settings/ROCFilings/ROCfilingsettings"));
 const BannerSettings = lazy(() => import("../Settings/Banner/BannerSettings"));
 const CMApreparationSettings = lazy(() => import("../Settings/CMA/CMApreparationSettings"));
@@ -213,7 +213,7 @@ function Sidebar({ children }) {
             <Route path="/cma-settings" element={<CMApreparationSettings />} />
             <Route path="/banner-settings" element={<BannerSettings />} />
             <Route path="/roc-settings" element={<ROCfilingssettings />} />
-            <Route path="/company-settings" element={<CompanySettings />} />
+            {/*<Route path="/company-settings" element={<CompanySettings />} />*/}
             <Route path="/license-settings" element={<LicenseSettings />} />
             <Route path="/email-settings" element={<EmailSettings />} />
             <Route path="/payment-settings" element={<PaymentSettings />} />

@@ -114,7 +114,7 @@ function App() {
                 path="/forgot-password"
                 element={<ForgotPassword />}
               ></Route>
-
+              <Route path="/login/reset-password" element={<ResetPassword />} />
               <Route path="*" element={<Navigate to={defaultRedirectPath} />} />
             </>
           ) : (
@@ -131,7 +131,7 @@ function App() {
                 path="/employee/employeedashboard/*"
                 element={<DashboardEmployee />}
               ></Route>
-              <Route path="/login/reset-password" element={<ResetPassword />} />
+
               <Route
                 path="/support-ticket-details/:ticketId"
                 element={<SupportTicketDetails />}

@@ -113,6 +113,8 @@ const EmailSettingsPage = () => {
       <div className=" mx-5 bg-white shadow-md rounded-md p-4 my-8">
         <AdminEmailComponent />
       </div>
+      
+        {/*
       <div className=" mx-5 bg-white shadow-xl rounded-md p-4">
         <h2 className="text-xl font-bold  text-gray-600 m-4">
           Add New Email Data:
@@ -180,7 +182,7 @@ const EmailSettingsPage = () => {
                       </button>
                       {/* <button onClick={() => deleteEmailSetting(setting._id)} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition duration-300 ease-in-out focus:outline-none focus:bg-red-600">
                         Delete
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 </li>
@@ -190,7 +192,7 @@ const EmailSettingsPage = () => {
             <p>{error ? error : "No existing email settings found."}</p>
           )}
         </div>
-      </div>
+ */}
     </div>
   );
 };
