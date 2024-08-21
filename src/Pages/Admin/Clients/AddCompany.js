@@ -272,8 +272,11 @@ const AddCompany = () => {
         navigate("/admin/admindashboard/view-client"); // Navigate to another page
       }
     } catch (error) {
-      message.error("Error! Try again later");
-      console.error("Error uploading files:", error); // Log error details for debugging
+      if (error.response.data) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("Error! Try again later");
+      }
     } finally {
       setLoading(false); // End loading state
     }

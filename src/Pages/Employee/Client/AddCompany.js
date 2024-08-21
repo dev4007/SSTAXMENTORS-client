@@ -264,6 +264,7 @@ const AddCompany = () => {
           },
         }
       );
+      console.log("🚀 ~ handleSubmit ~ response:", response)
 
       if (response.status === 200) {
         // Check for successful response
@@ -272,8 +273,11 @@ const AddCompany = () => {
         navigate("/employee/employeedashboard/view-client"); // Navigate to another page
       }
     } catch (error) {
-      message.error("Error! Try again later");
-      console.error("Error uploading files:", error); // Log error details for debugging
+      if (error.response.data) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("Error! Try again later");
+      }
     } finally {
       setLoading(false); // End loading state
     }

@@ -138,11 +138,11 @@ function AddCompany() {
     formData.append("gstNumber", values.gstNumber);
     formData.append("panNumber", values.panNumber);
     formData.append("tanNumber", values.tanNumber);
-  
+
     if (values.gstFile) formData.append("gstFile", values.gstFile);
     if (values.panFile) formData.append("panFile", values.panFile);
     if (values.tanFile) formData.append("tanFile", values.tanFile);
-  
+
     Object.entries(files).forEach(([key, file]) => {
       if (file) {
         formData.append(key, file);
@@ -183,8 +183,11 @@ function AddCompany() {
         navigate("/user/userdashboard/view-company");
       }
     } catch (error) {
-      message.error("Error! Try again later");
-      console.error("Error uploading files:", error);
+      if (error.response.data) {
+        message.error(error.response.data.message);
+      } else {
+        message.error("Error! Try again later");
+      }
     } finally {
       setLoading(false);
     }
@@ -377,134 +380,140 @@ function AddCompany() {
                     className="text-red-500 text-sm"
                   />
                 </div>
-                 {/* GST Number and File Upload */}
-          <div className="mb-4">
-          <label
-            htmlFor="gstNumber"
-            className="block mb-3 font-regular text-lg text-gray-500"
-          >
-            GST Number:
-          </label>
-          <Field
-            id="gstNumber"
-            name="gstNumber"
-            type="text"
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-            placeholder="Enter GST Number"
-          />
-          <ErrorMessage
-            name="gstNumber"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
+                {/* GST Number and File Upload */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="gstNumber"
+                    className="block mb-3 font-regular text-lg text-gray-500"
+                  >
+                    GST Number:
+                  </label>
+                  <Field
+                    id="gstNumber"
+                    name="gstNumber"
+                    type="text"
+                    className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                    placeholder="Enter GST Number"
+                  />
+                  <ErrorMessage
+                    name="gstNumber"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="gstFile"
-            className="block mb-3 font-regular text-lg text-gray-500"
-          >
-            Upload File:
-          </label>
-          <input
-            id="gstFile"
-            name="gstFile"
-            type="file"
-            onChange={(event) => setFieldValue('gstFile', event.currentTarget.files[0])}
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-          />
-          <ErrorMessage
-            name="gstFile"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="gstFile"
+                    className="block mb-3 font-regular text-lg text-gray-500"
+                  >
+                    Upload File:
+                  </label>
+                  <input
+                    id="gstFile"
+                    name="gstFile"
+                    type="file"
+                    onChange={(event) =>
+                      setFieldValue("gstFile", event.currentTarget.files[0])
+                    }
+                    className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                  />
+                  <ErrorMessage
+                    name="gstFile"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-        {/* PAN Number and File Upload */}
-        <div className="mb-4">
-          <label
-            htmlFor="panNumber"
-            className="block mb-3 font-regular text-lg text-gray-500"
-          >
-            PAN Number:
-          </label>
-          <Field
-            id="panNumber"
-            name="panNumber"
-            type="text"
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-            placeholder="Enter PAN Number"
-          />
-          <ErrorMessage
-            name="panNumber"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
+                {/* PAN Number and File Upload */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="panNumber"
+                    className="block mb-3 font-regular text-lg text-gray-500"
+                  >
+                    PAN Number:
+                  </label>
+                  <Field
+                    id="panNumber"
+                    name="panNumber"
+                    type="text"
+                    className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                    placeholder="Enter PAN Number"
+                  />
+                  <ErrorMessage
+                    name="panNumber"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="panFile"
-            className="block mb-3 font-regular text-lg text-gray-500"
-          >
-            Upload File:
-          </label>
-          <input
-            id="panFile"
-            name="panFile"
-            type="file"
-            onChange={(event) => setFieldValue('panFile', event.currentTarget.files[0])}
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-          />
-          <ErrorMessage
-            name="panFile"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="panFile"
+                    className="block mb-3 font-regular text-lg text-gray-500"
+                  >
+                    Upload File:
+                  </label>
+                  <input
+                    id="panFile"
+                    name="panFile"
+                    type="file"
+                    onChange={(event) =>
+                      setFieldValue("panFile", event.currentTarget.files[0])
+                    }
+                    className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                  />
+                  <ErrorMessage
+                    name="panFile"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-        {/* TAN Number and File Upload */}
-        <div className="mb-4">
-          <label
-            htmlFor="tanNumber"
-            className="block mb-3 font-regular text-lg text-gray-500"
-          >
-            TAN Number:
-          </label>
-          <Field
-            id="tanNumber"
-            name="tanNumber"
-            type="text"
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-            placeholder="Enter TAN Number"
-          />
-          <ErrorMessage
-            name="tanNumber"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
+                {/* TAN Number and File Upload */}
+                <div className="mb-4">
+                  <label
+                    htmlFor="tanNumber"
+                    className="block mb-3 font-regular text-lg text-gray-500"
+                  >
+                    TAN Number:
+                  </label>
+                  <Field
+                    id="tanNumber"
+                    name="tanNumber"
+                    type="text"
+                    className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                    placeholder="Enter TAN Number"
+                  />
+                  <ErrorMessage
+                    name="tanNumber"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
-        <div className="mb-4">
-          <label
-            htmlFor="tanFile"
-            className="block mb-3 font-regular text-lg text-gray-500"
-          >
-            Upload File:
-          </label>
-          <input
-            id="tanFile"
-            name="tanFile"
-            type="file"
-            onChange={(event) => setFieldValue('tanFile', event.currentTarget.files[0])}
-            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
-          />
-          <ErrorMessage
-            name="tanFile"
-            component="div"
-            className="text-red-500 text-sm"
-          />
-        </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="tanFile"
+                    className="block mb-3 font-regular text-lg text-gray-500"
+                  >
+                    Upload File:
+                  </label>
+                  <input
+                    id="tanFile"
+                    name="tanFile"
+                    type="file"
+                    onChange={(event) =>
+                      setFieldValue("tanFile", event.currentTarget.files[0])
+                    }
+                    className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                  />
+                  <ErrorMessage
+                    name="tanFile"
+                    component="div"
+                    className="text-red-500 text-sm"
+                  />
+                </div>
 
                 <div className="flex justify-center items-center mt-10 mb-5">
                   <button

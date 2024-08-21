@@ -319,6 +319,12 @@ const Reminder = () => {
     formik.setFieldValue("files", updatedFiles);
   };
 
+  const handleFileDelete = (index) => {
+    const updatedFiles = formik.values.files.filter((_, i) => i !== index);
+    formik.setFieldValue("files", updatedFiles);
+  };
+
+
   const filteredClients = clients.filter(
     (client) =>
       (client.firstname &&
@@ -612,6 +618,13 @@ const Reminder = () => {
                       {formik.values.files.map((file, index) => (
                         <li key={index} className="text-gray-600">
                           {file.name}
+                          <button
+                          type="button"
+                          className="ml-4 text-red-500 hover:text-red-700"
+                          onClick={() => handleFileDelete(index)}
+                        >
+                          Delete
+                        </button>
                         </li>
                       ))}
                     </ul>
