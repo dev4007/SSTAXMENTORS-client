@@ -122,6 +122,7 @@ const Employeeattendance = () => {
   const endIndex = Math.min(startIndex + itemsPerPage, filteredAttendance.length);
   const slicedAttendance = filteredAttendance.slice(startIndex, endIndex);
 
+
   return (
     <div>
       <NavigationBar />

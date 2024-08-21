@@ -135,38 +135,6 @@ const CreatePaymentBill = () => {
             }
           );
     
-          const formData2 = new FormData();
-          formData2.append("title", "Reminder for Payment");
-    
-          // Constructing the description
-          const formattedDueDate = new Date(dueDate).toLocaleDateString("en-US", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          });
-          const reminderDescription = `Please pay the bill before the due date: ${formattedDueDate}. 
-                Service: ${selectedService}, Sub-service: ${selectedSubService}, Amount: ${amount}`;
-    
-          formData2.append("description", reminderDescription);
-    
-          // for (let i = 0; i < files.length; i++) {
-            formData2.append("file", files);
-          // }
-    
-          formData2.append("selectedClients", JSON.stringify(selectedClient));
-    
-          await axios.post(
-            `${process.env.REACT_APP_API_URL}/admin/reminder/sendreminder`,
-            formData2,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-    
           if (selectedService === "IT") {
             const formData3 = new FormData();
             formData3.append("description", values.description);
