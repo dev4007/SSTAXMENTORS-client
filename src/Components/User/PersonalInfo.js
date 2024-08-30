@@ -9,16 +9,20 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
       lastName: formData.lastName || "",
       dob: formData.dob || "",
       state: formData.state || "Telangana",
+      houseAddress: formData.houseAddress || "",
+      streetAddress: formData.streetAddress || "",
       address: formData.address || "",
       landmark: formData.landmark || "",
-      country:"India",
+      country: "India",
     },
     validationSchema: Yup.object({
       firstName: Yup.string().required("First Name is required"),
       lastName: Yup.string().required("Last Name is required"),
       dob: Yup.date().required("Date of Birth is required").nullable(),
       state: Yup.string().required("State is required"),
-      address: Yup.string().required("Address is required"),
+      houseAddress: Yup.string().required("House Address is required"),
+      streetAddress: Yup.string().required("Street Address is required"),
+      address: Yup.string().required("City/Town/Village/District is required"),
       landmark: Yup.string(),
       country: Yup.string().required("Country is required"),
     }),
@@ -75,6 +79,7 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
         <h2 className="text-2xl font-bold mb-6">Personal Information</h2>
 
         <form onSubmit={formik.handleSubmit}>
+          {/* First Name */}
           <label className="block mb-4">
             First Name:
             <input
@@ -90,6 +95,7 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
             )}
           </label>
 
+          {/* Last Name */}
           <label className="block mb-4">
             Last Name:
             <input
@@ -105,6 +111,7 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
             )}
           </label>
 
+          {/* Date of Birth */}
           <label className="block mb-4">
             Date of Birth:
             <input
@@ -120,6 +127,7 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
             )}
           </label>
 
+          {/* State */}
           <label className="block mb-4">
             State:
             <select
@@ -141,8 +149,41 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
             )}
           </label>
 
+          {/* House Address */}
           <label className="block mb-4">
-            City/Town/Village/District
+            House Address:
+            <input
+              type="text"
+              id="houseAddress"
+              name="houseAddress"
+              onChange={formik.handleChange}
+              value={formik.values.houseAddress}
+              className={`border ${formik.touched.houseAddress && formik.errors.houseAddress ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.houseAddress && formik.errors.houseAddress && (
+              <p className="text-red-500">{formik.errors.houseAddress}</p>
+            )}
+          </label>
+
+          {/* Street Address */}
+          <label className="block mb-4">
+            Street Address:
+            <input
+              type="text"
+              id="streetAddress"
+              name="streetAddress"
+              onChange={formik.handleChange}
+              value={formik.values.streetAddress}
+              className={`border ${formik.touched.streetAddress && formik.errors.streetAddress ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.streetAddress && formik.errors.streetAddress && (
+              <p className="text-red-500">{formik.errors.streetAddress}</p>
+            )}
+          </label>
+
+          {/* City/Town/Village/District */}
+          <label className="block mb-4">
+            City/Town/Village/District:
             <input
               type="text"
               id="address"
@@ -155,21 +196,24 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
               <p className="text-red-500">{formik.errors.address}</p>
             )}
           </label>
-          <label className="block mb-4">
-          Landmark (optional):
-          <input
-            type="text"
-            id="landmark"
-            name="landmark"
-            onChange={formik.handleChange}
-            value={formik.values.landmark}
-            className={`border ${formik.touched.landmark && formik.errors.landmark ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
-          />
-          {formik.touched.landmark && formik.errors.landmark && (
-            <p className="text-red-500">{formik.errors.landmark}</p>
-          )}
-        </label>
 
+          {/* Landmark (optional) */}
+          <label className="block mb-4">
+            Landmark (optional):
+            <input
+              type="text"
+              id="landmark"
+              name="landmark"
+              onChange={formik.handleChange}
+              value={formik.values.landmark}
+              className={`border ${formik.touched.landmark && formik.errors.landmark ? 'border-red-500' : 'border-gray-400'} px-3 py-2 rounded w-full`}
+            />
+            {formik.touched.landmark && formik.errors.landmark && (
+              <p className="text-red-500">{formik.errors.landmark}</p>
+            )}
+          </label>
+
+          {/* Country */}
           <label className="block mb-4">
             Country:
             <input
@@ -186,7 +230,7 @@ const PersonalInfo = ({ formData, setFormData, nextStep }) => {
           </label>
 
           <div className="flex justify-end">
-            <button type="submit" className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 mt-10 rounded">
+            <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
               Next
             </button>
           </div>

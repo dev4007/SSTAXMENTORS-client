@@ -264,47 +264,14 @@ function MyProfile() {
               </div>
             </div>
 
-            {/* Professional Details */}
-            {/* <div>
-            <h3 className="text-xl font-semibold text-blue-500 mb-2">Professional Details</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="companyname" className="block text-sm font-semibold mb-1 text-gray-600">
-                  Company Name:
-                </label>
-                <input
-                  type="text"
-                  id="companyname"
-                  name="companyname"
-                  value={editedData.companyname}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${isEditing ? 'border-blue-500' : 'border-gray-300'} rounded`}
-                  readOnly={!isEditing}
-                />
-              </div>
-              <div>
-                <label htmlFor="destination" className="block text-sm font-semibold mb-1 text-gray-600">
-                  Designation:
-                </label>
-                <input
-                  type="text"
-                  id="destination"
-                  name="destination"
-                  value={editedData.destination}
-                  onChange={handleInputChange}
-                  className={`w-full px-4 py-2 border ${isEditing ? 'border-blue-500' : 'border-gray-300'} rounded`}
-                  readOnly={!isEditing}
-                />
-              </div>
-            </div>
-          </div> */}
+
 
             {/* Address */}
             <div>
               <h3 className="text-xl font-semibold text-blue-500 mb-2">
                 Address
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-4 mt-2">
                 <div>
                   <label
                     htmlFor="address"
@@ -344,6 +311,46 @@ function MyProfile() {
                   />
                 </div>
               </div>
+              <div className="grid grid-cols-2 gap-4 mt-2">
+              <div>
+                <label
+                  htmlFor="houseAddress"
+                  className="block text-sm font-semibold mb-1 text-gray-600"
+                >
+                  House Address:
+                </label>
+                <input
+                  type="text"
+                  id="houseAddress"
+                  name="houseAddress"
+                  value={editedData.houseAddress}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${
+                    isEditing ? "border-blue-500" : "border-gray-300"
+                  } rounded`}
+                  readOnly={!isEditing}
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="streetAddress"
+                  className="block text-sm font-semibold mb-1 text-gray-600"
+                >
+                  Street Address:
+                </label>
+                <input
+                  type="text"
+                  id="streetAddress"
+                  name="streetAddress"
+                  value={editedData.streetAddress}
+                  onChange={handleInputChange}
+                  className={`w-full px-4 py-2 border ${
+                    isEditing ? "border-blue-500" : "border-gray-300"
+                  } rounded`}
+                  readOnly={!isEditing}
+                />
+              </div>
+            </div>
 
               <div className="grid grid-cols-2 gap-4 mt-4">
               <div>
