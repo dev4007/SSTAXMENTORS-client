@@ -29,6 +29,8 @@ const validationSchema = Yup.object().shape({
   companyName: Yup.string()
     .required("Company Name is required")
     .min(2, "Company Name must be at least 2 characters"),
+    companyHouseAddress: Yup.string().required("Company House Address is required"),
+    companyStreetAddress: Yup.string().required("Company Street Address is required"),
   address: Yup.string().required("Address is required"),
   state: Yup.string().required("State is required"),
   country: Yup.string().required("Country is required"),
@@ -222,6 +224,8 @@ const AddCompany = () => {
     formData.append("landmark", values.landmark);
     formData.append("country", values.country);
     formData.append("state", values.state);
+    formData.append("companyHouseAddress", values.companyHouseAddress);
+    formData.append("companyStreetAddress", values.companyStreetAddress);
     formData.append("gstNumber", values.gstNumber);
     formData.append("panNumber", values.panNumber);
     formData.append("tanNumber", values.tanNumber);
@@ -229,6 +233,7 @@ const AddCompany = () => {
     if (values.gstFile) formData.append("gstFile", values.gstFile);
     if (values.panFile) formData.append("panFile", values.panFile);
     if (values.tanFile) formData.append("tanFile", values.tanFile);
+    if (values.companyTypeFiles) formData.append("companyTypeFiles", values.companyTypeFiles);
   
     Object.entries(files).forEach(([key, file]) => {
       if (file) {
@@ -428,6 +433,8 @@ const AddCompany = () => {
             companyName: "",
             address: "",
             state: "",
+            companyHouseAddress: "",
+            companyStreetAddress: "",
             country: "India",
             landmark: "",
             officeNumber: "",
@@ -437,6 +444,7 @@ const AddCompany = () => {
             gstFile: null,
             panFile: null,
             tanFile: null,
+            companyTypeFiles:null,
           }}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
@@ -488,20 +496,86 @@ const AddCompany = () => {
                   )}
                 </div>
                 <div className="mb-4">
-                  <label
-                    htmlFor="companyTypeFiles"
-                    className="block mb-3 font-regular text-lg text-gray-500"
-                  >
-                    Upload Company Type Documents:
-                  </label>
-                  <input
-                    type="file"
-                    id="companyTypeFiles"
-                    onChange={handleCompanyTypeFileUpload}
-                    multiple
-                    className="border border-gray-300 px-3 py-2 rounded w-full"
-                  />
-                </div>
+                <label
+                  htmlFor="companyTypeFiles"
+                  className="block mb-3 font-regular text-lg text-gray-500"
+                >
+                  Upload Company Type Documents:
+                </label>
+                <input
+                  type="file"
+                  id="companyTypeFiles"
+  
+                  onChange={(event) =>
+                    setFieldValue("companyTypeFiles", event.currentTarget.files[0])
+                  }
+                  className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+                />
+                <ErrorMessage
+                  name="companyTypeFiles"
+                  component="div"
+                  className="text-red-500 text-sm"
+                />
+
+              </div>
+              <div className="mb-4">
+              <label className="block mb-4">
+                State:
+                <Field as="select" name="state" className="border border-gray-400 px-3 py-2 rounded w-full">
+                  <option value="">Select State</option>
+                  {statesInIndia.map((state) => (
+                    <option key={state} value={state}>
+                      {state}
+                    </option>
+                  ))}
+                </Field>
+              </label>
+              <ErrorMessage
+                name="state"
+                component="div"
+                className="text-red-500 text-sm"
+              />
+            </div>
+            <div className="mb-4">
+            <label
+              htmlFor="companyHouseAddress"
+              className="block mb-3 font-regular text-lg text-gray-500"
+            >
+             Company House Address:
+            </label>
+            <Field
+              type="text"
+              id="companyHouseAddress"
+              name="companyHouseAddress"
+              placeholder="Enter House name"
+              className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+            />
+            <ErrorMessage
+              name="companyHouseAddress"
+              component="div"
+              className="text-red-500 text-sm"
+            />
+          </div>
+          <div className="mb-4">
+          <label
+            htmlFor="companyStreetAddress"
+            className="block mb-3 font-regular text-lg text-gray-500"
+          >
+          Company Street Address:
+          </label>
+          <Field
+            type="text"
+            id="companyStreetAddress"
+            name="companyStreetAddress"
+            placeholder="Enter street name"
+            className="border border-gray-300 rounded px-4 py-2 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 w-full"
+          />
+          <ErrorMessage
+            name="companyStreetAddress"
+            component="div"
+            className="text-red-500 text-sm"
+          />
+        </div>
 
                 <div className="mb-4">
                   <label
@@ -524,24 +598,7 @@ const AddCompany = () => {
                   />
                 </div>
 
-                <div className="mb-4">
-                  <label className="block mb-4">
-                    State:
-                    <Field as="select" name="state" className="border border-gray-400 px-3 py-2 rounded w-full">
-                      <option value="">Select State</option>
-                      {statesInIndia.map((state) => (
-                        <option key={state} value={state}>
-                          {state}
-                        </option>
-                      ))}
-                    </Field>
-                  </label>
-                  <ErrorMessage
-                    name="state"
-                    component="div"
-                    className="text-red-500 text-sm"
-                  />
-                </div>
+           
                 <div className="mb-4">
                   <label
                     htmlFor="country"
@@ -569,7 +626,7 @@ const AddCompany = () => {
                     htmlFor="landmark"
                     className="block mb-3 font-regular text-lg text-gray-500"
                   >
-                    Landmark:
+                    Landmark (Optional):
                   </label>
                   <Field
                     type="text"
@@ -626,7 +683,7 @@ const AddCompany = () => {
                       htmlFor="gstFile"
                       className="block mb-3 font-regular text-lg text-gray-500"
                     >
-                      Upload File:
+                    Upload GST Document:
                     </label>
                     <input
                       id="gstFile"
@@ -669,7 +726,7 @@ const AddCompany = () => {
                       htmlFor="panFile"
                       className="block mb-3 font-regular text-lg text-gray-500"
                     >
-                      Upload File:
+                    Upload PAN Document:
                     </label>
                     <input
                       id="panFile"
@@ -712,7 +769,7 @@ const AddCompany = () => {
                       htmlFor="tanFile"
                       className="block mb-3 font-regular text-lg text-gray-500"
                     >
-                      Upload File:
+                    Upload TAN Document:
                     </label>
                     <input
                       id="tanFile"

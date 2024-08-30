@@ -413,18 +413,30 @@ const ViewCompanies = () => {
               </span>
               <span>{getCompanyType(company.companyType)}</span>
             </div>
-            <div className="flex mb-2">
-              <span className="text-gray-500 font-semibold text-md mr-2">
-                Address:
-              </span>
-              <span>{company.address}</span>
-            </div>
+          
             <div className="flex mb-2">
               <span className="text-gray-500 font-semibold text-md mr-2">
                 State:
               </span>
               <span>{company.state}</span>
             </div>
+            <div className="flex mb-2">
+            <span className="text-gray-500 font-semibold text-md mr-2">
+             Company House Address:
+            </span>
+            <span>{company.companyHouseAddress}</span>
+          </div> <div className="flex mb-2">
+          <span className="text-gray-500 font-semibold text-md mr-2">
+          Company Street Address:
+          </span>
+          <span>{company.companyStreetAddress}</span>
+        </div>
+        <div className="flex mb-2">
+        <span className="text-gray-500 font-semibold text-md mr-2">
+          Address:
+        </span>
+        <span>{company.address}</span>
+      </div>
             <div className="flex mb-2">
               <span className="text-gray-500 font-semibold text-md mr-2">
                 Country:

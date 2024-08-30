@@ -84,7 +84,6 @@ const ClientDetailsInNewTab = () => {
     }
   };
 
-
   const getAddress = (address) => {
     if (!address) return "Not specified";
     const { streetName, city, state, country, postalCode, landmark } = address;
@@ -230,7 +229,16 @@ const ClientDetailsInNewTab = () => {
                     <strong>Date of Birth:</strong> {clientData.DOB}
                   </p>
                   <p class="mb-2 text-lg">
-                    <strong>Address:</strong> {clientData.address}
+                    <strong>House Address:</strong>{" "}
+                    {clientData.houseAddress}
+                  </p>{" "}
+                  <p class="mb-2 text-lg">
+                    <strong>Street Address:</strong>{" "}
+                    {clientData.streetAddress}
+                  </p>
+                  <p class="mb-2 text-lg">
+                    <strong>City/Town/Village/District:</strong>{" "}
+                    {clientData.address}
                   </p>
                   <p class="mb-2 text-lg">
                     <strong>Is Verified:</strong>{" "}
@@ -239,14 +247,15 @@ const ClientDetailsInNewTab = () => {
                 </div>
                 <div>
                   <p class="mb-2 text-lg">
-                    <strong>Landmark:</strong> {clientData.landmark ? clientData.landmark : "Not Available"} 
+                    <strong>Landmark:</strong>{" "}
+                    {clientData.landmark
+                      ? clientData.landmark
+                      : "Not Available"}
                   </p>
                   <p class="mb-2 text-lg">
                     <strong>State:</strong> {clientData.state}
                   </p>
-                  <p class="mb-2 text-lg">
-                    <strong>Company Name:</strong> {clientData.companyname}
-                  </p>
+                 
                   <p class="mb-2 text-lg">
                     <strong>Country:</strong> {clientData.country}
                   </p>
@@ -284,8 +293,10 @@ const ClientDetailsInNewTab = () => {
                 <p class="mb-2 text-lg">{`Company Type: ${getCompanyType(
                   company.companyType
                 )}`}</p>
-                <p class="mb-2 text-lg">Address: {
-                  company.address}</p>
+                <p class="mb-2 text-lg">Company House Address: {company.companyHouseAddress}</p>
+                <p class="mb-2 text-lg">Company Street Address: {company.companyStreetAddress}</p>
+                <p class="mb-2 text-lg">City/Town/Village/District: {company.address}</p>
+
                 <p class="mb-2 text-lg">{`Office Number: ${
                   company.officeNumber || "Not specified"
                 }`}</p>
@@ -293,95 +304,95 @@ const ClientDetailsInNewTab = () => {
                 {/* Display subInputs */}
                 {showMoreMap[idx] ? (
                   <>
-                  <div className="mt-4">
-                  {/* GST Files Section */}
-                  <h4 className="text-lg font-semibold text-gray-800 mt-4">
-                    GST Files:
-                  </h4>
-                  {company.gstFile.map((file, index) => (
-                    <div key={index} className="mt-2">
-                      <div className="mb-2">
-                        <span className="text-gray-500 font-semibold text-md mr-2">
-                          Filename:
-                        </span>
-                        <span>{file.name}</span>
-                      </div>
-                      <div className="mb-4 space-x-2">
-                        <button
-                          onClick={() => handleDownload(file.filename)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        >
-                          Download
-                        </button>
-                        <button
-                          onClick={() => handlePreview(file.filename)}
-                          className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        >
-                          Preview
-                        </button>
-                      </div>
+                    <div className="mt-4">
+                      {/* GST Files Section */}
+                      <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                        GST Files:
+                      </h4>
+                      {company.gstFile.map((file, index) => (
+                        <div key={index} className="mt-2">
+                          <div className="mb-2">
+                            <span className="text-gray-500 font-semibold text-md mr-2">
+                              Filename:
+                            </span>
+                            <span>{file.name}</span>
+                          </div>
+                          <div className="mb-4 space-x-2">
+                            <button
+                              onClick={() => handleDownload(file.filename)}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Download
+                            </button>
+                            <button
+                              onClick={() => handlePreview(file.filename)}
+                              className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Preview
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* PAN Files Section */}
+                      <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                        PAN Files:
+                      </h4>
+                      {company.panFile.map((file, index) => (
+                        <div key={index} className="mt-2">
+                          <div className="mb-2">
+                            <span className="text-gray-500 font-semibold text-md mr-2">
+                              Filename:
+                            </span>
+                            <span>{file.name}</span>
+                          </div>
+                          <div className="mb-4 space-x-2">
+                            <button
+                              onClick={() => handleDownload(file.filename)}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Download
+                            </button>
+                            <button
+                              onClick={() => handlePreview(file.filename)}
+                              className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Preview
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+
+                      {/* TAN Files Section */}
+                      <h4 className="text-lg font-semibold text-gray-800 mt-4">
+                        TAN Files:
+                      </h4>
+                      {company.tanFile.map((file, index) => (
+                        <div key={index} className="mt-2">
+                          <div className="mb-2">
+                            <span className="text-gray-500 font-semibold text-md mr-2">
+                              Filename:
+                            </span>
+                            <span>{file.name}</span>
+                          </div>
+                          <div className="mb-4 space-x-2">
+                            <button
+                              onClick={() => handleDownload(file.filename)}
+                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Download
+                            </button>
+                            <button
+                              onClick={() => handlePreview(file.filename)}
+                              className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                            >
+                              Preview
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-    
-                  {/* PAN Files Section */}
-                  <h4 className="text-lg font-semibold text-gray-800 mt-4">
-                    PAN Files:
-                  </h4>
-                  {company.panFile.map((file, index) => (
-                    <div key={index} className="mt-2">
-                      <div className="mb-2">
-                        <span className="text-gray-500 font-semibold text-md mr-2">
-                          Filename:
-                        </span>
-                        <span>{file.name}</span>
-                      </div>
-                      <div className="mb-4 space-x-2">
-                        <button
-                          onClick={() => handleDownload(file.filename)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        >
-                          Download
-                        </button>
-                        <button
-                          onClick={() => handlePreview(file.filename)}
-                          className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        >
-                          Preview
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-    
-                  {/* TAN Files Section */}
-                  <h4 className="text-lg font-semibold text-gray-800 mt-4">
-                    TAN Files:
-                  </h4>
-                  {company.tanFile.map((file, index) => (
-                    <div key={index} className="mt-2">
-                      <div className="mb-2">
-                        <span className="text-gray-500 font-semibold text-md mr-2">
-                          Filename:
-                        </span>
-                        <span>{file.name}</span>
-                      </div>
-                      <div className="mb-4 space-x-2">
-                        <button
-                          onClick={() => handleDownload(file.filename)}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        >
-                          Download
-                        </button>
-                        <button
-                          onClick={() => handlePreview(file.filename)}
-                          className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                        >
-                          Preview
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-            
+
                     <div className="mt-6">
                       <div className="border-t border-gray-300 py-4">
                         <h4 className="text-xl font-semibold text-gray-800">
@@ -396,22 +407,21 @@ const ClientDetailsInNewTab = () => {
                               <span>{file.filename}</span>
                             </div>
                             <div className="mb-4 space-x-2">
-                            <button
-                            onClick={() => handleDownload(file.filename)}
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                          >
-                            Download
-                          </button>
-                          <button
-                            onClick={() => handlePreview(file.filename)}
-                            className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
-                          >
-                            Preview
-                          </button>
+                              <button
+                                onClick={() => handleDownload(file.filename)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                              >
+                                Download
+                              </button>
+                              <button
+                                onClick={() => handlePreview(file.filename)}
+                                className="bg-red-400 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-200 mt-3"
+                              >
+                                Preview
+                              </button>
                             </div>
                           </div>
                         ))}
-        
                       </div>
                     </div>
 
